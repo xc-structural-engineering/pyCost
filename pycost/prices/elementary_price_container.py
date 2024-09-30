@@ -7,6 +7,7 @@ __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
+import sys
 import pylatex
 import logging
 from pycost.prices import elementary_price
@@ -216,24 +217,33 @@ class ElementaryPrices(concept_dict.ConceptDict):
         if(Str.find("[MAT]")<len(Str)): LeeMatSpre(iS)
 
     def readBC3(self, els):
-        
-        if (els and (len(els)>0)):
-            logging.info("Reading elementary prices." + '\n')
-            sz_inicial= len(self)
-            keys= list(self.concepts.keys())
-            for key in els.keys():
-                data= els.GetDatosElementaryPrice(key)
-                el= elementary_price.ElementaryPrice()
-                el.readBC3(data)
-                self.Append(el)
+        ''' Read elementary prices from BC3 file.
 
-            num_agregados= len(self)-sz_inicial
+        :param els: 
+        '''
+        if(els):
             sz= len(els)
-            if num_agregados != sz:
-                logging.error("¡Errornot , pasaron: " + str(sz)
-                          + " precios elementales y se cargaron "
-                          + str(num_agregados)+ '\n')
-            logging.info("Loaded " + str(sz) + " elementary prices. " + '\n')
+            if(sz>0):
+                logging.info("Reading elementary prices." + '\n')
+                sz_inicial= len(self)
+                keys= list(self.concepts.keys())
+                for key in els.keys():
+                    data= els.GetDatosElementaryPrice(key)
+                    el= elementary_price.ElementaryPrice()
+                    el.readBC3(data)
+                    self.Append(el)
+
+                num_agregados= len(self)-sz_inicial
+                sz= len(els)
+                if('SINDESCO' in els.keys()):
+                    sz-= 1 # don't count SINDESCO
+                if num_agregados != sz:
+                    className= type(self).__name__
+                    methodName= sys._getframe(0).f_code.co_name
+                    logging.error(className+'.'+methodName+"; received: " + str(sz)
+                              + " elementary prices but only "
+                              + str(num_agregados)+ ' were loaded.\n')
+                logging.info("Loaded " + str(sz) + " elementary prices. " + '\n')
 
 
     def writeLatexPricesOfType(self, doc, tipo, filterBy= None):
