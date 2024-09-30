@@ -9,7 +9,6 @@ __email__= "l.pereztato@ciccp.es"
 
 from pycost.bc3 import bc3_entity as eBC3
 from pycost.bc3 import codes
-from pycost.structure import unit_price_quantities
 
 class Measurable(eBC3.EntBC3):
     '''Buildable thing that you can measure (en m, kg, m2, m3,...)
@@ -77,23 +76,3 @@ class Measurable(eBC3.EntBC3):
         self.long_description= dct['long_description']
         self.unidad= dct['unit']
         return super(Measurable, self).setFromDict(dct)
-
-def gen_quantities(currentChapter, cod, lst_med):
-    ''' Generates the cuantities from the given list.
-
-    :param currentChapter: chapter to add the quantities to.
-    :param cod: price corresponding to the measured quantities.
-    :param lst_med: list of measurements.
-    ''' 
-    rootChapter= currentChapter.getRootChapter()
-    currentPrice= rootChapter.getUnitPrice(cod)
-    currentQuantities= unit_price_quantities.UnitPriceQuantities(currentPrice)
-    for lmed in lst_med:
-        txt= lmed[0]
-        ud= lmed[1]
-        largo= lmed[2]
-        ancho= lmed[3]
-        alto= lmed[4]
-        currentQuantities.appendMeasurement(txt,ud,largo,ancho,alto)
-    currentChapter.appendUnitPriceQuantities(currentQuantities)
-    
