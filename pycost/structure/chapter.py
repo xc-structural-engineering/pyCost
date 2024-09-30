@@ -258,7 +258,7 @@ class Chapter(bc3_entity.EntBC3):
             if(indice>len(self.subcapitulos)):
                 className= type(self).__name__
                 methodName= sys._getframe(0).f_code.co_name
-                logging.error(className+'.'+methodName+"; chapter with index: " + str(indice) + " not found in chapter: '"+str(self.Codigo()) + "' returning None.\n")
+                logging.error(className+'.'+methodName+"; chapter with index: " + str(indice) + " not found in chapter: '"+str(self.Codigo()) + "' (" + self.getTitle() + '). lst= '+str(lst)+' Returning None.\n')
                 return None
             if(sz==1): # it must be a subchapter of this one.
                 retval= self.subcapitulos[indice-1]
