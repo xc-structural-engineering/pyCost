@@ -632,6 +632,9 @@ class Chapter(bc3_entity.EntBC3):
             if(self.owner):
                 retval= self.owner.getRootChapter()
             else:
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                logging.error(className+'.'+methodName+"; chapter: "+str(self.codigo)+' has no owner.')
                 retval= None
         return retval
         
