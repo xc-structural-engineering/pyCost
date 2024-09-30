@@ -126,7 +126,9 @@ class UnitPrice(ms.Measurable):
         for i in descBC3:
             ent= rootChapter.getUnitPrice((i).codigo)
             if not ent:
-                logging.warning("UnitPrice.getPointers; component: " + (i).codigo + 'not found.')
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                logging.warning(className+'.'+methodName+"; component: " + (i).codigo + 'not found.')
                 error= True
                 continue
             else:

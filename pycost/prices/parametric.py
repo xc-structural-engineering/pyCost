@@ -49,7 +49,9 @@ class Parametric(fiebdc3.regBC3_parametric):
                 searchKey= key[1:] # Remove the first percent sign.
             ent= rootChapter.getUnitPrice(searchKey)
             if not ent:
-                logging.warning("UnitPrice.getPointers; component: " + key + ' not found.')
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                logging.warning(className+'.'+methodName+"; component: " + key + ' not found.')
                 error= True
                 continue
             else:

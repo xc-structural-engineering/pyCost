@@ -34,7 +34,9 @@ class ConceptDict(epy.EntPyCost):
 
     @staticmethod
     def err_no_encontrado(cod):
-        logging.error("Concept: " + cod + " not found.")
+        className= type(self).__name__
+        methodName= sys._getframe(0).f_code.co_name
+        logging.error(className+'.'+methodName+"; concept: " + cod + " not found.")
 
     def Busca(self,cod):
         retval= None

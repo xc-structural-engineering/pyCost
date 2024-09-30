@@ -182,7 +182,9 @@ class Codigos(dict):
             if entity.EsObra():
                 retval= Codigos({key: entity})
         if(retval is None):
-            logging.error("Root chapter not found.")
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+'; root chapter not found.')
             exit(1)
         return retval
 
@@ -289,9 +291,10 @@ class Codigos(dict):
         # elif(key in concept_dict.ConceptDict.claves):
         #     retval= reg_T(c= key, d= concept_dict.ConceptDict.claves[key].GetDatosElemento())
         else:
-            logging.error('elementary price: '+key+' not found.')
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+'; elementary price: '+key+' not found.')
         return retval
-
 
     def getUnitPriceData(self, key):
         return reg_T(c= key, d= self[key].getUnitPriceData())

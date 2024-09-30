@@ -100,7 +100,9 @@ class RegBC3(object):
         elif self.isChapter():
             return capitulo
         else:
-            logging.error("Type of the concept: '" + str(i) + "' not found.")
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+"; type of the concept: '" + str(i) + "' not found.")
             return sin_tipo
 
     def getConceptTypeString(self):

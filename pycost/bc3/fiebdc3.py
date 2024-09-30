@@ -858,7 +858,9 @@ class regBC3_parametric(regBC3_elemento):
         if(parameterKey in self.parameters.parameterLabelStatements):
             retval= self.parameters.parameterLabelStatements[parameterKey]
         else:
-            logging.error('parameter: \''+parameterKey+'\' not found.')
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+'; parameter: \''+parameterKey+'\' not found.')
         return retval
         
     def getDict(self):

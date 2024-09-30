@@ -267,8 +267,10 @@ class Descompuestos(concept_dict.ConceptDict):
         if key in self.parametricConcepts:
             retval= self.parametricConcepts[key]
         else:
-            logging.error('parametric concept: \''+str(key)+'\' not found. Candidates are:')
-            logging.info(str(self.parametricConcepts.keys()))
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+'; parametric concept: \''+str(key)+'\' not found. Candidates are:')
+            logging.error(str(self.parametricConcepts.keys()))
         return retval
 
     def writeParametricConcepts(self, os= sys.stdout):

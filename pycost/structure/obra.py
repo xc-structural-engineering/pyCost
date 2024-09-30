@@ -165,7 +165,9 @@ class Obra(cp.Chapter):
         '''
         retval= super(Obra,self).findPrice(cod)
         if not retval:
-            logging.error('unit price: '+ cod + ' not found.')
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+'; unit price: '+ cod + ' not found.')
         return retval
     
     def replacePrices(self, replacementsTable):
@@ -291,7 +293,9 @@ class Obra(cp.Chapter):
 
     def LeeBC3DatosObra(self, rootChapterDict):
         if(len(rootChapterDict)<1):
-            logging.error('Root chapter not found.')
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            logging.error(className+'.'+methodName+'; root chapter not found.')
         key= next(iter(rootChapterDict)) # first key
         rootChapter= rootChapterDict[key]
         reg= rootChapterDict.getChapterData(key= key)
@@ -344,6 +348,8 @@ class Obra(cp.Chapter):
                         logging.error(className+'.'+methodName+"; parent concept '"+str(chapterCode)+ "' is not a chapter. Measurements outside chapters are not supported yet.\n")
                         retval= False
                     else:
+                        className= type(self).__name__
+                        methodName= sys._getframe(0).f_code.co_name
                         logging.error(className+'.'+methodName+"; chapter with code '"+str(chapterCode)+ "' not found.\n")
                         retval= False
         return retval

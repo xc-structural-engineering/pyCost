@@ -111,7 +111,9 @@ class Chapter(bc3_entity.EntBC3):
                 tpl= (price, comp[1], comp[2])
                 derefComponents.append(tpl)
             else:
-                logging.error('Price: '+str(key)+' not found.')
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                logging.error(className+'.'+methodName+"; Price: "+str(key)+' not found.')
         retval= self.precios.newCompoundPrice(code= code, shortDescription= shortDescription, components= derefComponents, unit= unit, longDescription= longDescription)
         return retval
         
@@ -431,9 +433,13 @@ class Chapter(bc3_entity.EntBC3):
                 if(hasattr(obj, attribute)):
                     setattr(obj, attribute, value)
                 else:
-                    logging.error('attribute: '+attribute+' not found for object: '+str(obj))
+                    className= type(self).__name__
+                    methodName= sys._getframe(0).f_code.co_name
+                    logging.error(className+'.'+methodName+'; attribute: '+attribute+' not found for object: '+str(obj))
             else:
-                logging.error('price: \''+key+'\' in object: '+ str(obj)+ ' not found.')
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                logging.error(className+'.'+methodName+'; price: \''+key+'\' in object: '+ str(obj)+ ' not found.')
                 missingCodes.append((key, link))
         if(len(missingCodes)>0):
             logging.error('Some codes were missing. Exiting')
