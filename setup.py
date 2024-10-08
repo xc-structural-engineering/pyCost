@@ -21,34 +21,46 @@
 #
 
 from setuptools import setup
-from distutils.core import sys
-from distutils.sysconfig import get_python_lib
+from setuptools import find_packages
+import sys
+import version
 
-myPrefix = sys.prefix
-if len (sys.argv) > 2:
-    i = 0
-    for o in sys.argv:
-        if o.startswith ("--prefix"):
-            if o == "--prefix":
-                if len (sys.argv) >= i:
-                    myPrefix = sys.argv[i + 1]
-                sys.argv.remove (prefix)
-            elif o.startswith ("--prefix=") and len (o[9:]):
-                myPrefix = o[9:]
-            sys.argv.remove (o)
-        i += 1
-if not myPrefix and "PREFIX" in os.environ:
-    myPrefix = os.environ["PREFIX"]
-if not myPrefix or not len (myPrefix):
-    myPrefix = "/usr/local"
+# Get version
+pycost_version= version.__version__
+pycost_deb_pkg_folder= None
+pycost_installation_target= None
+usr_local_pth= None
+with open('./pycost_installation_target.txt','r') as f:
+    pycost_version= f.readline().strip()
+    sys_arch= f.readline().strip()
+    pycost_deb_pkg_folder= f.readline().strip()
+    pycost_installation_target= f.readline().strip()
+    usr_local_pth= f.readline().strip()
+if (pycost_version is None):
+    logging.error('PYCOST_VERSION not set.')
+    exit(1)
+if (sys_arch is None):
+    logging.error('SYS_ARCH not set.')
+    exit(1)
+if (pycost_deb_pkg_folder is None):
+    logging.error('PYCOST_DEB_PKG_FOLDER not set.')
+    exit(1)
+if (pycost_installation_target is None):
+    logging.error('PYCOST_INSTALLATION_TARGET not set.')
+    exit(1)
+if (usr_local_pth is None):
+    logging.error('USR_LOCAL not set.')
+    exit(1)
 
-pth_to_libs= get_python_lib(1,0,myPrefix)
-print(pth_to_libs)
+pycost_packages= ['pycost','pycost.bc3','pycost.measurements','pycost.prices','pycost.prices.price_justification','pycost.structure','pycost.utils','pycost.utils.structural_members']
+
+print('pyCost temporary folder: '+pycost_deb_pkg_folder)
+print('pyCost temporary installation target: '+pycost_installation_target)
 
 setup(name='pycost',
-      version='0.1.0',
+      version= pycost_version,
       author='Luis C. Pérez Tato',
-      packages=['pycost','pycost/bc3','pycost/measurements','pycost/prices','pycost/prices/price_justification','pycost/structure','pycost/utils','pycost/utils/structural_members',],
+      packages= find_packages(include= pycost_packages),
       install_requires=[],
       data_files=[]
      )

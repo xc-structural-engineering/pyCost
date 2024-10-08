@@ -1,0 +1,7 @@
+0.5.1
+amd64
+./debian-pkg
+./debian-pkg/usr/local/tmp
+/usr/local
+./debian-pkg/usr/local/lib/python3.10/dist-packages
+pycost-python-modules_0.5.1_amd64.deb
