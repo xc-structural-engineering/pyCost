@@ -253,7 +253,7 @@ class Descompuestos(concept_dict.ConceptDict):
             doc.append(pylatex_utils.NormalSizeCommand())
 
     def writeSpreadsheet(self, sheet):
-        sheet.row+= [u"Código", "Ud.", "Denominación", "Precio en letra", "Precio en cifra"]
+        sheet.append([u"Código", "Ud.", "Denominación", "Precio en letra", "Precio en cifra"])
         for j in self.concepts:
             self.concepts[j].writeSpreadsheet(sheet)
 

@@ -140,17 +140,17 @@ class UnitPriceQuantitiesBase(epc.EntPyCost):
 
         :param sheet: spreadsheet to write into.
         '''
-        sheet.row+= [self.getUnitPriceCode(), basic_types.human_readable(self.getTotal(),3), pylatex_utils.ascii2latex(self.UnidadMedida()), pylatex_utils.ascii2latex(self.ud.getNoEmptyDescription())]
-        sheet.row+= ["Texto", "Unidades", "Largo", "Ancho", "Alto", "Parcial"]
+        sheet.append([self.getUnitPriceCode(), basic_types.human_readable(self.getTotal(),3), pylatex_utils.ascii2latex(self.UnidadMedida()), pylatex_utils.ascii2latex(self.ud.getNoEmptyDescription())])
+        sheet.append(["Texto", "Unidades", "Largo", "Ancho", "Alto", "Parcial"])
         self.quantities.writeSpreadsheet(sheet)
-        sheet.row+= [None,None,None,None,None,None]
+        sheet.append([None,None,None,None,None,None])
 
     def writeSpreadsheetBudget(self, sheet):
         ''' Write the budget in the spreadsheet argument.
 
         :param sheet: spreadsheet to write into.
         '''
-        sheet.row+= [self.getUnitPriceCode(), self.getTotal(),  self.UnidadMedida(),  self.ud.getNoEmptyDescription(), self.getUnitPriceString(), self.getPrice()]
+        sheet.append([self.getUnitPriceCode(), self.getTotal(),  self.UnidadMedida(),  self.ud.getNoEmptyDescription(), self.getUnitPriceString(), self.getPrice()])
 
     def WriteBC3RegM(self, os, cap_padre, pos):
         os.write("~M|" + cap_padre + '\\' + self.getUnitPriceCode() + '|'

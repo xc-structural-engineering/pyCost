@@ -123,8 +123,8 @@ class Quantities(list, epy.EntPyCost):
         '''
         for i in self:
             (i).writeSpreadsheet(sheet)
-        sheet.row+= [None,None,None,None,'Suma ...',self.getTotal()]
-        sheet.row+= []
+        sheet.append([None,None,None,None,'Suma ...',self.getTotal()])
+        sheet.append([])
 
     def getDict(self):
         ''' Return a dictionary containing the object data.'''

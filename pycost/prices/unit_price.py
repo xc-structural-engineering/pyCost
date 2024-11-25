@@ -206,7 +206,7 @@ class UnitPrice(ms.Measurable):
         data_table.add_row([nested_data_table])
 
     def writeSpreadsheet(self, sheet):
-        sheet.row+= [self.Codigo(), pylatex_utils.ascii2latex(self.Unidad()),pylatex_utils.ascii2latex(self.getNoEmptyDescription()),self.StrPriceToWords(True) ,self.getPriceString()]
+        sheet.append([self.Codigo(), pylatex_utils.ascii2latex(self.Unidad()),pylatex_utils.ascii2latex(self.getNoEmptyDescription()),self.StrPriceToWords(True) ,self.getPriceString()])
 
     def getDict(self):
         ''' Return a dictionary containing the object data.'''

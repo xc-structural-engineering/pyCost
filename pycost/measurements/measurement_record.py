@@ -226,5 +226,5 @@ class MeasurementRecord(epc.EntPyCost):
             row.append(total)
         else:
             row.append(None)
-        sheet.row+= row
+        sheet.append(row)
 

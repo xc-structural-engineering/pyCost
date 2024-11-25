@@ -27,8 +27,7 @@ from pycost.utils import basic_types
 from pycost.bc3 import fiebdc3
 import tempfile
 import re # strip comments
-import pyexcel # spreadsheets.
-from collections import OrderedDict # spreadsheets
+from openpyxl import Workbook
 
 def print_tree(current_node, indent="", last='updown'):
 
@@ -637,28 +636,25 @@ class Obra(cp.Chapter):
         im.printLtx(retval)
         return retval
     
-    def writeSpreadsheetSummary(self, book, maxDepth):
+    def writeSpreadsheetSummary(self, sheet, maxDepth):
         ''' Write partial budgets summary.
 
         :param book: spreadsheet book.
         '''
         self.setOwner(parent= self) # Compute chapters owners.
-        sheet= book['Resumen']
-        sheet.row+= ['Resumen de los presupuestos parciales']
+        sheet.append(['Resumen de los presupuestos parciales'])
         super(Obra,self).writeSpreadsheetSummary(sheet, depth= 0, maxDepth= maxDepth)
 
-    def writeSpreadsheetQuantities(self, book):
+    def writeSpreadsheetQuantities(self,sheet):
         ''' Write the quantities in the work book argument.
 
         :param book: spreadsheet book.
         '''
-        sheet= book['Mediciones']
-        sheet.row+= [self.getTitle()]
+        sheet.append([self.getTitle()])
         super(Obra, self).writeSpreadsheetQuantities(sheet, parentSection= 'root')
         
-    def writeSpreadsheetBudget(self, book):
-        sheet= book['PreParc']
-        sheet.row+= [self.getTitle()]
+    def writeSpreadsheetBudget(self, sheet):
+        sheet.append([self.getTitle()])
         super(Obra, self).writeSpreadsheetBudget(sheet, parentSection= 'root')
         
     def writeSpreadsheet(self, outputFileName, summaryMaxDepth= None):
@@ -666,26 +662,26 @@ class Obra(cp.Chapter):
  
         :param outputFile: name of the output file.
         '''
-        # Create spreadsheet book.
-        sheetNames= OrderedDict()
-        sheetNames.update({'Mediciones': []})
-        sheetNames.update({"CuaPre1": []})
-        sheetNames.update({"CuaPre2": []})
-        sheetNames.update({"PreParc": []})
-        sheetNames.update({"Resumen": []})
-        sheetNames.update({"Elementales": []})
+        # Create spreadsheet book and sheets
+        wbook = Workbook()
+        quantSheet=wbook.create_sheet("Mediciones")
+        priz1Sheet=wbook.create_sheet("CuaPre1")
+        priz2Sheet=wbook.create_sheet("CuaPre2")
+        partbdgSheet=wbook.create_sheet("PreParc")
+        summSheet=wbook.create_sheet("Resumen")
+        elemprizSheet=wbook.create_sheet("Elementales")
         pyexcel.save_book_as(bookdict=sheetNames, dest_file_name= outputFileName)
         book= pyexcel.get_book(file_name=outputFileName)
         # Populate it with quantities.
-        self.writeSpreadsheetQuantities(book)
+        self.writeSpreadsheetQuantities(quantSheet)
         # with prices.
-        self.precios.writeSpreadsheet(book)
+        self.precios.writeSpreadsheet(partbdgSheet)
         # and with partial budgets.
-        self.writeSpreadsheetBudget(book)
+        self.writeSpreadsheetBudget(partbdgSheet)
         # write summary.
         if(not summaryMaxDepth):
             summaryMaxDepth= self.getHeight()
-        self.writeSpreadsheetSummary(book, maxDepth= summaryMaxDepth)
+        self.writeSpreadsheetSummary(summSheet, maxDepth= summaryMaxDepth)
         # Save the modified document.
         book.save_as(outputFileName)
 

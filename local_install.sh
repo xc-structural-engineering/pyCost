@@ -30,5 +30,5 @@ echo "Remove package files after installation."
 rm -vi *.deb
 
 # Install required packages using pip3
-pip3 install -r requirements.txt
+# pip3 install -r requirements.txt
 
