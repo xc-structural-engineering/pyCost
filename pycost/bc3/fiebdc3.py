@@ -688,7 +688,21 @@ class regBC3_p(regBC3):
         if(len(expr)>2):
             values.append(expr[2].strip())
         return code, values
-        
+    
+    def _decode_substitution_statement(self, itk):
+        ''' Decode inner token corresponding to a substitution statement.
+
+        :param itk: BC3 inner token corresponding to a substitution statement.
+        '''
+        expr= itk.split('\\')
+        if(itk[0]=='\\'):
+            key= expr[1].strip()
+            value= expr[2]
+        else:
+            key= expr[0]
+            value= expr[1]
+        return key, value
+    
     def decod_bc3(self, tokens):
         '''Decodification.
 
@@ -721,13 +735,7 @@ class regBC3_p(regBC3):
                         lastChar= itk[-1]
                         if(lastChar in ['\\', '"', '+', '-', '*', '/']):
                             substitutionStatementContinues= False
-                            expr= itk.split('\\')
-                            if(itk[0]=='\\'):
-                                key= expr[1].strip()
-                                value= expr[2]
-                            else:
-                                key= expr[0]
-                                value= expr[1]
+                            key, value= self._decode_substitution_statement(itk)
                             self.substitutionStatements[key]= value
                         else:
                             lastStatement= itk
