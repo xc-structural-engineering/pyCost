@@ -488,7 +488,7 @@ class Obra(cp.Chapter):
         :param doc: pylatex document to write into.
         :param other: project to compare with.
         '''
-        doc.create(pylatex_utils.ltx_part(basic_types.quantitesCaption) + '\n')
+        doc.create(pylatex_utils.ltx_part(basic_types.quantitiesCaption) + '\n')
         doc.create(pylatex.Command('parttoc'))
         doc.create(pylatex_utils.ltx_begin("landscape") + '\n')
         super(Obra,self).ImprCompLtxMed(os,'root',other)
@@ -603,9 +603,9 @@ class Obra(cp.Chapter):
         :param other: project to compare with.
         '''
         #ImprCompLtxMed(other,os)
-        ImprCompLtxMed(other,os)
+        self.ImprCompLtxMed(doc,other)
         precios.writePriceTablesIntoLatexDocument(os); #Price tables.
-        ImprCompLtxPreParc(other,os)
+        self.ImprCompLtxPreParc(doc,other)
         #ImprLtxResumen(os)
 
     def writeIntoLatexDocument(self, doc, filterBy= None):
