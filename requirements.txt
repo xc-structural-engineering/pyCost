@@ -1,1 +1,2 @@
 ###### pyCost requirements ######
+pylatex
