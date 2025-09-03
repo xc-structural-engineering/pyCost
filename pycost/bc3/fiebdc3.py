@@ -702,7 +702,38 @@ class regBC3_p(regBC3):
             key= expr[0]
             value= expr[1]
         return key, value
-    
+
+    def _decode_parameter_label_statement(self, itk):
+        ''' Decode inner token corresponding to a parameter label statement.
+
+        :param itk: BC3 inner token corresponding to a parameter label statement.
+        '''
+        expr= itk.split('\\')
+        if(itk[0]=='\\'):
+            key= expr[1]
+            values= expr[2:]
+        else:
+            key= expr[0]
+            values= expr[1:]
+        key= key.strip()
+        key= key.replace(' ','_')
+        key= key.lower()
+        tmp= list()
+        for v in values:
+            if(len(v)>0):
+                v= v.strip()
+                v= v.replace(' >= ', '>=')
+                v= v.replace(' > ', '>')
+                v= v.replace(' <= ', '<=')
+                v= v.replace(' < ', '<')
+                tmp.append(v)
+        values= tmp
+        order= len(self.parameterLabelStatements)
+        if(order>3): # letter 'E' reserved for error (good design indeed).
+            order+= 1
+        letter= chr(order+ord('A'))
+        return key, letter, values
+        
     def decod_bc3(self, tokens):
         '''Decodification.
 
@@ -711,7 +742,7 @@ class regBC3_p(regBC3):
         for tk in tokens:
             innerTokens= tk.split(parameter_tokens_separator)
             substitutionStatementContinues= False
-            for itk in innerTokens:
+            for itk_i, itk in enumerate(innerTokens):
                 itk= itk.strip()
                 # remove comments.
                 itk= itk.split('#', 1)[0]
@@ -741,36 +772,20 @@ class regBC3_p(regBC3):
                             lastStatement= itk
                             substitutionStatementContinues= True
                     elif(self.isParameterLabelStatement(itk)):
-                        expr= itk.split('\\')
-                        if(itk[0]=='\\'):
-                            key= expr[1]
-                            values= expr[2:]
-                        else:
-                            key= expr[0]
-                            values= expr[1:]
-                        key= key.strip()
-                        key= key.replace(' ','_')
-                        key= key.lower()
-                        tmp= list()
-                        for v in values:
-                            if(len(v)>0):
-                                v= v.strip()
-                                v= v.replace(' >= ', '>=')
-                                v= v.replace(' > ', '>')
-                                v= v.replace(' <= ', '<=')
-                                v= v.replace(' < ', '<')
-                                tmp.append(v)
-                        values= tmp
-                        order= len(self.parameterLabelStatements)
-                        if(order>3): # letter 'E' reserved for error (good design indeed).
-                            order+= 1
-                        letter= chr(order+ord('A'))
+                        key, letter, values= self._decode_parameter_label_statement(itk)
                         self.parameterLabelStatements[key]= values
                         self.parameterLabelLetters[key]= letter
                     else:
-                        logging.error('Unknown token in parametric concept: \''+itk+'\'')
-                        print(tokens)
-                        exit(1)
+                        className= type(self).__name__
+                        methodName= sys._getframe(0).f_code.co_name
+                        errorMsg= "; unknown token in parametric concept: "+str(itk)+"\n"
+                        # errorMsg+= " in line: "+str(tk)
+                        # print("previous token: "+str(innerTokens[itk_i-1]))
+                        # print("this token: "+str(innerTokens[itk_i]))
+                        # print("next token: "+str(innerTokens[itk_i+1]))
+                        # print(innerTokens)
+                        logging.error(className+'.'+methodName+errorMsg)
+                        # exit(1)
         return tokens
 
     def writeParameterLabelStatements(self, os= sys.stdout):
