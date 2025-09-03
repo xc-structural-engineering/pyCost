@@ -10,6 +10,7 @@ __email__= "l.pereztato@ciccp.es"
 import pylatex
 import logging
 import sys
+import difflib
 from pycost.prices import elementary_price_container
 from pycost.prices import unit_price
 from pycost.prices import parametric
@@ -270,7 +271,10 @@ class Descompuestos(concept_dict.ConceptDict):
             className= type(self).__name__
             methodName= sys._getframe(0).f_code.co_name
             logging.error(className+'.'+methodName+'; parametric concept: \''+str(key)+'\' not found. Candidates are:')
-            logging.error(str(self.parametricConcepts.keys()))
+            candidate_keys= self.parametricConcepts.keys()
+            if(len(candidate_keys)>10): # Do not fill the console with data.
+                candidate_keys= difflib.get_close_matches(key, candidate_keys)
+            logging.error(str(candidate_keys))
         return retval
 
     def writeParametricConcepts(self, os= sys.stdout):
