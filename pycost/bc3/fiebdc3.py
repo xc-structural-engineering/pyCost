@@ -611,9 +611,89 @@ class regBC3_p(regBC3):
         elif 'ATOF' in token:
             retval= True
         return retval
-    
+
+    def _decode_assignment_statement(self, itk):
+        ''' Decode inner token corresponding to an assignment.
+
+        :param itk: BC3 inner token.
+        '''
+        expr= itk.split('=', 1)
+        leftHandSide= expr[0]
+        if('(' in leftHandSide): # Has indexes.
+            indexes= leftHandSide.split('(',1)[1].split(')')[0]
+            if(',' in indexes):
+                indexes= indexes.split(',')
+            else:
+                indexes= [indexes]
+        else:
+            indexes= []
+        varName= leftHandSide[:2]
+        prefix= itk[0]
+        if(prefix=='%'): # Numerical assignment statement.
+            if(self.isExpression(expr[1])): # is expression
+                values= expr[1]
+            else: # is list of values.
+                values= expr[1].split(',')
+                tmp= list()
+                for v in values:
+                    if(len(v)>0):
+                        tmp.append(float(v))
+                values= tmp
+        elif(prefix=='$'):# Alphanumeric assignment statement.
+            #values= re.split(r',(?=")', expr[1]) #expr[1].split(',')
+            expr[1]= expr[1].replace('$', 'str')
+            parsedValues= parse_comma_separated_list(expr[1])
+            tmp= list()
+            for parsedV in parsedValues:
+                tmpStr= parsedV.strip()
+                # Remove the double quotes only if it starts and ends with double quotes.
+                if((tmpStr[0]=='"') and (tmpStr[-1]=='"')): # 
+                   tmpStr= tmpStr[1:-1]
+                tmp.append(tmpStr)
+            if(len(tmp)>1):
+                values= tmp
+            elif(len(tmp)>0):
+                values= tmp[0]
+            else:
+                logging.error('Something went wrong when parsing\''+itk+'\'')
+                exit(1)
+        varName= varName.replace('%', 'num')
+        varName= varName.replace('$', 'str')
+        if(len(indexes)>1): # is a matrix (not a vector)
+
+            noRows= int(indexes[0])
+            noCols= int(indexes[1])
+            matrix= list()
+            for i in range(0,noRows):
+                row= list()
+                for j in range(1,noCols+1):
+                    ijElem= values.pop(0)
+                    row.append(ijElem)
+                matrix.append(row)
+            values= matrix
+        self.variables[varName]= values
+        return varName, values
+
+    def _decode_decomposition_statement(self, itk):
+        ''' Decode inner token corresponding to a decomposition statement.
+
+        :param itk: BC3 inner token corresponding to a decomposition statement.
+        '''
+        expr= itk.split(':')
+        code= expr[0].strip()
+        values= list()
+        if code in self.components:
+            values= self.components[code]
+        values.append(expr[1].strip())
+        if(len(expr)>2):
+            values.append(expr[2].strip())
+        return code, values
+        
     def decod_bc3(self, tokens):
-        '''Decodification.'''
+        '''Decodification.
+
+        :param tokens: BC3 tokens to decode.
+        '''
         for tk in tokens:
             innerTokens= tk.split(parameter_tokens_separator)
             substitutionStatementContinues= False
@@ -628,76 +708,15 @@ class regBC3_p(regBC3):
                     tmp+= ' '+itk
                     itk= tmp
                 if(len(itk)>0):
-                    prefix= itk[0]
                     if(self.isVariable(itk)):
                         if('=' in itk): # is asignment.
-                            expr= itk.split('=', 1)
-                            leftHandSide= expr[0]
-                            if('(' in leftHandSide): # Has indexes.
-                                indexes= leftHandSide.split('(',1)[1].split(')')[0]
-                                if(',' in indexes):
-                                    indexes= indexes.split(',')
-                                else:
-                                    indexes= [indexes]
-                            else:
-                                indexes= []
-                            varName= leftHandSide[:2]
-                            if(prefix=='%'): # Numerical assignment statement.
-                                if(self.isExpression(expr[1])): # is expression
-                                    values= expr[1]
-                                else: # is list of values.
-                                    values= expr[1].split(',')
-                                    tmp= list()
-                                    for v in values:
-                                        if(len(v)>0):
-                                            tmp.append(float(v))
-                                    values= tmp
-                            elif(prefix=='$'):# Alphanumeric assignment statement.
-                                #values= re.split(r',(?=")', expr[1]) #expr[1].split(',')
-                                expr[1]= expr[1].replace('$', 'str')
-                                parsedValues= parse_comma_separated_list(expr[1])
-                                tmp= list()
-                                for parsedV in parsedValues:
-                                    tmpStr= parsedV.strip()
-                                    # Remove the double quotes only if it starts and ends with double quotes.
-                                    if((tmpStr[0]=='"') and (tmpStr[-1]=='"')): # 
-                                       tmpStr= tmpStr[1:-1]
-                                    tmp.append(tmpStr)
-                                if(len(tmp)>1):
-                                    values= tmp
-                                elif(len(tmp)>0):
-                                    values= tmp[0]
-                                else:
-                                    logging.error('Something went wrong when parsing\''+itk+'\'')
-                                    exit(1)
-                            varName= varName.replace('%', 'num')
-                            varName= varName.replace('$', 'str')
-                            if(len(indexes)>1): # is a matrix (not a vector)
-                                
-                                noRows= int(indexes[0])
-                                noCols= int(indexes[1])
-                                matrix= list()
-                                for i in range(0,noRows):
-                                    row= list()
-                                    for j in range(1,noCols+1):
-                                        ijElem= values.pop(0)
-                                        row.append(ijElem)
-                                    matrix.append(row)
-                                values= matrix
-                            self.variables[varName]= values
+                           varName, values= self._decode_assignment_statement(itk)
                         else: #not assignment.
                             lastStatement= itk
                             substitutionStatementContinues= True
                     elif(self.isDecompositionStatement(itk)):
-                         expr= itk.split(':')
-                         code= expr[0].strip()
-                         values= list()
-                         if code in self.components:
-                             values= self.components[code]
-                         values.append(expr[1].strip())
-                         if(len(expr)>2):
-                             values.append(expr[2].strip())
-                         self.components[code]= values
+                        code, values= self._decode_decomposition_statement(itk)
+                        self.components[code]= values
                     elif(self.isSubstitutionStatement(itk)):
                         lastChar= itk[-1]
                         if(lastChar in ['\\', '"', '+', '-', '*', '/']):
@@ -742,7 +761,8 @@ class regBC3_p(regBC3):
                         self.parameterLabelLetters[key]= letter
                     else:
                         logging.error('Unknown token in parametric concept: \''+itk+'\'')
-                        #exit(1)
+                        print(tokens)
+                        exit(1)
         return tokens
 
     def writeParameterLabelStatements(self, os= sys.stdout):
