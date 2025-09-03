@@ -110,7 +110,7 @@ else:
         f.write(pth_to_libs+'\n')
 
 # Locate dependencies.
-dependencies= ['python3', 'python3-num2words', 'python3-pylatex']
+dependencies= ['python3', 'python3-num2words', 'python3-pylatex', 'python3-xmltodict', 'python3-dicttoxml']
 depends_string, requirements_string= locate_dependencies(dependencies)
 
 with open('./requirements.txt', 'w') as f:

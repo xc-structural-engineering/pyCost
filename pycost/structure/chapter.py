@@ -673,7 +673,7 @@ class Chapter(bc3_entity.EntBC3):
             row= (maxDepth+3)*[None]
             row[depth]= self.getTitle()
             row[-1]= self.getPrice()
-            sheet.row+= row
+            sheet.append(row)
             if(recursive):
                 self.subcapitulos.writeSpreadsheetSummary(sheet, depth= depth+1, recursive= recursive, maxDepth= maxDepth)
 
@@ -683,7 +683,7 @@ class Chapter(bc3_entity.EntBC3):
         :param sheet: spreadsheet to write into.
         :param parentSection: name of the parent section.
         '''
-        sheet.row+= [self.getTitle()]
+        sheet.append([self.getTitle()])
         self.quantities.writeSpreadsheetQuantities(sheet)
         self.subcapitulos.writeSpreadsheetQuantities(sheet, parentSection)
 
@@ -693,10 +693,10 @@ class Chapter(bc3_entity.EntBC3):
         :param sheet: spreadsheet to write into.
         :param parentSection: name of the parent section.
         '''
-        sheet.row+= [self.getTitle()]
+        sheet.append([self.getTitle()])
         self.quantities.writeSpreadsheetBudget(sheet)
-        sheet.row+= [None, None, None, None,"Total: ",self.getTitle(),None,self.getPriceString()]
-        sheet.row+= [None]
+        sheet.append([None, None, None, None,"Total: ",self.getTitle(),None,self.getPriceString()])
+        sheet.append([None])
         self.subcapitulos.writeSpreadsheetBudget(sheet,parentSection)
 
     def getQuantitiesReport(self):
