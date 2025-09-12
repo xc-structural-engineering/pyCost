@@ -39,6 +39,7 @@ python tests/raw_pycost/test_02.py
 python tests/raw_pycost/test_03.py
 python tests/raw_pycost/test_04.py
 python tests/raw_pycost/test_05.py
+python tests/raw_pycost/test_06.py
 python tests/raw_pycost/test_indirect_cost.py
 
 echo "$BLEU" "  Misc tests." "$NORMAL"
