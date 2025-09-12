@@ -22,7 +22,14 @@ class ComponentList(list, epc.EntPyCost):
     def __init__(self):
         super(ComponentList,self).__init__()
         epc.EntPyCost.__init__(self)
-        
+
+    def getCopy(self):
+        ''' Return a copy of the component list.'''
+        retval= ComponentList()
+        for component in self:
+            retval.append(component.getCopy())
+        return retval
+            
     def getPrice(self):
         return self.getRoundedPrice()
 
