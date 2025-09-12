@@ -22,6 +22,11 @@ class BC3Component(fr_entity.EntFR):
         super(BC3Component,self).__init__(fr.factor,fr.productionRate)
         self.ent= e
 
+    def getCopy(self):
+        ''' Return a copy of this object.'''
+        fr_copy= super().getCopy()
+        return BC3Component(e= self.ent, fr= fr_copy)
+    
     def getPrice(self):
         return self.ent.getPrice()*self.getProduct()
 

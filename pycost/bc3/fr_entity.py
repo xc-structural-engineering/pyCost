@@ -22,7 +22,11 @@ class EntFR(epc.EntPyCost):
         super(EntFR, self).__init__()
         self.factor= f
         self.productionRate= r
-        
+
+    def getCopy(self):
+        ''' Return a copy of this object.'''
+        return EntFR(f= self.factor, r= self.productionRate)
+    
     def getFactor(self):
         return self.factor
 
