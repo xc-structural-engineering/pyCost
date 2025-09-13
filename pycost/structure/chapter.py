@@ -346,6 +346,13 @@ class Chapter(bc3_entity.EntBC3):
         c.owner= self
         return self.subcapitulos.newChapter(c)
 
+    def findChapter(self, chapterCode):
+        ''' Find the chapter with the given code.
+
+        :param chapterCode: code of the chapter to find.
+        '''
+        return self.BuscaCodigo(chapterCode)
+
     def extractChapters(self, chapterCodes, recipientChapter):
         ''' Dumps the concepts corresponding to the codes in the argument list
             in the recipient chapter.
