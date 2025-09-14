@@ -129,7 +129,8 @@ def human_readable_currency(number, symbol= False, grouping=True):
     ''' Return a string containing the number in a human readable form.
 
     :param number: number to convert.
-    :param decPlaces: number of decimal places.
+    :param symbol: if true add currency symbol to the string.
+    :param grouping: 
     '''
     return locale.currency(number, symbol= symbol, grouping= grouping)
 

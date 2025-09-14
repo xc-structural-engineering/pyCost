@@ -435,6 +435,12 @@ class Obra(cp.Chapter):
         if(signaturesFileName):
             chapter.append(pylatex.Command('input{'+signaturesFileName+'}'))
         doc.append(chapter)
+
+    def getFinalPrices(self, symbol):
+        ''' Return a dictionary containing the final prices.
+        '''
+        roundedPrice= self.getRoundedPrice()
+        return self.percentages.getFinalPrices(roundedPrice, symbol= symbol)
         
     def ImprLtxPresContrata(self, doc, signaturesFileName= 'firmas'):
         ''' Write the contract execution budget.
