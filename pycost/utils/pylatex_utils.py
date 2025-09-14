@@ -179,23 +179,30 @@ def getLatexSection(parentSection):
     else:
         return None
 
-def getPyLatexSection(sctName,title):
+def getPyLatexSection(sctName, title, label= True):
+    ''' Return a pylatex section corresponding to the given arguments.
+
+    :param sctName: type of section (from 'part' until 'subparagraph').
+    :param title: title of the section.
+    :param label: (Label or bool or str) – Can set a label manually or use a 
+                  boolean to set preference between automatic or no label.
+    '''
     if(sctName == 'part'):
-        return Part(title)
+        return Part(title, label= label)
     elif(sctName == 'chapter'):
-        return Chapter(title)
+        return Chapter(title, label= label)
     elif(sctName == 'section'):
-        return pylatex.section.Section(title)
+        return pylatex.section.Section(title, label= label)
     elif(sctName == 'subsection'):
-        return pylatex.section.Subsection(title)
+        return pylatex.section.Subsection(title, label= label)
     elif(sctName == 'subsubsection'):
-        return pylatex.section.Subsubsection(title)
+        return pylatex.section.Subsubsection(title, label= label)
     elif(sctName == 'paragraph'):
-        return Paragraph(title)
+        return Paragraph(title, label= label)
     elif(sctName == 'subparagraph'):
-        return Subparagraph(title)
+        return Subparagraph(title, label= label)
     else:
-        return Subparagraph(title)
+        return Subparagraph(title, label= label)
     
 
 #ltx_percent= '\\%'

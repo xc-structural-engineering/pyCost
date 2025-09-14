@@ -14,6 +14,8 @@ from pycost.utils import basic_types
 from pycost.utils import EntPyCost as epc
 from pycost.utils import pylatex_utils
 
+locale= basic_types.locale
+
 class MeasurementRecord(epc.EntPyCost):
     precision= 3
     places= decimal.Decimal(10) ** -precision
@@ -142,10 +144,10 @@ class MeasurementRecord(epc.EntPyCost):
         '''Return measurement components: 
            [description,number of units, length, width and height].'''
         retval= [ self.comentario, '','','','']
-        if(self.unidades): retval[1]= self.getUnitsString()
-        if(self.largo): retval[2]= self.getLengthString()
-        if(self.ancho): retval[3]= self.getWidthString()
-        if(self.alto): retval[4]= self.getHeightString()
+        if(self.unidades): retval[1]= f'{self.unidades:n}' # self.getUnitsString()
+        if(self.largo): retval[2]= f'{self.largo:n}' # self.getLengthString()
+        if(self.ancho): retval[3]= f'{self.ancho:n}' # self.getWidthString()
+        if(self.alto): retval[4]= f'{self.alto:n}' # self.getHeightString()
         return retval
     
     def WriteBC3(self, os):

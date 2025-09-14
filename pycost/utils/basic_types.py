@@ -11,6 +11,9 @@ from decimal import getcontext, Decimal
 from num2words import num2words
 import locale
 
+localeString= 'es_ES.utf-8'
+l= locale.setlocale(locale.LC_ALL, localeString)
+
 ''' TIPO: Tipo de concepto, se reservan los siguientes tipos: '''
 
 ''' 0 (Sin clasificar) 1 (Mano de obra), 2 (Maquinaria y medios aux.), 3 (Materiales). '''
@@ -119,8 +122,8 @@ def human_readable(number, decPlaces= 3):
     :param decPlaces: number of decimal places.
     '''
     #return locale.format('%d',number, grouping= True)
-    formatString= '{0:.'+str(decPlaces)+'f}'
-    return formatString.format(number, grouping= True)
+    formatString= '%10.'+str(decPlaces)+'f'
+    return locale.format_string(formatString, number, grouping= True)
 
 def human_readable_currency(number, symbol= False, grouping=True):
     ''' Return a string containing the number in a human readable form.
@@ -128,10 +131,5 @@ def human_readable_currency(number, symbol= False, grouping=True):
     :param number: number to convert.
     :param decPlaces: number of decimal places.
     '''
-    #return locale.format('%d',number, grouping= True)
-    #formatString= '{0:.'+str(decPlaces)+'f}'
-    #return formatString.format(number, grouping= True)
-    localeString= 'es_ES.utf-8'
-    l= locale.setlocale(locale.LC_ALL, localeString)
     return locale.currency(number, symbol= symbol, grouping= grouping)
 

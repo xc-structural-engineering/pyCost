@@ -489,7 +489,7 @@ class Chapter(bc3_entity.EntBC3):
             caption= basic_types.quantitiesCaption
             if(sectName!='part'):
                 caption= self.getTitle()
-            docPart= pylatex_utils.getPyLatexSection(sectName,caption)
+            docPart= pylatex_utils.getPyLatexSection(sectName, caption, label= False)
             self.quantities.writeQuantitiesIntoLatexDocument(docPart)
             if(len(self.subcapitulos)>0):
                 self.subcapitulos.writeQuantitiesIntoLatexDocument(docPart,sectName)
@@ -656,7 +656,7 @@ class Chapter(bc3_entity.EntBC3):
             caption= basic_types.partialBudgetsCaption
             if(sectName!='part'):
                 caption= self.getTitle()
-            docPart= pylatex_utils.getPyLatexSection(sectName,caption)
+            docPart= pylatex_utils.getPyLatexSection(sectName, caption, label= False)
             self.quantities.writePartialBudgetsIntoLatexDocument(docPart,self.getTitle())
             if(len(self.subcapitulos)>0):
                 self.subcapitulos.writePartialBudgetsIntoLatexDocument(docPart, sectName)

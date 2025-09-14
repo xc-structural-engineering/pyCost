@@ -7,11 +7,9 @@ __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
-import pylatex
 from pycost.structure import unit_price_quantities_base as ptp
 from pycost.measurements import measurement_detail as m
 from pycost.measurements import measurement_record as mr
-from pycost.utils import pylatex_utils
 
 class UnitPriceQuantities(ptp.UnitPriceQuantitiesBase):
     '''UnitPriceQuantities del presupuesto correspondiente 
