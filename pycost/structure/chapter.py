@@ -60,12 +60,35 @@ class Chapter(bc3_entity.EntBC3):
 
         :param code: price identifier.
         :param shortDescription: short description of the price.
-        :param typ: price type (labor, machinery, materials or unclassified).
+        :param typ: price type (labor, machiney, materials or unclassified).
         :param unit: unit (m, kg,...).
         :param longDescription: long description of the price.
         '''
         return self.precios.newElementaryPrice(code= code, shortDescription= shortDescription, price= price, typ= typ, unit= unit, longDescription= longDescription)
 
+    def addConceptMeasurementFromList(self,code,lstQuants):
+        '''Add to subchapter the measurments of the concept whose code is
+        passed as parameter.
+
+        :param code: code of the concept
+        :param lstQuants: list (or list of lists) of quantities 
+               (e.g. ['Pier 1',12.25,6.0,None])
+               
+        '''
+        presup=self.getRootChapter()
+        currentPrice=presup.getUnitPrice(cod)
+        currentQuantities= UnitPriceQuantities(currentPrice)
+        if type(lstQuant[0] is not list):
+            lstQuant=[lstQuant]
+        for lqt in lstQuant:
+            txt=lqt[0]
+            units=lqt[1]
+            length=lqt[2]
+            width=lqt[3]
+            height=lqt[4]
+            currentQuantities.appendMeasurement(txt,units,length,width,height)
+        self.appendUnitPriceQuantities(currentQuantities)
+    
     def NumElementales(self, filterBy= None):
         ''' Return the number of elementary prices in this chapter and its
             sub-chapters. If filterBy is not None return only the number of 
