@@ -191,11 +191,15 @@ class Obra(cp.Chapter):
 
     def newChapter(self, cap_padre, cap):
         ''' Appends the chapter to the sub-chapter
-            obtained from the string of the form 1\2\1\4.'''
+            obtained from the string of the form 1\2\1\4.
+
+        :param cap_padre: identifier of the parent chapter.
+        :param cap: chapter to add.
+        '''
         if(cap_padre==""): #root chapter.
             subcapitulos.newChapter(cap)
         else:
-            self.BuscaSubcapitulo(cap_padre).getSubcapitulos().newChapter(cap)
+            self.BuscaSubcapitulo(cap_padre).newSubChapter(cap)
 
     def appendUnitPriceQuantities(self, cap_padre, m):
         ''' Appends la partida being passed as parameter

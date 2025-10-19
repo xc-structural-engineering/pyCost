@@ -23,7 +23,7 @@ if(not pth):
 pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_03_prices.yaml')
 pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_07.yaml')
 
-ch01= site.subcapitulos.newChapter(Chapter(cod= '01', tit= 'Chapter 01'))
+ch01= site.newSubChapter(Chapter(cod= '01', tit= 'Chapter 01'))
 
 # Measurements
 ## MAACE0201 quantities.

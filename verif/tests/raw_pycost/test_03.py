@@ -17,7 +17,7 @@ if(not pth):
     pth= '.'
 obra.readFromYaml(pth+'/../data/yaml/test_03_prices.yaml')
 
-ch01= obra.subcapitulos.newChapter(Chapter(cod= '01', tit= 'Chapter 01'))
+ch01= obra.newSubChapter(Chapter(cod= '01', tit= 'Chapter 01'))
 
 # Measurements
 ## MAACE0201 quantities.

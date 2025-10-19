@@ -46,7 +46,7 @@ unitPrice= pConcept.getUnitPrice(code= parametricConceptKeys[0], options= option
 site.precios.unidades.Append(unitPrice)
 # Measurements
 ## New chapter
-ch01= site.subcapitulos.newChapter(chapter.Chapter(cod= '01', tit= 'Chapter 01'))
+ch01= site.newSubChapter(chapter.Chapter(cod= '01', tit= 'Chapter 01'))
 ## Quantities.
 measurements= unit_price_quantities.UnitPriceQuantities(site.getUnitPrice(unitPrice.codigo))
 measurements.appendMeasurement(textComment='test parametric price.', nUnits= 1, length= None, width=None, height=None)

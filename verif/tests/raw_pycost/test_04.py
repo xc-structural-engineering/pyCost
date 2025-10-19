@@ -39,7 +39,7 @@ site.precios.unidades.Append(reinforcingSteel)
 
 # Measurements
 ## New chapter
-ch01= site.subcapitulos.newChapter(chapter.Chapter(cod= '01', tit= 'Chapter 01'))
+ch01= site.newSubChapter(chapter.Chapter(cod= '01', tit= 'Chapter 01'))
 ## MAACE0201 quantities.
 rebarMeasurements= unit_price_quantities.UnitPriceQuantities(site.getUnitPrice('MAACE0201'))
 q1units= 2

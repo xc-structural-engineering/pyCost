@@ -144,12 +144,16 @@ class Subcapitulos(list, epc.EntPyCost):
 
         :param c: chapter to append.
         '''
+        if(not c.owner):
+            c.owner= self.owner
         self.append(c)
         return c
 
     def newChapterFromRecord(self, r):
         '''Appends a chapter.'''
-        return self.newChapter(chapter.Chapter(r.codigo,"",r.factor,r.productionRate))
+        nChapter= chapter.Chapter(r.codigo,"",r.factor,r.productionRate)
+        nChapter.owner= self.owner
+        return self.newChapter(nChapter)
 
     def newChapters(self, descomp):
         '''Append the chapters from the records on the container.'''

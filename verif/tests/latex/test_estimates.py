@@ -9,7 +9,7 @@ def test(pth):
 
     retval.readFromYaml(pth+'/../data/yaml/test_03_prices.yaml')
 
-    ch01= retval.subcapitulos.newChapter(Chapter(cod= '01', tit= 'Test'))
+    ch01= retval.newSubChapter(Chapter(cod= '01', tit= 'Test'))
 
     # Measurements
     ## MAACE0201 quantities.

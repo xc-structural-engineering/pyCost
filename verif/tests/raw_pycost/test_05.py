@@ -27,7 +27,7 @@ site.precios.unidades.Append(oranges)
 
 # Measurements
 ## New chapter
-ch01= site.subcapitulos.newChapter(chapter.Chapter(cod= '01', tit= 'Oranges'))
+ch01= site.newSubChapter(chapter.Chapter(cod= '01', tit= 'Oranges'))
 ## Orange quantities.
 orangeMeasurements= unit_price_quantities.UnitPriceQuantities(site.getUnitPrice('Oranges'))
 q1units= 2

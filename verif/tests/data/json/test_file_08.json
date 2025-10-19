@@ -5,18 +5,21 @@
     "owner_code": "root##",
     "components": {
       "E": {
+        "owner_code": "root##",
         "code": "E",
         "title": "Estructuras",
         "sub_chapters": {
           "owner_code": "E",
           "components": {
             "EA": {
+              "owner_code": "E",
               "code": "EA",
               "title": "Acero",
               "sub_chapters": {
                 "owner_code": "EA",
                 "components": {
                   "EAS": {
+                    "owner_code": "EA",
                     "code": "EAS",
                     "title": "Pilares",
                     "sub_chapters": {

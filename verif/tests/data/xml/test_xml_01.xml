@@ -6,6 +6,7 @@
 		<owner_code>ROOT##</owner_code>
 		<components>
 			<key name="01#">
+				<owner_code>ROOT##</owner_code>
 				<code>01#</code>
 				<title>Subconcept 1</title>
 				<sub_chapters>
@@ -22,6 +23,7 @@
 				<chapter_quantities/>
 			</key>
 			<key name="02#">
+				<owner_code>ROOT##</owner_code>
 				<code>02#</code>
 				<title>Subconcept 2</title>
 				<sub_chapters>

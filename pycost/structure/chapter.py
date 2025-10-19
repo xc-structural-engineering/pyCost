@@ -367,7 +367,7 @@ class Chapter(bc3_entity.EntBC3):
             chapter= self.BuscaCodigo(chapterCode)
             if(chapter):
                 employedPrices.update(chapter.getEmployedPrices())
-                recipientChapter.subcapitulos.newChapter(chapter)
+                recipientChapter.newSubChapter(chapter)
         recipientChapter= self.extractConcepts(employedPrices, recipientChapter)
         return recipientChapter
     

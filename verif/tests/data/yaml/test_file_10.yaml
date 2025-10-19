@@ -141,6 +141,7 @@ sub_chapters:
     E:
       chapter_quantities: {}
       code: E
+      owner_code: root##
       prices:
         elementary_prices: {}
         units:
@@ -151,6 +152,7 @@ sub_chapters:
           EA:
             chapter_quantities: {}
             code: EA
+            owner_code: E
             prices:
               elementary_prices: {}
               units:
@@ -170,6 +172,7 @@ sub_chapters:
                           width: 1
                       ud: EAS005
                   code: EAS
+                  owner_code: EA
                   prices:
                     elementary_prices: {}
                     units:

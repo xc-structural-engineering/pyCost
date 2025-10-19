@@ -51,7 +51,7 @@ newSite.precios.unidades.Append(unitPrice)
 
 # Measurements
 ## New chapter
-ch01= newSite.subcapitulos.newChapter(chapter.Chapter(cod= '01', tit= 'Chapter 01'))
+ch01= newSite.newSubChapter(chapter.Chapter(cod= '01', tit= 'Chapter 01'))
 ## Quantities.
 measurements= unit_price_quantities.UnitPriceQuantities(newSite.getUnitPrice(unitPrice.codigo))
 measurements.appendMeasurement(textComment='test parametric price.', nUnits= 4, length= 2, width=12, height=None)

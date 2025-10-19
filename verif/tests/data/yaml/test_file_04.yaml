@@ -173,6 +173,7 @@ sub_chapters:
               width: 0
           ud: B01
       code: 01#
+      owner_code: ROOT##
       prices:
         elementary_prices:
           A01:
@@ -199,6 +200,7 @@ sub_chapters:
     02#:
       chapter_quantities: {}
       code: 02#
+      owner_code: ROOT##
       prices:
         elementary_prices: {}
         units:
@@ -211,6 +213,7 @@ sub_chapters:
     03#:
       chapter_quantities: {}
       code: 03#
+      owner_code: ROOT##
       prices:
         elementary_prices:
           C01:
