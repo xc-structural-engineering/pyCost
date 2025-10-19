@@ -23,6 +23,7 @@ from pycost.prices import unit_price_container
 from pycost.structure import unit_price_quantities
 from pycost.utils import pylatex_utils
 from pycost.utils import basic_types
+from pycost.structure.unit_price_quantities import UnitPriceQuantities
 
 class Chapter(bc3_entity.EntBC3):
     ''' Chapter.
@@ -67,27 +68,42 @@ class Chapter(bc3_entity.EntBC3):
         return self.precios.newElementaryPrice(code= code, shortDescription= shortDescription, price= price, typ= typ, unit= unit, longDescription= longDescription)
 
     def addConceptMeasurementFromList(self,code,lstQuants):
-        '''Add to subchapter the measurments of the concept whose code is
+        '''Add to the subchapter the measurements of the concept whose code is
         passed as parameter.
 
         :param code: code of the concept
         :param lstQuants: list (or list of lists) of quantities 
-               (e.g. ['Pier 1',12.25,6.0,None])
+               (e.g. ['Pier 1',12.25,6.0,None] or [['Pier 1',5,12.25,6.0,None],['slab',5,None,1,1]]
                
         '''
         presup=self.getRootChapter()
-        currentPrice=presup.getUnitPrice(cod)
+        currentPrice=presup.getUnitPrice(code)
         currentQuantities= UnitPriceQuantities(currentPrice)
-        if type(lstQuant[0] is not list):
-            lstQuant=[lstQuant]
-        for lqt in lstQuant:
+        if type(lstQuants[0]) is not list:
+            lstQuants=[lstQuants]
+        for lqt in lstQuants:
             txt=lqt[0]
+            if not txt: txt=' '
             units=lqt[1]
             length=lqt[2]
             width=lqt[3]
             height=lqt[4]
             currentQuantities.appendMeasurement(txt,units,length,width,height)
         self.appendUnitPriceQuantities(currentQuantities)
+
+    def addMeasurementsFromDict(self,dictQuants):
+        '''Add to the subchapter the measurements passed in a dictionary 
+
+        :param dictQuants: dictionary of codes-quantities 
+               (e.g. dictQuants={'CM1U00U010':['Pier',4,12,1,None],
+                                 'CM1U00U020':[['Pier',4,12,1,None],['slab',1,12,15,None],
+                                ....}
+               
+        '''
+        for cod in dictQuants.keys():
+            lstQuants=dictQuants[cod]
+            self.addConceptMeasurementFromList(cod,lstQuants)
+ 
     
     def NumElementales(self, filterBy= None):
         ''' Return the number of elementary prices in this chapter and its
