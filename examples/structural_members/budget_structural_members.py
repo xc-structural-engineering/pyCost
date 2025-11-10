@@ -303,7 +303,6 @@ finish.addGenericQuant2chapter(chFinishes,prCornice,textComment='Cornice',nUnits
 import pylatex
 doc=pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
-doc.packages.append(pylatex.Package('aeguill'))
 doc.packages.append(pylatex.Package('minitoc'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 doc.packages.append(pylatex.Package('graphicx'))
@@ -317,7 +316,6 @@ doc.generate_tex('measur_structural_members')
 # Generate budget text
 doc=pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
-doc.packages.append(pylatex.Package('aeguill'))
 doc.packages.append(pylatex.Package('minitoc'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 doc.packages.append(pylatex.Package('graphicx'))

@@ -21,7 +21,6 @@ obra= test_estimates.test(pth)
 # Store text int pylatex doc.
 doc= pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
-doc.packages.append(pylatex.Package('aeguill'))
 doc.packages.append(pylatex.Package('minitoc'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 # doc.append(pylatex.Command('doparttoc'))
@@ -55,3 +54,5 @@ else:
 # Remove LaTeX file
 if os.path.exists(thisFile):
     os.remove(thisFile)
+else:
+    logging.error('ERROR file: '+thisFile+' not found.')

@@ -20,7 +20,6 @@ obra= test_estimates.test(pth)
 
 doc= pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
-doc.packages.append(pylatex.Package('aeguill'))
 doc.packages.append(pylatex.Package('minitoc'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 # doc.append(pylatex.Command('doparttoc'))
