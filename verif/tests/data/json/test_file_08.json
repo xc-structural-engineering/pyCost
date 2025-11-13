@@ -87,7 +87,7 @@
         "title": "Envases de papel y cart\u00c3\u00b3n.",
         "long_description": "Envases de papel y cart\u00c3\u00b3n.",
         "unit": "kg",
-        "type": 0,
+        "type": 4,
         "price": 0.0
       },
       "re150104": {
@@ -95,7 +95,7 @@
         "title": "Envases met\u00c3\u00a1licos.",
         "long_description": "Envases met\u00c3\u00a1licos.",
         "unit": "kg",
-        "type": 0,
+        "type": 4,
         "price": 0.0
       },
       "re170201": {
@@ -103,7 +103,7 @@
         "title": "Madera.",
         "long_description": "Madera.",
         "unit": "kg",
-        "type": 0,
+        "type": 4,
         "price": 0.0
       },
       "re170203": {
@@ -111,7 +111,7 @@
         "title": "Pl\u00c3\u00a1stico.",
         "long_description": "Pl\u00c3\u00a1stico.",
         "unit": "kg",
-        "type": 0,
+        "type": 4,
         "price": 0.0
       },
       "re170604": {
@@ -119,7 +119,7 @@
         "title": "Materiales de aislamiento distintos de los especificados en los c\u00c3\u00b3digos 17 06 01 y 17 06 03.",
         "long_description": "Materiales de aislamiento distintos de los especificados en los c\u00c3\u00b3digos 17 06 01 y 17 06 03.",
         "unit": "kg",
-        "type": 0,
+        "type": 4,
         "price": 0.0
       },
       "mt07ala010dab": {

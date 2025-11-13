@@ -50,7 +50,8 @@ python tests/database_manipulation/test_extract_concepts.py
 python tests/database_manipulation/test_extract_concepts_regex.py
 python tests/database_manipulation/test_merge_concepts_01.py
 python tests/database_manipulation/test_merge_concepts_02.py
-python tests/database_manipulation/test_employed_prices.py
+python tests/database_manipulation/test_employed_prices_01.py
+python tests/database_manipulation/test_employed_prices_02.py
 python tests/database_manipulation/test_concept_substitution_01.py
 python tests/database_manipulation/test_remove_concept_01.py
 

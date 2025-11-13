@@ -61,28 +61,28 @@ prices:
       long_description: Envases de papel y cartón.
       price: 0.0
       title: Envases de papel y cartón.
-      type: 0
+      type: 4
       unit: kg
     re150104:
       code: re150104
       long_description: Envases metálicos.
       price: 0.0
       title: Envases metálicos.
-      type: 0
+      type: 4
       unit: kg
     re170201:
       code: re170201
       long_description: Madera.
       price: 0.0
       title: Madera.
-      type: 0
+      type: 4
       unit: kg
     re170203:
       code: re170203
       long_description: Plástico.
       price: 0.0
       title: Plástico.
-      type: 0
+      type: 4
       unit: kg
     re170604:
       code: re170604
@@ -91,7 +91,7 @@ prices:
       price: 0.0
       title: Materiales de aislamiento distintos de los especificados en los códigos
         17 06 01 y 17 06 03.
-      type: 0
+      type: 4
       unit: kg
   units:
     parametric: {}

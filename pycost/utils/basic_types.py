@@ -18,7 +18,7 @@ l= locale.setlocale(locale.LC_ALL, localeString)
 
 ''' 0 (Sin clasificar) 1 (Mano de obra), 2 (Maquinaria y medios aux.), 3 (Materiales). '''
 
-sin_clasif, mdo, maq, mat= range(0, 4)
+sin_clasif, mdo, maq, mat, awc, wcl= range(0, 6)
 
 def str2tipo_concepto(Str):
     if(len(Str)<1):
@@ -31,6 +31,10 @@ def str2tipo_concepto(Str):
         return maq
     elif(Str[0]=='3'):
         return mat
+    elif(Str[0]=='4'):
+        return awc
+    elif(Str[0]=='5'):
+        return wcl
     else:
         return sin_clasif
 
@@ -43,21 +47,30 @@ def sint2tipo_concepto(si):
         return maq
     elif(si==3):
         return mat
+    elif(si==4):
+        return awc
+    elif(si==5):
+        return wcl
     else:
         return sin_clasif
 
 def tipo_concepto2str(t):
+    retval= 'sin_clasif'
     if(t==0):
-        return "sin_clasif"
+        retval= "sin_clasif"
     elif(t==1):
-        return "mdo"
+        retval= "mdo"
     elif(t==2):
-        return "maq"
+        retval= "maq"
     elif(t==3):
-        return "mat"
+        retval= "mat"
+    elif(t==4):
+        retval= "awc" # additional waste components.
+    elif(t==5):
+        retval= "wcl" # waste classification.
     else:
-        return "sin_clasif"
-    return "sin_clasif"
+        retval= "sin_clasif"
+    return retval
 
 def tipo_concepto2chr(tp):
     if(tp==sin_clasif):
@@ -68,6 +81,10 @@ def tipo_concepto2chr(tp):
         return '2'
     elif(tp==mat):
         return '3'
+    elif(tp==awc):
+        return '4'
+    elif(tp==wcl):
+        return '45'
     else:
         return '0'
 
@@ -103,6 +120,10 @@ def str_tipo(tipo):
         retval= 'maquinaria'
     elif(tipo==mat):
         retval= 'materiales'
+    elif(tipo==awc):
+        retval= 'additional waste components'
+    elif(tipo==wcl):
+        retval= 'waste classification'
     else:
         retval= 'sin clasificar'
     return retval

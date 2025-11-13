@@ -62,7 +62,6 @@ class EntFR(epc.EntPyCost):
         txtFactor=  self.formatString.format(self.factor)
         txtRate=  self.formatString.format(self.productionRate)
         os.write(' factor= '+txtFactor+ ' prod. rate: '+txtRate)
-        
 
     def getDict(self):
         ''' Return a dictionary containing the object data.'''

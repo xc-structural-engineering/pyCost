@@ -167,6 +167,7 @@ class Obra(cp.Chapter):
             className= type(self).__name__
             methodName= sys._getframe(0).f_code.co_name
             logging.error(className+'.'+methodName+'; unit price: '+ cod + ' not found.')
+            exit(1)
         return retval
     
     def replacePrices(self, replacementsTable):

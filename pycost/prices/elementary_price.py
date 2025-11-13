@@ -40,7 +40,39 @@ class ElementaryPrice(m.Measurable):
                           + " no es un porcentaje y su tipo está sin clasificar." + '\n')
 
     def getType(self):
+        ''' Return the type of this concept.'''
         return self.tipo
+
+    def isOfType(self, typo):
+        ''' Return true if the type of this concept is equal to the given one.
+
+        :param typo: type to check against.
+        '''
+        return (self.tipo==typo)
+
+    def isLabour(self):
+        '''Return true if the concept correspond to labour.'''
+        return self.isOfType(1)
+
+    def isMachinery(self):
+        '''Return true if the concept correspond to machinery and auxiliary
+           equipment.'''
+        return self.isOfType(2)
+    
+    def isMaterial(self):
+        '''Return true if the concept correspond to materials.'''
+        return self.isOfType(3)
+    
+    def isAdditionalWasteComponents(self):
+        '''Return true if the concept correspond to additional waste components.
+           '''
+        return self.isOfType(4)
+    
+    def isAdditionalWasteClassification(self):
+        '''Return true if the concept correspond to additional waste 
+           classification.
+           '''
+        return self.isOfType(5)
 
     def getPrice(self):
         return self.precio

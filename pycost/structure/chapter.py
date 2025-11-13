@@ -262,15 +262,17 @@ class Chapter(bc3_entity.EntBC3):
             quantities.appendMeasurement(textComment=row[0], nUnits= row[1], length= row[2], width= row[3], height= row[4])
         self.appendUnitPriceQuantities(quantities)
         
-        
     def getBC3Component(self):
         '''Return this chapter as a component.'''
         return bc3_component.BC3Component(e= self,fr= self.fr)
+    
     def LeeBC3Elementales(self, elementos):
         '''Appends the elementary prices from argument.'''
         self.precios.LeeBC3Elementales(elementos)
+        
     def LeeBC3DescompFase1(self, descompuestos):
         self.precios.LeeBC3DescompFase1(descompuestos)
+        
     def LeeBC3DescompFase2(self, descompuestos, rootChapter):
         return self.precios.LeeBC3DescompFase2(descompuestos, rootChapter= rootChapter)
     
@@ -310,20 +312,18 @@ class Chapter(bc3_entity.EntBC3):
             logging.error(className+'.'+methodName+"; empty list argument: " + str(lst) + " in chapter: '"+str(self.Codigo()) + "' returning None.\n")
             return None
 
-        logging.error("sale por aqui (y no debiera) en el capitulo: " + self.Codigo() + '\n')
+        logging.error("something went wrong when processing chapter: " + self.Codigo() + '\n')
         return retval
     
-    def BuscaCodigo(self, nmb):
-        if (self.Codigo()==nmb) or ((self.Codigo()+'#')==nmb):
+    def BuscaCodigo(self, cod):
+        ''' Search for the chapter with the given code.
+
+        :param cod: code to find.
+        '''
+        if self.Codigo()==cod:
             return self
         else:
-            return self.subcapitulos.BuscaCodigo(nmb)
-        
-    def BuscaCodigo(self, nmb):
-        if self.Codigo()==nmb:
-            return self
-        else:
-            return self.subcapitulos.BuscaCodigo(nmb)
+            return self.subcapitulos.BuscaCodigo(cod)
         
     def findPrice(self, cod):
         ''' Return the concept with the code corresponding to the argument.
@@ -761,22 +761,38 @@ class Chapter(bc3_entity.EntBC3):
         quantitiesReport= self.getQuantitiesReport()
         return quantitiesReport.getKeysWithMeasurementGreaterThan(lowerMeasurementBound= lowerMeasurementBound)
 
-    def getEmployedElementaryPrices(self, lowerMeasurementBound= 0.0):
+    def getEmployedElementaryPrices(self, lowerMeasurementBound= 0.0, filterByType= None):
         ''' Return the codes of the elementary prices that have a total 
             measurement greater than the limit argument.
 
         :param lowerMeasurementBound: lower bound for the total measurement.
         '''
         employedPrices= self.getEmployedPrices(lowerMeasurementBound= lowerMeasurementBound)
+        rootChapter= self.getRootChapter()
         retval= set()
         for key in employedPrices:
-            price= self.findPrice(key)
-            if(hasattr(price, 'components')): # is a compound price
-                for c in price.components:
-                    code= c.CodigoEntidad()
-                    retval.add(code)
-            else: # it's an elementary price already.
-                retval.add(key)
+            price= rootChapter.findPrice(key)
+            if(price):
+                if(hasattr(price, 'components')): # is a compound price
+                    for c in price.components:
+                        code= c.CodigoEntidad()
+                        if(filterByType):
+                            if(c.isOfType(filterByType)):
+                                retval.add(code)
+                        else:
+                            retval.add(code)
+                else: # it's an elementary price already.
+                    if(filterByType):
+                        if(price.isOfType(filterByType)):
+                            retval.add(key)
+                    else:
+                        retval.add(key)
+            else:
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                errorMsg= "; price: " + key + ' not found.'
+                logging.error(className+'.'+methodName+errorMsg)
+                exit(1)
         return retval
        
     def writeMembersToJSON(self, outputFileName, indent= 2):

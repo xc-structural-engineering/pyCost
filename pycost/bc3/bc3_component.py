@@ -38,7 +38,6 @@ class BC3Component(fr_entity.EntFR):
     def getLtxPriceString(self):
         return basic_types.human_readable_currency(self.getRoundedPrice())
 
-
     def PrecioSobre(self, sobre):
         '''For percentages.'''
         d= basic_types.ppl_price(sobre)
@@ -51,6 +50,13 @@ class BC3Component(fr_entity.EntFR):
 
     def getType(self):
         return self.ent.getType()
+
+    def isOfType(self, typo):
+        ''' Return true if the type of this concept is equal to the given one.
+
+        :param typo: type to check against.
+        '''
+        return (self.getType()==typo)
 
     def CodigoEntidad(self):
         return self.ent.Codigo()
