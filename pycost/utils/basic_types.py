@@ -130,6 +130,8 @@ def str_tipo(tipo):
 
 quantitiesCaption= 'Mediciones'
 partialBudgetsCaption= 'Presupuestos parciales'
+quantitiesPrecision= 3
+quantitiesFormatString= '{0:.'+str(quantitiesPrecision)+'f}'
 
 sin_desc_string= u'sin_desc'
 
@@ -155,3 +157,25 @@ def human_readable_currency(number, symbol= False, grouping=True):
     '''
     return locale.currency(number, symbol= symbol, grouping= grouping)
 
+def fix_unit_text(unit_text):
+    ''' Fix common mistakes when writing units.
+
+    :param unit_text: unit text to fix.
+    '''
+    retval= unit_text
+    if(retval[-1]=='.'): # remove point at end.
+        retval= retval[0:-1]
+    if(retval=='M3'):
+        retval= 'm3'
+    elif(retval=='M2'):
+        retval= 'm2'
+    elif(retval in ['M', 'Ml', 'ml', 'ML']):
+        retval= 'm'
+    elif(retval in ['Ud', 'UD']):
+        retval= 'ud'
+    elif(retval=='Kg'):
+        retval= 'kg'
+    elif(retval in ['Tn', 'tn', 'Tm', 'tm']):
+        retval= 't'
+    return retval
+        
