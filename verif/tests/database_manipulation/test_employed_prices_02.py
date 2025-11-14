@@ -28,6 +28,10 @@ pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
 employedLabourElementaryPrices= site.getEmployedElementaryPrices(filterByType= basic_types.mdo)
 employedLabourElementaryPricesRef= {'PEON', 'PEONES', 'UOFIC0101', 'OFIC', 'OFICMON', 'OFICENC', 'MO0101', 'OFICFER', 'PEONENC', 'OFICJAR', 'MO0201'}
 
+# for code in employedLabourElementaryPrices:
+#     elemPrice= site.findPrice(code)
+#     print(elemPrice.title)
+
 import os
 import logging
 fname= os.path.basename(__file__)
