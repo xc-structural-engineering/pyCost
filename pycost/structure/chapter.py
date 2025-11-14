@@ -794,7 +794,7 @@ class Chapter(bc3_entity.EntBC3):
                 logging.error(className+'.'+methodName+errorMsg)
                 exit(1)
         return retval
-       
+
     def writeMembersToJSON(self, outputFileName, indent= 2):
         ''' Write data to a JSON file.
 

@@ -54,6 +54,7 @@ python tests/database_manipulation/test_employed_prices_01.py
 python tests/database_manipulation/test_employed_prices_02.py
 python tests/database_manipulation/test_concept_substitution_01.py
 python tests/database_manipulation/test_remove_concept_01.py
+python tests/database_manipulation/test_quantities_report_01.py
 
 echo "$BLEU" "  FieBDC3 read tests." "$NORMAL"
 python tests/bc3/test_read_bc3_01.py
