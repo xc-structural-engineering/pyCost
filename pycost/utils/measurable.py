@@ -31,7 +31,11 @@ class Measurable(eBC3.EntBC3):
           self.long_description= ld #unicode(ld,encoding='utf-8')
         else:
           self.long_description= ''
-          
+
+    def isCompound(self):
+        ''' Return true if it is a compound concept instead of a simple one.'''
+        return False
+    
     def readBC3(self, r):
         ''' Read from BC3 record.
 

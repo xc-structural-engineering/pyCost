@@ -177,5 +177,7 @@ def fix_unit_text(unit_text):
         retval= 'kg'
     elif(retval in ['Tn', 'tn', 'Tm', 'tm']):
         retval= 't'
+    elif(retval in ['H', 'hr', 'Hr']):
+        retval= 'h'
     return retval
         

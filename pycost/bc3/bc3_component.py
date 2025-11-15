@@ -80,6 +80,27 @@ class BC3Component(fr_entity.EntFR):
             logging.error("La componente no se refiere a ninguna entidad" + '\n')
             exit(1)
 
+    def getElementaryComponentFactors(self, parentPrices, parentFactor= 1.0):
+        ''' Return the factors of the elementary components of this 
+            collection (if any component is composed append its 
+            decomposition to the returned container.
+
+        :param parentPrices: chain of prices that contain this concept.
+        :param parentFactor: factor from the upper call.
+        '''
+        retval= dict()
+        code= self.CodigoEntidad()
+        parentPrices.append(code)
+        if(self.ent.isCompound()):# compound price.
+            factor= self.getProduct()*parentFactor # factor
+            retval= self.ent.getElementaryComponentFactors(parentPrices= parentPrices, parentFactor= factor)
+        else: # elementary price.
+            index= '/'.join(parentPrices)
+            if not index in retval:
+                retval[index]= (parentFactor, self)
+        parentPrices.pop()
+        return retval
+    
     def getPriceJustificationRecord(self, over):
         if self.isPercentage():
             return pjr.PriceJustificationRecord(self.ent.Codigo(),self.getRoundedProduct(),self.ent.Unidad(),self.ent.getTitle(),True,self.getRoundedPercentage(),over)

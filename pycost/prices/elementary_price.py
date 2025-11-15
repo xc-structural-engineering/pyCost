@@ -10,11 +10,11 @@ __email__= "l.pereztato@ciccp.es"
 import logging
 from pycost.utils import pylatex_utils
 from pycost.utils import basic_types
-from pycost.utils import measurable as m
+from pycost.utils import measurable as ms
 from decimal import Decimal
 
 
-class ElementaryPrice(m.Measurable):
+class ElementaryPrice(ms.Measurable):
     precision= 2
     places= Decimal(10) ** -precision
     formatString= '{0:.'+str(precision)+'f}'
@@ -73,6 +73,12 @@ class ElementaryPrice(m.Measurable):
            classification.
            '''
         return self.isOfType(5)
+    
+    # def getElementaryComponents(self):
+    #     ''' Return the elementary components of this price.
+    #     '''
+    #     code= self.Codigo()
+    #     return {code:self}
 
     def getPrice(self):
         return self.precio

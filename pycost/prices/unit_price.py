@@ -41,8 +41,12 @@ class UnitPrice(ms.Measurable):
         self.components= component_list.ComponentList()
         
     def getType(self):
-        return basic_types.mat; #XXX provisional.
+        return 0
 
+    def isCompound(self):
+        ''' Return true if it is a compound concept instead of a simple one.'''
+        return True
+    
     def dependsOnConcept(self,  priceCode):
         ''' Return the prices which depend on the one whose code
             is passed as parameter.
@@ -66,6 +70,29 @@ class UnitPrice(ms.Measurable):
         :param newPrice: replacement price (not the code, the object).
         '''
         return self.components.replaceConcept(oldPriceCode, newPrice)
+    
+    def getElementaryComponentFactors(self, parentPrices, parentFactor= 1.0):
+        ''' Return the factors of the elementary components of this 
+            collection (if any component is composed append its 
+            decomposition to the returned container).
+
+        :param parentPrices: chain of prices that contains this one.
+        :param parentFactor: factor from the upper call.
+        '''
+        return self.components.getElementaryComponentFactors(parentPrices= parentPrices, parentFactor= parentFactor)
+
+    def getElementaryComponents(self, parentPrices, parentFactor= 1.0):
+        ''' Return the elementary components of this price.
+
+        :param parentPrices: chain of prices that contains this one.
+        :param previousComponents: dictionary containing the components already
+                                   obtained.
+        '''
+        code= self.Codigo()
+        retval= self.components.getElementaryComponents(parentPrices= parentPrices, parentFactor= parentFactor)
+        for key in retval:
+            c= retval[key]
+        return retval
             
     def getPrice(self):
         return self.components.getPrice()
@@ -195,13 +222,13 @@ class UnitPrice(ms.Measurable):
         tableStr= 'l r p{5.5cm} r'
         headerRow= [u'Código',u'Ud.',u'Descripción',u'Importe']
         nested_data_table= pylatex.Tabular(tableStr)
-        #Header
+        # Header
         nested_data_table.add_row(headerRow)
         nested_data_table.add_hline()
         row= self.getLtxCodeUnitDescription()
         row.append('')
         nested_data_table.add_row(row)
-        #Decomposition
+        # Decomposition
         self.components.writePriceTableTwoIntoLatexDocument(nested_data_table,True); #XXX Here cumulated percentages.
         data_table.add_row([nested_data_table])
 

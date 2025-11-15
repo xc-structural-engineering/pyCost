@@ -14,6 +14,7 @@ import re
 import json
 from decimal import Decimal
 from pycost.measurements import measurement_container
+from pycost.measurements import measurement_report
 from pycost.bc3 import fr_entity
 from pycost.bc3 import bc3_entity
 from pycost.bc3 import bc3_component
@@ -236,19 +237,28 @@ class Chapter(bc3_entity.EntBC3):
         return basic_types.human_readable_currency(self.getRoundedPrice())
     
     def WriteQuantitiesBC3(self,os, pos=""):
+        ''' Write the quantites in fiebdc-3 format.'''
         self.quantities.Write(os,self.CodigoBC3(),pos)
+        
     def WriteSubChaptersBC3(self,os, pos=""):
+        ''' Write the subchapters in fiebdc-3 format.'''
         self.subcapitulos.WriteBC3(os,pos)
+        
     def CodigoBC3(self):
+        ''' Return the code to unse for this chapter in fiebdc-3 format.'''
         return super(Chapter,self).CodigoBC3() + "#"
+    
     def CuadroPrecios(self):
+        ''' Return the price table of this chapter.'''
         return self.precios
+    
     def appendUnitPriceQuantities(self, m):
         ''' Append the UnitPriceQuantities object to the quantities container.
 
         :param m: quantities to append.
         '''
         self.quantities.append(m)
+        
     def appendQuantitiesList(self, priceCode, measurements):
         ''' Append the given list of quantities to the quantities container.
 
@@ -411,14 +421,17 @@ class Chapter(bc3_entity.EntBC3):
         return recipientChapter
     
     def WritePreciosBC3(self, os):
+        ''' Write the prices in fiebdc-3 format.'''
         self.precios.WriteBC3(os)
         self.subcapitulos.WritePreciosBC3(os)
         
     def WriteDescompBC3(self, os):
+        ''' Write the subchapters and quantities in fiebdc-3 format.'''
         self.subcapitulos.WriteDescompBC3(os,self.CodigoBC3())
         self.quantities.WriteDescompBC3(os,self.CodigoBC3())
         
     def WriteBC3(self, os, pos):
+        ''' Write this chapter in fiebdc-3 format.'''
         self.WriteConceptoBC3(os)
         self.WriteDescompBC3(os)
         self.WriteQuantitiesBC3(os,pos)
@@ -751,6 +764,23 @@ class Chapter(bc3_entity.EntBC3):
         retval= self.quantities.getQuantitiesReport()
         retval.Merge(self.subcapitulos.getQuantitiesReport())
         return retval
+    
+    def getElementaryQuantitiesReport(self):
+        ''' Return a report containing the total measurement for 
+            each elemental price being part of this chapter.'''
+        quantitiesReport= self.getQuantitiesReport()
+        tmp_dict= quantitiesReport.getElementaryQuantities()
+        retval= dict()
+        for key in tmp_dict:
+            concept= self.findPrice(key)
+            if(concept):
+                retval[concept]= tmp_dict[key]
+            else:
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                errorMsg= "; price: " + key + ' not found.'
+                logging.error(className+'.'+methodName+errorMsg)
+        return retval
 
     def getEmployedPrices(self, lowerMeasurementBound= 0.0):
         ''' Return the codes of the prices that have a total measurement
@@ -773,20 +803,24 @@ class Chapter(bc3_entity.EntBC3):
         for key in employedPrices:
             price= rootChapter.findPrice(key)
             if(price):
-                if(hasattr(price, 'components')): # is a compound price
-                    for c in price.components:
-                        code= c.CodigoEntidad()
+                if(price.isCompound()): # compound price.
+                    parentPrices= []
+                    elementaryComponents= price.getElementaryComponents(parentPrices= parentPrices)
+                    for code in elementaryComponents:
+                        ec= elementaryComponents[code]
+                        elementaryCode= code.split('/')[-1]
                         if(filterByType):
-                            if(c.isOfType(filterByType)):
-                                retval.add(code)
+                            if(ec.isOfType(filterByType)):
+                                retval.add(elementaryCode)
                         else:
-                            retval.add(code)
-                else: # it's an elementary price already.
+                            retval.add(elementaryCode)
+                else: # elementary price.
+                    code= price.Codigo()
                     if(filterByType):
-                        if(price.isOfType(filterByType)):
-                            retval.add(key)
+                        if(ec.isOfType(filterByType)):
+                            retval.add(code)
                     else:
-                        retval.add(key)
+                        retval.add(code)
             else:
                 className= type(self).__name__
                 methodName= sys._getframe(0).f_code.co_name

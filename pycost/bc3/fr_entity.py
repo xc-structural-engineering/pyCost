@@ -30,9 +30,23 @@ class EntFR(epc.EntPyCost):
     def getFactor(self):
         return self.factor
 
+    def setFactor(self, f):
+        ''' Set the factor.
+
+        :param f: new factor.
+        '''
+        self.factor= f
+
     def getProductionRate(self):
         return self.productionRate
 
+    def setProductionRate(self, pr):
+        ''' Set the factor.
+
+        :param pr: new production rate.
+        '''
+        self.productionRate= pr
+        
     def getProduct(self):
         return self.factor*self.productionRate
 

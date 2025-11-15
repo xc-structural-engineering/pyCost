@@ -9,6 +9,8 @@ __email__= "l.pereztato@ciccp.es"
 
 import pylatex
 from pycost.prices import unit_price_report
+from pycost.utils import basic_types
+from operator import itemgetter
 
 class QuantitiesReport(dict):
 
@@ -39,6 +41,51 @@ class QuantitiesReport(dict):
                 retval.add(code)
         return retval
 
+    def getElementaryQuantities(self):
+        ''' Return the quantities corresponding to each of the elementary prices
+            present in the concepts of this container.
+        '''
+        retval= dict()
+        for unitPrice in self:
+            quantity= self[unitPrice]
+            parentPrices= [unitPrice.Codigo()]
+            elementaryComponents= unitPrice.getElementaryComponents(parentPrices= parentPrices)
+            for code in elementaryComponents:
+                ec= elementaryComponents[code]
+                c_code= ec.CodigoEntidad()
+                c_quantity= ec.getProduct()*quantity
+                if(c_code in retval):
+                    retval[c_code]+= c_quantity
+                else:
+                    retval[c_code]= c_quantity                
+        return retval
+
+    def getRows(self, currencySymbol, biggestAmountFirst= True, limitTextWidth= None):
+        ''' Return the report in a Python list. For each record in this 
+        containe return a row containing the  price code, its descritipion, 
+        the quantity employed and the price of that quantity.
+
+        :param biggestAmountFirst: if true sort the list from the biggest to the
+                                   smallest amount of money.
+        :param currencySymbol: symbol of the currency.
+        :param limitTextWidth: maximum length of the returned description. 
+        '''
+        retval= list()
+        for unitPrice in self:
+            quantity= self[unitPrice]
+            title= unitPrice.title
+            if(limitTextWidth):
+                if(len(title)>limitTextWidth):
+                    limit= limitTextWidth-3
+                    title= title[0:limit]+'...'
+            unit= basic_types.fix_unit_text(unitPrice.unidad)
+            price= float(unitPrice.getPrice())*quantity
+            code= unitPrice.Codigo()
+            retval.append([code, title, quantity, unit, price, currencySymbol])
+        if(biggestAmountFirst):
+            retval= list(reversed(sorted(retval, key=itemgetter(4))))
+        return retval
+
     def printLtx(self, doc):
         ''' Write Latex report.
 
@@ -67,3 +114,31 @@ class QuantitiesReport(dict):
                     iu= unit_price_report.UnitPriceReport(key,value)
                     iu.printLtx(data_table)
 
+def get_rows_elementary_quantities(elementaryQuantitiesDict, currencySymbol, biggestAmountFirst= True, limitTextWidth= None):
+    ''' For each record in the given dictionary return a row containing the 
+        elementary price code, its descritipion, the quantity employed and
+        the price of that quantity.
+
+
+        :param elementaryQuantitiesDict: dictionary containing the quantities
+                                         of each elementary price.
+        :param biggestAmountFirst: if true sort the list from the biggest to the
+                                   smallest amount of money.
+        :param currencySymbol: symbol of the currency. 
+        :param limitTextWidth: maximum length of the returned description. 
+    '''
+    retval= list()
+    for elementaryPrice in elementaryQuantitiesDict:
+        quantity= elementaryQuantitiesDict[elementaryPrice]
+        title= elementaryPrice.title
+        if(limitTextWidth):
+            if(len(title)>limitTextWidth):
+                limit= limitTextWidth-3
+                title= title[0:limit]+'...'
+        unit= basic_types.fix_unit_text(elementaryPrice.unidad)
+        price= float(elementaryPrice.getPrice())*quantity
+        code= elementaryPrice.Codigo()
+        retval.append([code, title, quantity, unit, price, currencySymbol])
+    if(biggestAmountFirst):
+        retval= list(reversed(sorted(retval, key=itemgetter(4))))
+    return retval

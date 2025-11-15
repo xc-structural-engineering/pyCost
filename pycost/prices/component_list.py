@@ -69,7 +69,49 @@ class ComponentList(list, epc.EntPyCost):
             code= i.CodigoEntidad()
             if(code==oldPriceCode):
                 i.ent= newPrice # Replaces the price.
-        
+
+    def getElementaryComponentFactors(self, parentPrices, parentFactor= 1.0):
+        ''' Return the factors of the elementary components of this 
+            collection (if any component is composed append its 
+            decomposition to the returned container).
+
+        :param parentPrices: chain of prices that contain this one.
+        :param parentFactor: factor from the upper call.
+        '''
+        retval= dict()
+        for c in self:
+            if(c.ent.isCompound()): # compount price.
+                retval.update(c.getElementaryComponentFactors(parentPrices= parentPrices, parentFactor= parentFactor))
+            else: # elementary price.
+                code= c.CodigoEntidad()
+                parentPrices.append(code)
+                index= '/'.join(parentPrices)
+                if not index in retval:
+                    retval[index]= (parentFactor, c)
+                else:
+                    newFactor= (retval[code][0])*parentFactor
+                    retval[index]= (newFactor, c)
+                parentPrices.pop()
+        return retval
+                
+    def getElementaryComponents(self, parentPrices, parentFactor= 1.0):
+        ''' Return the elementary components of this collection (if any
+            component is composed append its decomposition to the returned
+            list.
+
+        :param parentPrices: chain of prices that contain this one.
+        :param parentFactor: factor from the upper call.
+        '''
+        factors_dict= self.getElementaryComponentFactors(parentPrices= parentPrices, parentFactor= parentFactor)
+        retval= dict()
+        for key in factors_dict:
+            (factor, c)= factors_dict[key]
+            newComponent= c.getCopy()
+            newComponent.setFactor(1.0)
+            newComponent.setProductionRate(c.getProductionRate()*factor)
+            retval[key]= newComponent
+        return retval
+
     def AsignaFactor(self, f):
         '''Asigna el valor f a los factores de toda la descomposición.'''
         for i in self:
@@ -95,7 +137,7 @@ class ComponentList(list, epc.EntPyCost):
             os.write('\n')
 
     def getRoundedPrice(self):
-        lista= self.getPriceJustificationList(True)#XXX Here cumulated percentages.
+        lista= self.getPriceJustificationList(True) # XXX Here cumulated percentages.
         return basic_types.ppl_price(float(lista.getRoundedTotal()))
 
 
@@ -176,15 +218,16 @@ class ComponentList(list, epc.EntPyCost):
 
         :param pa: True percentages must be cumulated.
         '''
-        return pjl.PriceJustificationList(pa,labor= self.getElementaryPricesOfType(basic_types.mdo),
-                                          materials= self.getElementaryPricesOfType(basic_types.mat),
-                                          machinery= self.getElementaryPricesOfType(basic_types.maq),
-                                          others= self.getElementaryPricesOfType(basic_types.sin_clasif),
-                                          labor_perc= self.getPourcentagesForType(basic_types.mdo),
-                                          materials_perc= self.getPourcentagesForType(basic_types.mat),
-                                          machinery_perc= self.getPourcentagesForType(basic_types.maq),
-                                          others_perc= self.getPourcentagesForType(basic_types.sin_clasif))
-
+        return pjl.PriceJustificationList(
+            pa,
+            labor= self.getElementaryPricesOfType(basic_types.mdo),
+            materials= self.getElementaryPricesOfType(basic_types.mat),
+            machinery= self.getElementaryPricesOfType(basic_types.maq),
+            others= self.getElementaryPricesOfType(basic_types.sin_clasif),
+            labor_perc= self.getPourcentagesForType(basic_types.mdo),
+            materials_perc= self.getPourcentagesForType(basic_types.mat),
+            machinery_perc= self.getPourcentagesForType(basic_types.maq),
+            others_perc= self.getPourcentagesForType(basic_types.sin_clasif))
 
     def writePriceJustification(self, data_table, pa):
         ''' Write the price justification in the argument table.
