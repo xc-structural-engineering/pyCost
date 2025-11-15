@@ -89,7 +89,7 @@ class ComponentList(list, epc.EntPyCost):
                 if not index in retval:
                     retval[index]= (parentFactor, c)
                 else:
-                    newFactor= (retval[code][0])*parentFactor
+                    newFactor= (retval[index][0])*parentFactor
                     retval[index]= (newFactor, c)
                 parentPrices.pop()
         return retval

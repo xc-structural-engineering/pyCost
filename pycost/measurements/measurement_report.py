@@ -46,18 +46,26 @@ class QuantitiesReport(dict):
             present in the concepts of this container.
         '''
         retval= dict()
-        for unitPrice in self:
-            quantity= self[unitPrice]
-            parentPrices= [unitPrice.Codigo()]
-            elementaryComponents= unitPrice.getElementaryComponents(parentPrices= parentPrices)
-            for code in elementaryComponents:
-                ec= elementaryComponents[code]
-                c_code= ec.CodigoEntidad()
-                c_quantity= ec.getProduct()*quantity
-                if(c_code in retval):
-                    retval[c_code]+= c_quantity
+        for price in self:
+            quantity= self[price]
+            if(price.isCompound()): # compound price.
+                parentPrices= [price.Codigo()]
+                elementaryComponents= price.getElementaryComponents(parentPrices= parentPrices)
+                for code in elementaryComponents:
+                    ec= elementaryComponents[code]
+                    c_code= ec.CodigoEntidad()
+                    c_quantity= ec.getProduct()*quantity
+                    if(c_code in retval):
+                        retval[c_code]+= c_quantity
+                    else:
+                        retval[c_code]= c_quantity
+                parentPrices.pop()
+            else: # elementary price.
+                code= price.Codigo()
+                if(code in retval):
+                    retval[code]+= quantity
                 else:
-                    retval[c_code]= c_quantity                
+                    retval[code]= quantity
         return retval
 
     def getRows(self, currencySymbol, biggestAmountFirst= True, limitTextWidth= None):
