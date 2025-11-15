@@ -804,7 +804,7 @@ class Chapter(bc3_entity.EntBC3):
             price= rootChapter.findPrice(key)
             if(price):
                 if(price.isCompound()): # compound price.
-                    parentPrices= []
+                    parentPrices= [price.Codigo()]
                     elementaryComponents= price.getElementaryComponents(parentPrices= parentPrices)
                     for code in elementaryComponents:
                         ec= elementaryComponents[code]
@@ -814,6 +814,7 @@ class Chapter(bc3_entity.EntBC3):
                                 retval.add(elementaryCode)
                         else:
                             retval.add(elementaryCode)
+                    parentPrices.pop()
                 else: # elementary price.
                     code= price.Codigo()
                     if(filterByType):
