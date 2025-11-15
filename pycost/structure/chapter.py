@@ -808,7 +808,7 @@ class Chapter(bc3_entity.EntBC3):
                     elementaryComponents= price.getElementaryComponents(parentPrices= parentPrices)
                     for code in elementaryComponents:
                         ec= elementaryComponents[code]
-                        elementaryCode= code.split('/')[-1]
+                        elementaryCode= ec.CodigoEntidad()
                         if(filterByType):
                             if(ec.isOfType(filterByType)):
                                 retval.add(elementaryCode)
