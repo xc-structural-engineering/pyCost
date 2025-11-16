@@ -86,17 +86,20 @@ class Subcapitulos(list, epc.EntPyCost):
         return retval
 
     def getPrice(self):
-        p= 0.0
+        ''' Compute the cost of the chapters in this container.'''
+        retval= 0.0
         for j in self:
-            p+= (j).getPrice()
-        return p
-
+            retval+= (j).getPrice()
+        return retval
 
     def getRoundedPrice(self):
-        p= Decimal('0.0')
+        ''' Compute the cost of the chapters in this container using numbers of
+            type Decimal.
+        '''
+        retval= Decimal('0.0')
         for j in self:
-            p+= (j).getRoundedPrice()
-        return p
+            retval+= (j).getRoundedPrice()
+        return retval
 
     def Busca(self, ruta):
         if(len(ruta)==0): return None
@@ -199,9 +202,6 @@ class Subcapitulos(list, epc.EntPyCost):
                 logging.error(className+'.'+methodName+"; chapter with code: '"+ str(i.Codigo())+"' not found.\n")
                 continue
 
-
-
-
     def WriteDescompBC3(self, os, cod):
         if(len(self)<1): return
         os.write("~D" + '|'
@@ -214,7 +214,6 @@ class Subcapitulos(list, epc.EntPyCost):
     def WritePreciosBC3(self, os):
         for i in self:
             (i).WritePreciosBC3(os)
-
 
     def WriteBC3(self, os, pos):
         conta= 1
@@ -284,7 +283,6 @@ class Subcapitulos(list, epc.EntPyCost):
         for j in self:
             retval+= (j).writePriceJustification(data_table, parentSection= parentSection, filterBy= filterBy)
         return retval
-
 
     def ImprLtxResumen(self, doc, parentSection, recursive):
         ''' Write summary report.

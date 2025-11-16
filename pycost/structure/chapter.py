@@ -24,6 +24,7 @@ from pycost.prices import unit_price_container
 from pycost.structure import unit_price_quantities
 from pycost.utils import pylatex_utils
 from pycost.utils import basic_types
+from pycost.utils import tree_utils
 from pycost.structure.unit_price_quantities import UnitPriceQuantities
 
 class Chapter(bc3_entity.EntBC3):
@@ -105,7 +106,6 @@ class Chapter(bc3_entity.EntBC3):
             lstQuants=dictQuants[cod]
             self.addConceptMeasurementFromList(cod,lstQuants)
  
-    
     def NumElementales(self, filterBy= None):
         ''' Return the number of elementary prices in this chapter and its
             sub-chapters. If filterBy is not None return only the number of 
@@ -217,7 +217,26 @@ class Chapter(bc3_entity.EntBC3):
     
     def getSubcapitulos(self):
         return self.subcapitulos
+
+    def getPaths(self):
+        ''' Return a container with all the paths that hang from this one.
+
+        :param parentChapters: chain of chapters that contain the ancestors of
+                               this one.
+        '''
+        if not self.subcapitulos:
+            return [[self]]  # one path: only contains self.value
+        else:
+            paths = []
+            for chapter in self.subcapitulos:
+                for path in chapter.getPaths():
+                    paths.append([self] + path)
+            return paths
+
     
+    def printTree(self):
+        tree_utils.print_tree(self)
+        
     def getQuantities(self):
         return self.quantities
     
