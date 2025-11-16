@@ -7,7 +7,9 @@ __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
-def print_tree(current_node, indent="", last='updown'):
+import sys
+
+def print_tree(current_node, indent="", last='updown', os= sys.stdout):
     ''' Print the tree structure from the current node to the leaves 
         hanging from it.
     '''
@@ -25,7 +27,7 @@ def print_tree(current_node, indent="", last='updown'):
     for child in up:     
         next_last = 'up' if up.index(child) == 0 else ''
         next_indent = '{0}{1}{2}'.format(indent, ' ' if 'up' in last else '│', " " * len(current_node.Codigo()))
-        print_tree(child, indent=next_indent, last=next_last)
+        print_tree(child, indent=next_indent, last=next_last, os= os)
 
     """ Printing of current node. """
     if last == 'up': start_shape = '┌'
@@ -37,11 +39,11 @@ def print_tree(current_node, indent="", last='updown'):
     elif down: end_shape = '┐'
     else: end_shape = ''
 
-    print('{0}{1}{2}{3}'.format(indent, start_shape, current_node.Codigo(), end_shape))
+    os.write('{0}{1}{2}{3}'.format(indent, start_shape, current_node.Codigo(), end_shape)+'\n')
 
     """ Printing of "down" branch. """
     for child in down:
         next_last = 'down' if down.index(child) is len(down) - 1 else ''
         next_indent = '{0}{1}{2}'.format(indent, ' ' if 'down' in last else '│', " " * len(current_node.Codigo()))
-        print_tree(child, indent=next_indent, last=next_last)
+        print_tree(child, indent=next_indent, last=next_last, os= os)
 

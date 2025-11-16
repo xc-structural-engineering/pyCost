@@ -234,8 +234,8 @@ class Chapter(bc3_entity.EntBC3):
             return paths
 
     
-    def printTree(self):
-        tree_utils.print_tree(self)
+    def printTree(self, os= sys.stdout):
+        tree_utils.print_tree(self, os= os)
         
     def getQuantities(self):
         return self.quantities

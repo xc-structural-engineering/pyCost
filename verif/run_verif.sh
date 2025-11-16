@@ -58,6 +58,10 @@ python tests/database_manipulation/test_quantities_report_01.py
 python tests/database_manipulation/test_quantities_report_02.py
 python tests/database_manipulation/test_quantities_report_03.py
 
+echo "$BLEU" "  Tree traversal." "$NORMAL"
+python tests/tree_traversal/test_get_paths_01.py
+python tests/tree_traversal/test_print_tree_01.py
+
 echo "$BLEU" "  FieBDC3 read tests." "$NORMAL"
 python tests/bc3/test_read_bc3_01.py
 python tests/bc3/test_read_bc3_02.py
