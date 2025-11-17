@@ -689,6 +689,15 @@ class Obra(cp.Chapter):
     def SimulaDescomp(self, origen, destino):
         precios.SimulaDescomp(origen,destino)
 
+    def solvePendingLinks(self, pendingLinks):
+        ''' Solve object pending links.
+
+        :param pendingLinks: list of pending links.
+        '''
+        super().solvePendingLinks(pendingLinks= pendingLinks)
+        self.setOwner(parent= self) # Compute chapters ownership.
+        return pendingLinks
+        
     def readFromYaml(self, inputFileName):
         ''' Load data from a YAML file.
 

@@ -13,6 +13,7 @@ import pylatex
 import re
 import json
 from decimal import Decimal
+from operator import itemgetter
 from pycost.measurements import measurement_container
 from pycost.measurements import measurement_report
 from pycost.bc3 import fr_entity
@@ -787,11 +788,12 @@ class Chapter(bc3_entity.EntBC3):
     def getElementaryQuantitiesReport(self):
         ''' Return a report containing the total measurement for 
             each elemental price being part of this chapter.'''
+        rootChapter= self.getRootChapter()
         quantitiesReport= self.getQuantitiesReport()
         tmp_dict= quantitiesReport.getElementaryQuantities()
         retval= dict()
         for key in tmp_dict:
-            concept= self.findPrice(key)
+            concept= rootChapter.findPrice(key)
             if(concept):
                 retval[concept]= tmp_dict[key]
             else:
@@ -801,6 +803,31 @@ class Chapter(bc3_entity.EntBC3):
                 logging.error(className+'.'+methodName+errorMsg)
         return retval
 
+    def getElementaryQuantities(self, target_unit= 'h', target_type= 'mdo', biggestAmountFirst= True):
+        ''' Return the quantities corresponding to elementary prices 
+            measured in the given target_unit and whose type is equal to 
+            the given target_type.
+
+        :param target_unit: target unit.
+        :param target_type: target type ('mdo' or 'maq' or 'mat', ...)
+        :param biggestAmountFirst: if true sort the list from the biggest to the
+                                   smallest quantity of target unit.
+        '''
+        elementaryQuantities= self.getElementaryQuantitiesReport()
+        retval= list()
+        for elementaryPrice in elementaryQuantities:
+            code= elementaryPrice.Codigo()
+            title= elementaryPrice.title
+            unit= basic_types.fix_unit_text(elementaryPrice.unidad)
+            typo= basic_types.tipo_concepto2str(elementaryPrice.getType())
+            quantity= elementaryQuantities[elementaryPrice]
+            if((unit== target_unit) and (typo==target_type)):
+                # print(code, title[0:40], quantity, unit, typo)
+                retval.append((elementaryPrice, quantity))
+        if(biggestAmountFirst):
+            retval= list(reversed(sorted(retval, key=itemgetter(1))))
+        return retval
+    
     def getEmployedPrices(self, lowerMeasurementBound= 0.0):
         ''' Return the codes of the prices that have a total measurement
             greater than the limit argument.

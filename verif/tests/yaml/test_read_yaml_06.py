@@ -24,6 +24,7 @@ ratio= abs(price-refPrice)/refPrice
 
 '''
 print("ratio= ", ratio)
+site.printTree()
 '''
 
 import os

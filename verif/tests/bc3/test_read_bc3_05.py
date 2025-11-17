@@ -20,20 +20,20 @@ inputFile= open(pth+'/../data/bc3/test_file_05.bc3',mode='r', encoding="utf-8")
 site.readBC3(inputFile)
 inputFile.close()
 
-# Write in YAML format
-site.writeYaml(pth+'/../data/yaml/test_file_05.yaml')
 
-
-# Get test values.
-price= site.getPrice()
-
-print('price: ', price)
-quit()
+# Check ownership.
+testOK= True
+for chapter_code in ['CAP1.1#', 'CAPITULO2#', 'CAPITULO3#', 'CAP.1.7.1#', 'CAP1.6.1#']:
+    chapter= site.findChapter(chapterCode= chapter_code)
+    rootChapter= chapter.getRootChapter()
+    if(rootChapter.Codigo()!=site.Codigo()):
+        testOK= False
 
 import os
 import logging
 fname= os.path.basename(__file__)
-if ((price==0.0) and (numChapters==3) and (numElementaryPrices==3) and (numQuantities==4)):
+if testOK:
     print('test: '+fname+': ok.')
 else:
     logging.error('test: '+fname+' ERROR.')
+

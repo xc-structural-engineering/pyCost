@@ -5,12 +5,14 @@
     "owner_code": "URBANIZACION_CIUDAD_DE_LA_JUSTICIA##",
     "components": {
       "CAPITULO1#": {
+        "owner_code": "URBANIZACION_CIUDAD_DE_LA_JUSTICIA##",
         "code": "CAPITULO1#",
         "title": "URBANIZACI\u00d3N DE LA PLAZA",
         "sub_chapters": {
           "owner_code": "CAPITULO1#",
           "components": {
             "CAP1.1#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.1#",
               "title": "MOVIMIENTO DE TIERRAS",
               "sub_chapters": {
@@ -156,6 +158,7 @@
               }
             },
             "CAP1.10#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.10#",
               "title": "MOBILIARIO URBANO",
               "sub_chapters": {
@@ -208,6 +211,7 @@
               }
             },
             "CAP1.2#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.2#",
               "title": "RED DE DRENAJE",
               "sub_chapters": {
@@ -418,6 +422,7 @@
               }
             },
             "CAP1.3#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.3#",
               "title": "MUROS DE HORMIGON",
               "sub_chapters": {
@@ -1177,6 +1182,7 @@
               }
             },
             "CAP1.4#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.4#",
               "title": "ALUMBRADO",
               "sub_chapters": {
@@ -1417,6 +1423,7 @@
               }
             },
             "CAP1.5#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.5#",
               "title": "RED DE RIEGO",
               "sub_chapters": {
@@ -1720,12 +1727,14 @@
               }
             },
             "CAP1.6#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.6#",
               "title": "JARDINERIA",
               "sub_chapters": {
                 "owner_code": "CAP1.6#",
                 "components": {
                   "CAP1.6.1#": {
+                    "owner_code": "CAP1.6#",
                     "code": "CAP1.6.1#",
                     "title": "TAREAS PREVIAS Y PREPARACI\u00d3N  DEL TERRENO",
                     "sub_chapters": {
@@ -1988,6 +1997,7 @@
                     }
                   },
                   "CAP1.6.2#": {
+                    "owner_code": "CAP1.6#",
                     "code": "CAP1.6.2#",
                     "title": "ARBOLADO",
                     "sub_chapters": {
@@ -2004,6 +2014,7 @@
                     "chapter_quantities": {}
                   },
                   "CAP1.6.3#": {
+                    "owner_code": "CAP1.6#",
                     "code": "CAP1.6.3#",
                     "title": "ARBUSTIVAS Y TAPIZANTES",
                     "sub_chapters": {
@@ -2031,12 +2042,14 @@
               "chapter_quantities": {}
             },
             "CAP1.7#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.7#",
               "title": "ESTANQUE",
               "sub_chapters": {
                 "owner_code": "CAP1.7#",
                 "components": {
                   "CAP.1.7.1#": {
+                    "owner_code": "CAP1.7#",
                     "code": "CAP.1.7.1#",
                     "title": "CAMARA DE INSTALACIONES",
                     "sub_chapters": {
@@ -2604,6 +2617,7 @@
               }
             },
             "CAP1.8#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.8#",
               "title": "PAVIMENTACION",
               "sub_chapters": {
@@ -2838,6 +2852,7 @@
               }
             },
             "CAP1.9#": {
+              "owner_code": "CAPITULO1#",
               "code": "CAP1.9#",
               "title": "CERRAJERIA",
               "sub_chapters": {
@@ -2972,6 +2987,7 @@
         "chapter_quantities": {}
       },
       "CAPITULO2#": {
+        "owner_code": "URBANIZACION_CIUDAD_DE_LA_JUSTICIA##",
         "code": "CAPITULO2#",
         "title": "GESTION DE RESIDUOS",
         "sub_chapters": {
@@ -2997,6 +3013,7 @@
         "chapter_quantities": {}
       },
       "CAPITULO3#": {
+        "owner_code": "URBANIZACION_CIUDAD_DE_LA_JUSTICIA##",
         "code": "CAPITULO3#",
         "title": "SEGURIDAD Y SALUD",
         "sub_chapters": {

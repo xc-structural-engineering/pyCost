@@ -67,7 +67,7 @@ python tests/bc3/test_read_bc3_01.py
 python tests/bc3/test_read_bc3_02.py
 python tests/bc3/test_read_bc3_03.py
 python tests/bc3/test_read_bc3_04.py
-#python tests/bc3/test_read_bc3_05.py
+python tests/bc3/test_read_bc3_05.py
 python tests/bc3/test_read_bc3_06.py
 python tests/bc3/test_read_bc3_07.py
 python tests/bc3/test_read_bc3_08.py
@@ -82,7 +82,7 @@ python tests/yaml/test_read_yaml_01.py
 python tests/yaml/test_read_yaml_02.py
 python tests/yaml/test_read_yaml_03.py
 python tests/yaml/test_read_yaml_04.py
-#python tests/yaml/test_read_yaml_05.py
+python tests/yaml/test_read_yaml_05.py
 python tests/yaml/test_read_yaml_06.py
 echo "$BLEU" "  XML read tests." "$NORMAL"
 python tests/xml/test_xml_01.py
@@ -104,6 +104,8 @@ python tests/latex/price_justification_02.py
 python tests/latex/elementary_prices.py
 python tests/latex/test_quantities_report.py
 
+echo "$BLEU" "  Project schedule tests." "$NORMAL"
+python tests/schedule/test_schedule_estimation_01.py
 
 END=$(date +%s.%N)
 DIFF=$(echo "$END - $START" | bc)
