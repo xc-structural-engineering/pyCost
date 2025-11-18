@@ -2,7 +2,7 @@
 '''Project schedule utilities.''' 
 
 __author__= "Luis C. Pérez Tato (LCPT)"
-__copyright__= "Copyright 2017, LCPT"
+__copyright__= "Copyright 2025, LCPT"
 __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
@@ -15,6 +15,9 @@ import numpy as np
 from operator import itemgetter
 import matplotlib
 import matplotlib.pyplot as plt
+from scipy import interpolate
+
+default_date_format= "%A, %d %B de %Y"
 
 class Task(object):
     ''' Representation of a project task.
@@ -186,6 +189,43 @@ class Task(object):
         else:
             self.computedWorkingHours= self.chapters[0].getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
 
+    def getTotalCost(self):
+        ''' Return the total cost of this task.'''
+        retval= 0.0
+        for chapter in self.chapters:
+            retval+= chapter.getPrice()
+        return retval
+
+    def getCompletionFractionAtDate(self, date):
+        ''' Return the fraction of the task that is completed at the given
+            date (assuming it unfolds as planned).
+
+        :param date: final date to compute the cost of the task.
+        '''
+        retval= 0.0
+        endDate= self.getEndDate()
+        if(date>self.getEndDate()): # task has finished.
+            retval= 1.0
+        else: # task is still running.
+            startDate= self.getStartDate()
+            if(startDate<date): # if the task has begun.
+                totalTaskInterval= endDate-startDate
+                currentTaskInterval= date-startDate
+                retval= currentTaskInterval.days/totalTaskInterval.days
+        return retval 
+
+    def getCostUntilDate(self, date):
+        ''' Return the cost of this task from its beginning until the given 
+            date.
+
+        :param date: final date to compute the cost of the task.
+        '''
+        retval= 0.0
+        completionAtDate= self.getCompletionFractionAtDate(date)
+        if(completionAtDate>0.0):
+            retval= self.getTotalCost()*completionAtDate
+        return retval
+
 class ProjectTasks(object):
     ''' Tasks of a project.
 
@@ -238,7 +278,39 @@ class ProjectTasks(object):
         for task in self.task_dict.values():
             if task.hasNoPredecessors():
                 task.setStartDate(startDate)
-        
+
+    def getStartDate(self):
+        ''' Return the start date of the project.
+         '''
+        tasks= list(self.task_dict.values())
+        startDate= tasks[0].getStartDate()
+        for task in tasks[1:]:
+            taskStartDate= task.getStartDate()
+            if(taskStartDate<startDate):
+                startDate= taskStartDate
+        return startDate
+    
+    def getTimeInterval(self):
+        ''' Return the start and end dates of the project in a tuple:
+            (startDate, endDate).
+         '''
+        tasks= list(self.task_dict.values())
+        startDate= tasks[0].getStartDate()
+        endDate= tasks[0].getEndDate()
+        for task in tasks[1:]:
+            taskStartDate= task.getStartDate()
+            taskEndDate= task.getEndDate()
+            if(taskStartDate<startDate):
+                startDate= taskStartDate
+            if(taskEndDate>endDate):
+                endDate= taskEndDate
+        return (startDate, endDate)
+
+    def getDuration(self):
+        ''' Return the project duration.'''
+        (startDate, endDate)= self.getTimeInterval()
+        return endDate-startDate
+            
     def setNumberOfTeams(self, taskCode, numberOfTeams):
         ''' Set the number of teams for the given task.
 
@@ -257,12 +329,18 @@ class ProjectTasks(object):
             task.computeWorkingHours()
 
     def getSortedTasksByStartDate(self):
-        ''' Compute the hours of work needed to fullfill each of the project
-            tasks.
-        '''
+        ''' Return a list of task sorted by its start date.'''
         task_list= list()
         for task in self.task_dict.values():
             task_list.append((task, task.getStartDate()))
+        task_list.sort(key=itemgetter(1))
+        return [x[0] for x in task_list]
+
+    def getSortedTasksByEndDate(self):
+        ''' Return a list of task sorted by its end date.'''
+        task_list= list()
+        for task in self.task_dict.values():
+            task_list.append((task, task.getEndDate()))
         task_list.sort(key=itemgetter(1))
         return [x[0] for x in task_list]
         
@@ -308,10 +386,13 @@ class ProjectTasks(object):
             retval[task.getDescription()]= task.color
         return retval
 
-    def drawMatplotlibGanttChart(self, title, outputFileName= None):
+    def drawMatplotlibGanttChart(self, title, outputFileName= None, timeIncrement= 30):
         ''' Draws a Matplotlib Gantt chart.
-        
-        :param outputFile: output file (if None display the chart in a window.
+       
+        :param title: title of the chart. 
+        :param outputFileName: name of the output file (if None display the 
+                               chart in a window).
+        :param timeIncrement: time increment between two samples (in days).
         '''
         # Create Pandas data fram.
         df= self.getPandasDataFrame()
@@ -325,21 +406,21 @@ class ProjectTasks(object):
         # Create subplots.
         fig, ax = plt.subplots()
         # Create xticks.
-        xticks = np.arange(5, df['days_to_end'].max() + 2, 7)
+        xticks = np.arange(5, df['days_to_end'].max() + 2, timeIncrement)
         for index, row in df.iterrows():
             # plt.barh(y=row['task'], width=row['task_duration'], left=row['days_to_start'] + 1, color=task_colors[row['task']])
 
             # Adding a lower bar - for the overall task duration
-            plt.barh(y=row['task'], width=row['task_duration'], left=row['days_to_start'] + 1, color=task_colors[row['task']], alpha=0.4)
+            plt.barh(y=row['task'], width=row['task_duration'], left=row['days_to_start'] + 1, color=task_colors[row['task']], alpha=0.4, height= .4)
 
             # Adding an upper bar - for the status of completion
-            plt.barh(y=row['task'], width=row['completion_days'], left=row['days_to_start'] + 1, color=task_colors[row['task']])
+            plt.barh(y=row['task'], width=row['completion_days'], left=row['days_to_start'] + 1, color=task_colors[row['task']], height= .4)
         # Create xticklabels.
         xticklabels = pandas.date_range(start=df['start'].min() + datetime.timedelta(days=4), end=df['end'].max()).strftime("%d/%m")
         plt.title(title, fontsize=15)
         plt.gca().invert_yaxis()
         ax.set_xticks(xticks)
-        ax.set_xticklabels(xticklabels[::7])
+        ax.set_xticklabels(xticklabels[::timeIncrement])
         ax.xaxis.grid(True, alpha=0.5)
 
         # Adding a legend
@@ -354,5 +435,114 @@ class ProjectTasks(object):
         else:
             plt.show()
 
+    def getCumulatedExpenses(self):
+        ''' Return the values of the cumulated expenses versus the 
+            number of days elapsed from the start of the project.'''
+        sorted_task_list= self.getSortedTasksByEndDate()
+        projectStartDate= self.getStartDate()
+        days= [0]
+        costs= [0.0]
+        totalCost= 0.0
+        for task in sorted_task_list:
+            totalCost+= task.getTotalCost()
+            costs.append(totalCost)
+            taskEndDate= task.getEndDate()
+            daysFromProjectStart= (taskEndDate-projectStartDate).days
+            days.append(daysFromProjectStart)
+        return days, costs
+    
+    def getExpensesIncrements(self, sampleTimes):
+        ''' Return the values of the expenses between two consecutive ends of 
+            taks.
+ 
+        :param sampleTimes: time values expressed in days elapsed from the 
+                            start of the project.
+        '''
+        cumulatedExpensesFunction= self.getCumulatedExpensesFunction()
+        cost_values= list(cumulatedExpensesFunction(sampleTimes))
+        inc_costs= [0]
+        cost0= 0.0
+        for cost1 in cost_values[1:]:
+            inc_costs.append(cost1-cost0)
+            cost0= cost1
+        return sampleTimes, inc_costs
+            
+    def getCumulatedExpensesFunction(self):
+        ''' Return a function that gives the cumulated expenses versus the 
+            number of days elapsed from the start of the project.'''
+        days, costs= self.getCumulatedExpenses()
+        return interpolate.interp1d(days, costs)
 
+    def getExpensesIncrementsFunction(self, sampleTimes):
+        ''' Return a function that gives the cumulated expenses versus the 
+            number of days elapsed from the start of the project.
+ 
+        :param sampleTimes: time values expressed in days elapsed from the 
+                            start of the project.
+        '''
+        days, inc_costs= self.getExpensesIncrements(sampleTimes= sampleTimes)
+        return interpolate.interp1d(days, inc_costs)
 
+    def getSampleTimes(self, timeIncrement):
+        ''' Return the time values to sample the cumulate expenses function
+            expressed in days elapsed from the start of the project.
+
+        :param timeIncrement: time increment between two samples (in days).
+        '''
+        projectDurationDays= self.getDuration().days
+        retval= list()
+        time= 0
+        while(time<projectDurationDays):
+            retval.append(time)
+            time+= timeIncrement
+        if(retval[-1]<projectDurationDays):
+            retval.append(projectDurationDays)
+        return retval
+
+    def getSampleDates(self, sampleTimes):
+        '''Return the dates corresponding to the given times.
+ 
+        :param sampleTimes: time values expressed in days elapsed from the 
+                            start of the project.
+        '''
+        projectStartDate= self.getStartDate()
+        retval= list()
+        for daysElapsed in sampleTimes:
+            date= projectStartDate+datetime.timedelta(days= daysElapsed)
+            retval.append(date)
+        return retval
+
+    def drawMatplotLibExpensesDiagram(self, title, outputFileName= None, timeIncrement= 30, currencyFactor= 1e-3):
+        ''' Draws a Matplotlib diagram showing the expenses of the project
+            versus time.
+
+        :param title: title of the chart. 
+        :param outputFileName: name of the output file (if None display the 
+                               chart in a window).
+        :param timeIncrement: time increment between two samples (in days).
+        :param currencyFactor: 1e-3 to express thousands of currency units.
+        '''
+        sample_times= self.getSampleTimes(timeIncrement= timeIncrement)
+        cumulatedExpensesFunction= self.getCumulatedExpensesFunction()
+        cost= cumulatedExpensesFunction(sample_times)/1e3
+        cost_inc_function= self.getExpensesIncrementsFunction(sample_times)
+        cost_inc= cost_inc_function(sample_times)/1e3
+        xTickDates= self.getSampleDates(sample_times)
+        xTickLabels= list()
+        for xtd in xTickDates:
+            xTickLabels.append(xtd.strftime("%d/%m"))
+
+        fig, ax = plt.subplots()
+        ax.set_xticks(sample_times)
+        ax.set_xticklabels(xTickLabels)
+        ax.plot(sample_times, cost_inc, label= 'expenses.')
+        ax.plot(sample_times, cost, label= 'cumulated expenses')
+        plt.legend()
+        ax.grid()
+        plt.title(title, fontsize=15)
+        if(outputFileName):
+            plt.savefig(outputFileName, dpi=200)
+        else:
+            plt.show()
+        
+        

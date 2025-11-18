@@ -106,6 +106,7 @@ python tests/latex/test_quantities_report.py
 
 echo "$BLEU" "  Project schedule tests." "$NORMAL"
 python tests/schedule/test_schedule_estimation_01.py
+python tests/schedule/test_financial_plan_01.py
 
 END=$(date +%s.%N)
 DIFF=$(echo "$END - $START" | bc)

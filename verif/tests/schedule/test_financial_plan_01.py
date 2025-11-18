@@ -9,6 +9,7 @@ __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
+import math
 import os
 import sys
 import yaml
@@ -19,6 +20,8 @@ from pycost.structure import obra
 from pycost.measurements import measurement_report
 from pycost.utils import basic_types
 from pycost.utils import schedule_utils
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Create main object.
 site= obra.Obra(cod="test", tit="Test title")
@@ -121,22 +124,25 @@ for task in projectTasks.task_dict.values():
     task.setDuration(weeks= estimatedDurationWeeks)
     # print('   estimated duration: ', estimatedDurationWeeks, ' weeks')
 
-# Print start dates.
-fname= os.path.basename(__file__)
-sorted_tasks= projectTasks.getSortedTasksByStartDate()
-txtFileName= fname.replace('.py', '.txt')
-textOutputFileName= '/tmp/'+txtFileName
-with open(textOutputFileName, 'w') as f:    
-    for task in sorted_tasks:
-        f.write('\ntask: '+str(task.getCode())+' '+str(task.getDescription())+'\n')
-        f.write('   start date: '+str(task.getStartDate())+'\n')
-        f.write('   end date: '+str(task.getEndDate())+'\n')
-refFile= refFile= pth+'/../data/reference_files/ref_'+txtFileName
-testOK= filecmp.cmp(refFile, textOutputFileName, shallow=False)
+
+(days, cumulatedExpenses)= projectTasks.getCumulatedExpenses()
+refDays= [0, 9, 38, 42, 53, 72, 78, 103, 117, 117, 118]
+refCumulatedExpenses= [0.0, 27355.186448, 65094.866598, 73362.76609800001, 88469.25609800001, 144070.2973492, 147449.4766492, 252604.1966492, 355095.4520492, 374507.7020492, 386131.87644920003]
+err= 0.0
+for d, rd in zip(days, refDays):
+    err+= (d-rd)**2
+for c, rc in zip(cumulatedExpenses,refCumulatedExpenses):
+    err+= (c-rc)**2
+err= math.sqrt(err)
+
+testOK= (err<1e-3)
+
+# print(cumulatedExpenses, err)
 
 # Plot Gantt chart.
+fname= os.path.basename(__file__)
 chartOutputFileName= '/tmp/'+fname.replace('.py', '.png')
-projectTasks.drawMatplotlibGanttChart(title= 'Schedule of Project:'+site.title, outputFileName= chartOutputFileName)
+projectTasks.drawMatplotLibExpensesDiagram(title= 'Expenses diagram', outputFileName= chartOutputFileName)
 
 # Check that file exists
 testOK= testOK and os.path.isfile(chartOutputFileName)
@@ -146,9 +152,5 @@ if testOK:
 else:
     logging.error(fname+' ERROR.')
 
-os.remove(textOutputFileName) # Clean after yourself.
 os.remove(chartOutputFileName)
 
-
-        
-    
