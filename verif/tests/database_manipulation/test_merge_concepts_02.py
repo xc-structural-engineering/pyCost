@@ -3,7 +3,6 @@
 from __future__ import division
 from __future__ import print_function
 
-import yaml
 import pickle
 from pycost.structure import obra
 from pycost.structure.chapter import Chapter

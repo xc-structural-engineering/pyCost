@@ -10,7 +10,6 @@ __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
 import sys
-import yaml
 from pycost.structure import obra
 from pycost.utils import basic_types
 
@@ -23,7 +22,7 @@ pth= os.path.dirname(__file__)
 # print("pth= ", pth)
 if(not pth):
     pth= '.'
-pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
+pendingLinks= site.readFromJson(pth+'/../data/json/test_file_05.json')
 
 employedLabourElementaryPrices= site.getEmployedElementaryPrices(filterByType= basic_types.mdo)
 employedLabourElementaryPricesRef= {'PEON', 'PEONES', 'UOFIC0101', 'OFIC', 'OFICMON', 'OFICENC', 'MO0101', 'OFICFER', 'PEONENC', 'OFICJAR', 'MO0201'}

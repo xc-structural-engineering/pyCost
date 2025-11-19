@@ -10,7 +10,6 @@ __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
 import sys
-import yaml
 from pycost.structure import obra
 from pycost.measurements import measurement_report
 from pycost.utils import basic_types
@@ -24,7 +23,7 @@ pth= os.path.dirname(__file__)
 # print("pth= ", pth)
 if(not pth):
     pth= '.'
-pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
+pendingLinks= site.readFromJson(pth+'/../data/json/test_file_05.json')
 
 # Get quantities report in tabular format.
 elementaryQuantities= site.getElementaryQuantitiesReport()

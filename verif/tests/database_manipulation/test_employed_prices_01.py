@@ -10,7 +10,6 @@ __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
 import sys
-import yaml
 from pycost.structure import obra
 
 # Create main object.
@@ -22,7 +21,7 @@ pth= os.path.dirname(__file__)
 # print("pth= ", pth)
 if(not pth):
     pth= '.'
-pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
+pendingLinks= site.readFromJson(pth+'/../data/json/test_file_05.json')
 
 employedPrices= site.getEmployedPrices(lowerMeasurementBound= 1000.0)
 employedPricesRef= {'DSELECRI', 'DRIESUB', 'USJT10abz', 'RELL0301', 'DPAVHORPUL', 'ACERO0103', 'DALPEDR', 'DMOVI3001'}
