@@ -123,33 +123,24 @@ for task in projectTasks.task_dict.values():
     task.setDuration(weeks= estimatedDurationWeeks)
     # print('   estimated duration: ', estimatedDurationWeeks, ' weeks')
 
+days, workers, xTickLabels= projectTasks.getAvgNumberOfWorkersAlongProject()
+refDays= [0, 9, 38, 42, 53, 72, 78, 103, 117, 118]
+refWorkers= [2, 2, 9, 7, 3, 2, 8, 17, 2, 2]
 
-(days, cumulatedExpenses)= projectTasks.getCumulatedExpenses()
-refDays= [0, 9, 38, 42, 53, 72, 78, 103, 117, 117, 118]
-refCumulatedExpenses= [0.0, 27355.186448, 65094.866598, 73362.76609800001, 88469.25609800001, 144070.2973492, 147449.4766492, 252604.1966492, 355095.4520492, 374507.7020492, 386131.87644920003]
-err= 0.0
-for d, rd in zip(days, refDays):
-    err+= (d-rd)**2
-for c, rc in zip(cumulatedExpenses,refCumulatedExpenses):
-    err+= (c-rc)**2
-err= math.sqrt(err)
+testOK= ((refDays==days) and (refWorkers==workers))
 
-testOK= (err<1e-3)
-
-# print(cumulatedExpenses, err)
-
-# Plot Gantt chart.
+# Plot diagram.
 fname= os.path.basename(__file__)
-chartOutputFileName= '/tmp/'+fname.replace('.py', '.png')
-projectTasks.drawMatplotLibExpensesDiagram(title= 'Expenses diagram', outputFileName= chartOutputFileName)
+diagramOutputFileName= '/tmp/'+fname.replace('.py', '.png')
+title= 'Number of workers'
+projectTasks.drawAvgNumberOfWorkersAlongProjectDiagram(title= title, outputFileName= diagramOutputFileName)
 
 # Check that file exists
-testOK= testOK and os.path.isfile(chartOutputFileName)
+testOK= testOK and os.path.isfile(diagramOutputFileName)
 
 if testOK:
     print('test '+fname+': ok.')
 else:
     logging.error(fname+' ERROR.')
 
-os.remove(chartOutputFileName)
-
+os.remove(diagramOutputFileName) # Clean after yourself.

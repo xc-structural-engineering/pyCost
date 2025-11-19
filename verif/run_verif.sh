@@ -57,6 +57,8 @@ python tests/database_manipulation/test_remove_concept_01.py
 python tests/database_manipulation/test_quantities_report_01.py
 python tests/database_manipulation/test_quantities_report_02.py
 python tests/database_manipulation/test_quantities_report_03.py
+python tests/database_manipulation/test_number_of_workers_01.py
+python tests/database_manipulation/test_number_of_workers_02.py
 
 echo "$BLEU" "  Tree traversal." "$NORMAL"
 python tests/tree_traversal/test_get_paths_01.py
@@ -107,6 +109,7 @@ python tests/latex/test_quantities_report.py
 echo "$BLEU" "  Project schedule tests." "$NORMAL"
 python tests/schedule/test_schedule_estimation_01.py
 python tests/schedule/test_financial_plan_01.py
+python tests/schedule/test_number_of_workers_estimation.py
 
 END=$(date +%s.%N)
 DIFF=$(echo "$END - $START" | bc)

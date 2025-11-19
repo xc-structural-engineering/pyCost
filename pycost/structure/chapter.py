@@ -12,6 +12,7 @@ import sys
 import pylatex
 import re
 import json
+import math
 from decimal import Decimal
 from operator import itemgetter
 from pycost.measurements import measurement_container
@@ -802,7 +803,7 @@ class Chapter(bc3_entity.EntBC3):
                 errorMsg= "; price: " + key + ' not found.'
                 logging.error(className+'.'+methodName+errorMsg)
         return retval
-
+    
     def getElementaryQuantities(self, target_unit= 'h', target_type= 'mdo', biggestAmountFirst= True):
         ''' Return the quantities corresponding to elementary prices 
             measured in the given target_unit and whose type is equal to 
@@ -827,6 +828,12 @@ class Chapter(bc3_entity.EntBC3):
         if(biggestAmountFirst):
             retval= list(reversed(sorted(retval, key=itemgetter(1))))
         return retval
+    
+    def getWorkingHours(self):
+        ''' Return the hours of work needed to fullfill the tasks of this
+            chapter.
+        '''
+        return self.getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
     
     def getEmployedPrices(self, lowerMeasurementBound= 0.0):
         ''' Return the codes of the prices that have a total measurement
@@ -864,7 +871,7 @@ class Chapter(bc3_entity.EntBC3):
                 else: # elementary price.
                     code= price.Codigo()
                     if(filterByType):
-                        if(ec.isOfType(filterByType)):
+                        if(price.isOfType(filterByType)):
                             retval.add(code)
                     else:
                         retval.add(code)
@@ -875,6 +882,48 @@ class Chapter(bc3_entity.EntBC3):
                 logging.error(className+'.'+methodName+errorMsg)
                 exit(1)
         return retval
+
+    def getNumberOfWorkers(self, lowerMeasurementBound= 0.0):
+        ''' Return the number of workers for each unit price.
+
+        :param lowerMeasurementBound: lower bound for the total measurement.
+        '''
+        employedPrices= self.getEmployedPrices(lowerMeasurementBound= lowerMeasurementBound)
+        rootChapter= self.getRootChapter()
+        retval= dict()
+        for key in employedPrices:
+            price= rootChapter.findPrice(key)
+            if(price):
+                if(price.isCompound()): # compound price.
+                    if(key in retval):
+                        className= type(self).__name__
+                        methodName= sys._getframe(0).f_code.co_name
+                        errorMsg= "; price: " + key + ' appears twice.'
+                        logging.error(className+'.'+methodName+errorMsg)
+                        exit(1)
+                    else:
+                        retval[price]= price.getNumberOfWorkers()
+                else: # elementary price.
+                    if(price.isLabour()):
+                        retval[price]= 1
+            else:
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                errorMsg= "; price: " + key + ' not found.'
+                logging.error(className+'.'+methodName+errorMsg)
+                exit(1)
+        return retval
+
+    def getAverageNumberOfWorkers(self, durationInYears, workingHoursPerYear= 1760):
+        ''' Return the average number of workers during the execution of the 
+            works in this chapter.
+
+        :param durationInYears: duration of the works of this chapters expressed
+                                in years.
+        :param workingHoursPerYear: hour of work per worker and per year.
+        '''
+        workingHours= self.getWorkingHours()
+        return int(math.ceil(workingHours/workingHoursPerYear/durationInYears))
 
     def writeMembersToJSON(self, outputFileName, indent= 2):
         ''' Write data to a JSON file.

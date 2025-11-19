@@ -93,6 +93,10 @@ class UnitPrice(ms.Measurable):
         for key in retval:
             c= retval[key]
         return retval
+
+    def getNumberOfWorkers(self):
+        ''' Return the number of workers needed to perform this task.'''
+        return self.components.getNumberOfWorkers()
             
     def getPrice(self):
         return self.components.getPrice()

@@ -7,6 +7,7 @@ __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
 
+import math
 import sys
 import logging
 import datetime
@@ -58,6 +59,7 @@ class Task(object):
             self.predecessors= list()
         self.numberOfTeams= numberOfTeams
         self.computedWorkingHours= None
+        self.averageNumberOfWorkers= None
         self.completion_frac= completion_frac
         self.color= color
 
@@ -178,7 +180,7 @@ class Task(object):
 
     def computeWorkingHours(self):
         ''' Compute the hours of work needed to fullfill the task and stores
-            them in the working_hours member.
+            them in the working hours member.
         '''
         if(len(self.chapters)>1):
             className= type(self).__name__
@@ -188,6 +190,16 @@ class Task(object):
             exit(1)
         else:
             self.computedWorkingHours= self.chapters[0].getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
+
+    def getTotalWorkingHours(self):
+        ''' Return the total hours of work needed to fullfill the task.
+        '''
+        if(not self.computedWorkingHours):
+            self.computeWorkingHours()
+        retval= 0.0
+        for wh in self.computedWorkingHours:
+            retval+= wh[1]
+        return retval
 
     def getTotalCost(self):
         ''' Return the total cost of this task.'''
@@ -226,6 +238,46 @@ class Task(object):
             retval= self.getTotalCost()*completionAtDate
         return retval
 
+    def getAverageNumberOfWorkers(self, date= None, hoursOfWorkPerYear= 1760, hoursOfWorkPerDay= 8):
+        ''' Return the average number of workers during the execution of the 
+            works in this chapter.
+
+        :param date: date at which the number of workers is queried.
+        :param hoursOfWorkPerYear: hour of work per worker and per year.
+        :param hoursOfWorkPerDay: hour of work per worker and per day.
+        '''
+        retval= 0
+        if(len(self.chapters)>1):
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            errMsg= '; not implemented for more than one chapter yet.'
+            logging.error(className+'.'+methodName+errMsg)
+            exit(1)
+        else:
+            if(date):
+                startDate= self.getStartDate()
+                endDate= self.getEndDate()
+                if((date>=startDate) and (date<=endDate)):
+                    totalWorkingHours= self.getTotalWorkingHours()
+                    durationInHours= self.durations[0].days*hoursOfWorkPerDay
+                    retval= int(math.ceil(totalWorkingHours/durationInHours))
+            else:
+                totalWorkingHours= self.getTotalWorkingHours()
+                durationInHours= self.durations[0].days*hoursOfWorkPerDay
+                retval= int(math.ceil(totalWorkingHours/durationInHours))
+        return retval
+
+    def computeAverageNumberOfWorkers(self, hoursOfWorkPerYear= 1760, hoursOfWorkPerDay= 8):
+        ''' Compute the average number of workers during the execution of the 
+            works in this chapter.
+
+        :param date: date at which the number of workers is queried.
+        :param hoursOfWorkPerYear: hour of work per worker and per year.
+        :param hoursOfWorkPerDay: hour of work per worker and per day.
+        '''
+        self.averageNumberOfWorkers= self.getAverageNumberOfWorkers(date= None, hoursOfWorkPerYear= hoursOfWorkPerYear, hoursOfWorkPerDay= hoursOfWorkPerDay)
+        
+        
 class ProjectTasks(object):
     ''' Tasks of a project.
 
@@ -328,6 +380,16 @@ class ProjectTasks(object):
             task= self.task_dict[key]
             task.computeWorkingHours()
 
+    def computeAverageNumberOfWorkers(self, hoursOfWorkPerYear= 1760, hoursOfWorkPerDay= 8):
+        ''' Compute the average number of workers for each task.
+
+        :param hoursOfWorkPerYear: hour of work per worker and per year.
+        :param hoursOfWorkPerDay: hour of work per worker and per day.
+        '''
+        for key in self.task_dict:
+            task= self.task_dict[key]
+            task.computeAverageNumberOfWorkers(hoursOfWorkPerYear= hoursOfWorkPerYear, hoursOfWorkPerDay= hoursOfWorkPerDay)
+
     def getSortedTasksByStartDate(self):
         ''' Return a list of task sorted by its start date.'''
         task_list= list()
@@ -382,7 +444,7 @@ class ProjectTasks(object):
     def getTaskColors(self):
         ''' Return a list with the colors for each task.'''
         retval= dict()
-        for task in self.task_dict.values():
+        for task in self.getSortedTasksByStartDate():
             retval[task.getDescription()]= task.color
         return retval
 
@@ -417,7 +479,13 @@ class ProjectTasks(object):
             plt.barh(y=row['task'], width=row['completion_days'], left=row['days_to_start'] + 1, color=task_colors[row['task']], height= .4)
         # Create xticklabels.
         xticklabels = pandas.date_range(start=df['start'].min() + datetime.timedelta(days=4), end=df['end'].max()).strftime("%d/%m")
-        plt.title(title, fontsize=15)
+        # Plot number of workers
+        sorted_tasks= self.getSortedTasksByStartDate()
+        task_patches= ax.patches[0::2] # Only the patches corresponding to tasks
+                                       # not to task completions.
+        for bar, task in zip(task_patches, sorted_tasks):
+            ax.text(bar.get_x()+bar.get_width()/2.0, bar.get_y()+bar.get_height()/2, task.averageNumberOfWorkers, color = 'white', ha = 'center', va = 'center')
+        plt.title(title, fontsize=12)
         plt.gca().invert_yaxis()
         ax.set_xticks(xticks)
         ax.set_xticklabels(xticklabels[::timeIncrement])
@@ -544,5 +612,73 @@ class ProjectTasks(object):
             plt.savefig(outputFileName, dpi=200)
         else:
             plt.show()
-        
-        
+
+    def getAvgNumberOfWorkersAlongProject(self):
+        ''' Return the number of workers along the project.
+
+        '''        
+        # Compute time intervals.
+        days_from_start= list()
+        projectStartDate= self.getStartDate()
+        for task in self.task_dict.values():
+            days_from_start.append((task.getStartDate()-projectStartDate).days)
+            days_from_start.append((task.getEndDate()-projectStartDate).days)
+        days_from_start= sorted(set(days_from_start))
+        ## Convert to dates.
+        dates= list()
+        for d in days_from_start:
+            dates.append(projectStartDate+datetime.timedelta(days= d))
+        # Compute average number of workers.
+        days= list()
+        workers= list()
+        day0= days_from_start[0]
+        for day1 in days_from_start[1:]:
+            date0= projectStartDate+datetime.timedelta(days= day0)
+            delta= datetime.timedelta(days= (day1-day0))
+            calculationDate= date0+0.5*delta
+            avgNumberOfWorkers= 0
+            for task in self.task_dict.values():
+                avgNumberOfWorkers+= task.getAverageNumberOfWorkers(date= calculationDate)
+            days.append(day0)
+            workers.append(avgNumberOfWorkers)
+            day0= day1
+        days.append(day1)
+        workers.append(avgNumberOfWorkers)
+
+        xTickLabels= list()
+        previousDate= None
+        for date in dates:
+            stringToAppend= date.strftime("%d/%m")
+            if(previousDate):
+                delta= (date-previousDate).days
+                if(delta<2):
+                    stringToAppend= ''
+            xTickLabels.append(stringToAppend)
+            previousDate= date
+
+        return days, workers, xTickLabels
+
+    def drawAvgNumberOfWorkersAlongProjectDiagram(self, title, outputFileName= None, xlabel= 't', ylabel= 'workers'):
+        ''' Draws a diagram of the the average number of workers along the 
+            project.
+
+        :param title: title of the chart. 
+        :param outputFileName: name of the output file (if None display the 
+                               chart in a window).
+        '''
+        days, workers, xTickLabels= self.getAvgNumberOfWorkersAlongProject()
+
+        fig, ax = plt.subplots()
+        ax.step(days, workers, where= 'post')
+        ax.set_xticks(days)
+        ax.set_yticks(workers)
+        ax.set_xticklabels(xTickLabels, rotation='vertical')
+        ax.grid()
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+
+        if(outputFileName):
+            plt.savefig(outputFileName, dpi=200)
+        else:
+            plt.show()

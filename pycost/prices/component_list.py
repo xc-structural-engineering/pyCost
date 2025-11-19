@@ -112,6 +112,18 @@ class ComponentList(list, epc.EntPyCost):
             retval[key]= newComponent
         return retval
 
+    def getNumberOfWorkers(self):
+        ''' Return the number of workers needed to perform this task.'''
+        retval= 0
+        for c in self:
+            if(c.ent.isCompound()): # compount price.
+                retval+= c.getNumberOfWorkers()
+            else: # elementary price.
+                if(c.isLabour()):
+                    retval+= 1
+        return retval
+        
+
     def AsignaFactor(self, f):
         '''Asigna el valor f a los factores de toda la descomposición.'''
         for i in self:

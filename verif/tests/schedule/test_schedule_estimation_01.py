@@ -11,7 +11,6 @@ __email__= "l.pereztato@ciccp.es"
 
 import os
 import sys
-import yaml
 import datetime
 import filecmp
 import logging
@@ -28,7 +27,7 @@ pth= os.path.dirname(__file__)
 # print("pth= ", pth)
 if(not pth):
     pth= '.'
-pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
+pendingLinks= site.readFromJson(pth+'/../data/json/test_file_05.json')
 
 # # Get the labour prices measured in hours.
 # labour_quantities= site.getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
@@ -120,6 +119,9 @@ for task in projectTasks.task_dict.values():
     estimatedDurationWeeks= estimatedDuration/40.0 # forty-hour workweek.
     task.setDuration(weeks= estimatedDurationWeeks)
     # print('   estimated duration: ', estimatedDurationWeeks, ' weeks')
+    
+# Compute average number of workers.
+projectTasks.computeAverageNumberOfWorkers()
 
 # Print start dates.
 fname= os.path.basename(__file__)
@@ -133,6 +135,8 @@ with open(textOutputFileName, 'w') as f:
         f.write('   end date: '+str(task.getEndDate())+'\n')
 refFile= refFile= pth+'/../data/reference_files/ref_'+txtFileName
 testOK= filecmp.cmp(refFile, textOutputFileName, shallow=False)
+
+# projectTasks.drawMatplotlibGanttChart(title= 'Schedule of Project:'+site.title)
 
 # Plot Gantt chart.
 chartOutputFileName= '/tmp/'+fname.replace('.py', '.png')

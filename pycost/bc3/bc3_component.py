@@ -58,12 +58,25 @@ class BC3Component(fr_entity.EntFR):
         '''
         return (self.getType()==typo)
 
-    def CodigoEntidad(self):
-        return self.ent.Codigo()
+    def isLabour(self):
+        '''Return true if the concept correspond to labour.'''
+        return self.isOfType(1)
 
+    def isMachinery(self):
+        '''Return true if the concept correspond to machinery and auxiliary
+           equipment.'''
+        return self.isOfType(2)
+    
+    def isMaterial(self):
+        '''Return true if the concept correspond to materials.'''
+        return self.isOfType(3)
+    
     def isPercentage(self):
         return self.ent.isPercentage()
 
+    def CodigoEntidad(self):
+        return self.ent.Codigo()
+    
     def WriteSpre(self, os):
         if not ((self.CodigoEntidad()).find('%')):
             os.write(0 + '|' + self.CodigoEntidad() + '|')
@@ -100,7 +113,11 @@ class BC3Component(fr_entity.EntFR):
                 retval[index]= (parentFactor, self)
         parentPrices.pop()
         return retval
-    
+
+    def getNumberOfWorkers(self):
+        ''' Return the number of workers needed to perform this task.'''
+        return self.ent.getNumberOfWorkers()
+        
     def getPriceJustificationRecord(self, over):
         if self.isPercentage():
             return pjr.PriceJustificationRecord(self.ent.Codigo(),self.getRoundedProduct(),self.ent.Unidad(),self.ent.getTitle(),True,self.getRoundedPercentage(),over)
