@@ -115,6 +115,7 @@ class Task(object):
             className= type(self).__name__
             methodName= sys._getframe(0).f_code.co_name
             errMsg= '; the task has predecessors; start date ignored.'
+            logging.error(className+'.'+methodName+errMsg)            
         else:
             self.start_dates[i_th]= startDate
 
@@ -162,21 +163,28 @@ class Task(object):
             retval= startDate+duration
         return retval
 
+    def appendPredecessor(self, predecessor):
+        ''' Append the given predecessors to the predecessors of this task.
+
+        :param predecessor: task that precede this one.
+        '''
+        if(predecessor!=self): # A task cannot precede itself.
+            self.predecessors.append(predecessor)
+        else:
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            errMsg= '; a task cannot precede itself. Predecessor: '
+            errMsg+= str(predecessor.code)
+            errMsg+= ' ignored.'
+            logging.error(className+'.'+methodName+errMsg)        
+
     def extendPredecessors(self, predecessors):
-        ''' Set the predecessors of this task.
+        ''' Extend the predecessors of this task.
 
         :param predecessors: list of tasks that precede this one.
         '''
         for t in predecessors:
-            if(t!=self): # A task cannot precede itself.
-                self.predecessors.append(t)
-            else:
-                className= type(self).__name__
-                methodName= sys._getframe(0).f_code.co_name
-                errMsg= '; a task cannot precede itself. Predecessor: '
-                errMsg+= str(t.code)
-                errMsg+= ' ignored.'
-                logging.error(className+'.'+methodName+errMsg)
+            self.appendPredecessor(t)
 
     def computeWorkingHours(self):
         ''' Compute the hours of work needed to fullfill the task and stores
@@ -185,11 +193,22 @@ class Task(object):
         if(len(self.chapters)>1):
             className= type(self).__name__
             methodName= sys._getframe(0).f_code.co_name
-            errMsg= '; not implemented for more than one chapter yet.'
-            logging.error(className+'.'+methodName+errMsg)
+            errMsg= 'Error in task: '+str(self.code)
+            errMsg+= ': ', className+'.'+methodName+ '; not implemented for more than one chapter yet.'
+            logging.error(errMsg)
             exit(1)
         else:
-            self.computedWorkingHours= self.chapters[0].getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
+            chapter= self.chapters[0]
+            if(chapter):
+                self.computedWorkingHours= chapter.getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
+            else:
+                className= type(self).__name__
+                methodName= sys._getframe(0).f_code.co_name
+                errMsg= 'Error in task: '+str(self.code)
+                errMsg+= ': '+ className+'.'+methodName+ '; no valid chapters found.'
+                logging.error(errMsg)
+                exit(1)
+                
 
     def getTotalWorkingHours(self):
         ''' Return the total hours of work needed to fullfill the task.
@@ -390,8 +409,12 @@ class ProjectTasks(object):
             task= self.task_dict[key]
             task.computeAverageNumberOfWorkers(hoursOfWorkPerYear= hoursOfWorkPerYear, hoursOfWorkPerDay= hoursOfWorkPerDay)
 
+    def getTaskList(self):
+        ''' Return the list of tasks.'''
+        return list(self.task_dict.values())
+        
     def getSortedTasksByStartDate(self):
-        ''' Return a list of task sorted by its start date.'''
+        ''' Return the list of tasks sorted by its start date.'''
         task_list= list()
         for task in self.task_dict.values():
             task_list.append((task, task.getStartDate()))
@@ -399,21 +422,50 @@ class ProjectTasks(object):
         return [x[0] for x in task_list]
 
     def getSortedTasksByEndDate(self):
-        ''' Return a list of task sorted by its end date.'''
+        ''' Return the list of tasks sorted by its end date.'''
         task_list= list()
         for task in self.task_dict.values():
             task_list.append((task, task.getEndDate()))
         task_list.sort(key=itemgetter(1))
         return [x[0] for x in task_list]
         
-    def getPandasDataFrame(self):
-        ''' Return the Pandas dataframe corresponding to the project tasks.'''
+    def getSortedTasksByCode(self):
+        ''' Return the list of tasks sorted by its code.'''
+        task_list= list()
+        for task in self.task_dict.values():
+            task_list.append((task, task.getCode()))
+        task_list.sort(key=itemgetter(1))
+        return [x[0] for x in task_list]
+    
+    def getSortedTaskList(self, sortBy= 'start_date'):
+        ''' Return a list of task sorted by its start date.
+
+        :param sortBy: sort criterion: 'start_date', 'end_date' or 'code'
+        '''
+        if(sortBy=='start_date'):
+            retval= self.getSortedTasksByStartDate()
+        elif(sortBy=='start_date'):
+            retval= self.getSortedTasksByEndDate()
+        elif(sortBy=='code'):
+            retval= self.getSortedTasksByCode()
+        else:
+            className= type(self).__name__
+            methodName= sys._getframe(0).f_code.co_name
+            errMsg= '; sort criterion: '+str(sortBy)+' unknown.'
+            logging.error(className+'.'+methodName+errMsg)            
+        return retval
+    
+    def getPandasDataFrame(self, sortBy= 'start_date'):
+        ''' Return the Pandas dataframe corresponding to the project tasks.
+
+        :param sortBy: sort criterion: 'start_date', 'end_date' or 'code'
+        '''
         task_labels= list()
         teams= list()
         start= list()
         end= list()
         completion_frac= list() # status of completion
-        sorted_task_list= self.getSortedTasksByStartDate()
+        sorted_task_list= self.getSortedTaskList(sortBy= sortBy)
         for task in sorted_task_list:
             task_labels.append(task.description)
             teams.append('team') # Needed?
@@ -439,7 +491,7 @@ class ProjectTasks(object):
         # Convert the status of completion of each task translated from a
         # fraction into a portion of days allocated to that task:
         df['completion_days'] = df['completion_frac'] * df['task_duration']
-        return df
+        return df, sorted_task_list
 
     def getTaskColors(self):
         ''' Return a list with the colors for each task.'''
@@ -448,7 +500,7 @@ class ProjectTasks(object):
             retval[task.getDescription()]= task.color
         return retval
 
-    def drawMatplotlibGanttChart(self, title, outputFileName= None, timeIncrement= 30):
+    def drawMatplotlibGanttChart(self, title, outputFileName= None, timeIncrement= 30, sortBy= 'start_date'):
         ''' Draws a Matplotlib Gantt chart.
        
         :param title: title of the chart. 
@@ -457,7 +509,7 @@ class ProjectTasks(object):
         :param timeIncrement: time increment between two samples (in days).
         '''
         # Create Pandas data fram.
-        df= self.getPandasDataFrame()
+        df, task_list= self.getPandasDataFrame(sortBy= sortBy)
 
         # Set colors.
         task_colors= self.getTaskColors()
@@ -469,26 +521,26 @@ class ProjectTasks(object):
         fig, ax = plt.subplots()
         # Create xticks.
         xticks = np.arange(5, df['days_to_end'].max() + 2, timeIncrement)
+        bar_height= .4
         for index, row in df.iterrows():
             # plt.barh(y=row['task'], width=row['task_duration'], left=row['days_to_start'] + 1, color=task_colors[row['task']])
 
             # Adding a lower bar - for the overall task duration
-            plt.barh(y=row['task'], width=row['task_duration'], left=row['days_to_start'] + 1, color=task_colors[row['task']], alpha=0.4, height= .4)
+            plt.barh(y=row['task'], width=row['task_duration'], left=row['days_to_start'] + 1, color=task_colors[row['task']], alpha=0.4, height= bar_height)
 
             # Adding an upper bar - for the status of completion
-            plt.barh(y=row['task'], width=row['completion_days'], left=row['days_to_start'] + 1, color=task_colors[row['task']], height= .4)
+            plt.barh(y=row['task'], width=row['completion_days'], left=row['days_to_start'] + 1, color=task_colors[row['task']], height= bar_height)
         # Create xticklabels.
         xticklabels = pandas.date_range(start=df['start'].min() + datetime.timedelta(days=4), end=df['end'].max()).strftime("%d/%m")
         # Plot number of workers
-        sorted_tasks= self.getSortedTasksByStartDate()
         task_patches= ax.patches[0::2] # Only the patches corresponding to tasks
                                        # not to task completions.
-        for bar, task in zip(task_patches, sorted_tasks):
+        for bar, task in zip(task_patches, task_list):
             ax.text(bar.get_x()+bar.get_width()/2.0, bar.get_y()+bar.get_height()/2, task.averageNumberOfWorkers, color = 'white', ha = 'center', va = 'center')
         plt.title(title, fontsize=12)
         plt.gca().invert_yaxis()
         ax.set_xticks(xticks)
-        ax.set_xticklabels(xticklabels[::timeIncrement])
+        ax.set_xticklabels(xticklabels[::timeIncrement], rotation='vertical')
         ax.xaxis.grid(True, alpha=0.5)
 
         # Adding a legend
@@ -503,6 +555,14 @@ class ProjectTasks(object):
         else:
             plt.show()
 
+    def getTotalCost(self):
+        ''' Return the cost of all the tasks.'''
+        task_list= self.getTaskList()
+        retval= 0.0
+        for task in task_list:
+            retval+= task.getTotalCost()
+        return retval
+        
     def getCumulatedExpenses(self):
         ''' Return the values of the cumulated expenses versus the 
             number of days elapsed from the start of the project.'''
@@ -580,7 +640,7 @@ class ProjectTasks(object):
             retval.append(date)
         return retval
 
-    def drawMatplotLibExpensesDiagram(self, title, outputFileName= None, timeIncrement= 30, currencyFactor= 1e-3):
+    def drawMatplotLibExpensesDiagram(self, title, outputFileName= None, timeIncrement= 30, currencyFactor= 1e-3, correctionFactor= 1.0):
         ''' Draws a Matplotlib diagram showing the expenses of the project
             versus time.
 
@@ -589,12 +649,15 @@ class ProjectTasks(object):
                                chart in a window).
         :param timeIncrement: time increment between two samples (in days).
         :param currencyFactor: 1e-3 to express thousands of currency units.
+        :param correctionFactor: correction factor to adjust the total cost
+                                 of the tasks with the total cost of the
+                                 project.
         '''
         sample_times= self.getSampleTimes(timeIncrement= timeIncrement)
         cumulatedExpensesFunction= self.getCumulatedExpensesFunction()
-        cost= cumulatedExpensesFunction(sample_times)/1e3
+        cost= cumulatedExpensesFunction(sample_times)*currencyFactor*correctionFactor
         cost_inc_function= self.getExpensesIncrementsFunction(sample_times)
-        cost_inc= cost_inc_function(sample_times)/1e3
+        cost_inc= cost_inc_function(sample_times)*currencyFactor*correctionFactor
         xTickDates= self.getSampleDates(sample_times)
         xTickLabels= list()
         for xtd in xTickDates:
@@ -602,7 +665,7 @@ class ProjectTasks(object):
 
         fig, ax = plt.subplots()
         ax.set_xticks(sample_times)
-        ax.set_xticklabels(xTickLabels)
+        ax.set_xticklabels(xTickLabels, rotation='vertical')
         ax.plot(sample_times, cost_inc, label= 'expenses.')
         ax.plot(sample_times, cost, label= 'cumulated expenses')
         plt.legend()
