@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-'''Extract concepts from unit cost databases.''' 
-from __future__ import division
-from __future__ import print_function
+'''Create a project schedule from its budget.''' 
 
 __author__= "Luis C. Pérez Tato (LCPT)"
-__copyright__= "Copyright 2017, LCPT"
+__copyright__= "Copyright 2025, LCPT"
 __license__= "GPL"
 __version__= "3.0"
 __email__= "l.pereztato@ciccp.es"
@@ -28,11 +26,6 @@ pth= os.path.dirname(__file__)
 if(not pth):
     pth= '.'
 pendingLinks= site.readFromJson(pth+'/../data/json/test_file_05.json')
-
-# # Get the labour prices measured in hours.
-# labour_quantities= site.getElementaryQuantities(target_unit= 'h', target_type= 'mdo')
-
-# print(labour_quantities)
 
 paths= site.getPaths()
 
