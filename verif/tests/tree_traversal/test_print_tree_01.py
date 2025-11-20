@@ -33,7 +33,7 @@ refFileName= pth+'/../data/reference_files/ref_'+outputFileName
 
 # Write tree.
 with open(outputFileName, 'w') as f:
-    site.printTree(f)
+    site.printTree(os= f, includeTitles= False)
 
 # Check results.
 testOK= filecmp.cmp(outputFileName, refFileName, shallow=False)
