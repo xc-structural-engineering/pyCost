@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''Extract concepts from unit cost databases.''' 
+'''Expenses diagram calculation.''' 
 from __future__ import division
 from __future__ import print_function
 
@@ -138,7 +138,7 @@ testOK= (err<1e-3)
 
 # print(cumulatedExpenses, err)
 
-# Plot Gantt chart.
+# Plot expenses diagram.
 fname= os.path.basename(__file__)
 chartOutputFileName= '/tmp/'+fname.replace('.py', '.png')
 projectTasks.drawMatplotLibExpensesDiagram(title= 'Expenses diagram', outputFileName= chartOutputFileName)
