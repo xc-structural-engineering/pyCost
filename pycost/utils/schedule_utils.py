@@ -205,11 +205,11 @@ class Task(object):
                 className= type(self).__name__
                 methodName= sys._getframe(0).f_code.co_name
                 errMsg= 'Error in task: '+str(self.code)
-                errMsg+= ': '+ className+'.'+methodName+ '; no valid chapters found.'
+                errMsg+= ': '+ className+'.'+methodName
+                errMsg+= '; no valid chapters found.'
                 logging.error(errMsg)
                 exit(1)
                 
-
     def getTotalWorkingHours(self):
         ''' Return the total hours of work needed to fullfill the task.
         '''
