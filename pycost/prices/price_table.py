@@ -171,14 +171,16 @@ class CuaPre(epc.EntPyCost):
         '''
         self.elementos.writeLatex(doc, tipos, filterBy= filterBy, superTabular= superTabular)
 
-    def writePriceJustification(self, doc, filterBy= None):
+    def writePriceJustification(self, doc, filterBy= None, superTabular= False):
         '''Write price justification.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price justification for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         :returns: list of the written prices.
         '''
-        return self.unidades.writePriceJustification(doc, filterBy= filterBy)
+        return self.unidades.writePriceJustification(doc, filterBy= filterBy, superTabular= superTabular)
 
 
     def writePriceTableOneIntoLatexDocument(self, doc, filterBy= None, superTabular= False):

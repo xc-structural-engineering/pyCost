@@ -31,6 +31,10 @@ class PriceJustificationRecordContainer(list):
                 base+= (i).getTotal()
 
     def writePriceJustification(self, data_table):
+        ''' Write price justification into a latex table.
+
+        :param data_table: pylatex table to write into.
+        '''
         if(len(self)):
             for i in self:
                 (i).writePriceJustification(data_table)

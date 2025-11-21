@@ -517,16 +517,18 @@ class Obra(cp.Chapter):
         super(Obra,self).writeElementaryPrices(doc= part, parentSection= 'root', tipos= tipos, filterBy= filterBy, superTabular= superTabular)
         doc.append(part)
             
-    def writePriceJustification(self, doc, signaturesFileName= 'firmas', filterBy= None):
+    def writePriceJustification(self, doc, signaturesFileName= 'firmas', filterBy= None, superTabular= False):
         ''' Write price justification.
 
         :param doc: pylatex document to write into.
         :param signaturesFileName: name of the file containing the signatures.
         :param filterBy: write price justification for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         :returns: list of the written prices.
         '''
         part= pylatex_utils.Part("Justificación de precios")
-        retval= super(Obra,self).writePriceJustification(part, 'root', filterBy= filterBy)
+        retval= super(Obra,self).writePriceJustification(part, 'root', filterBy= filterBy, superTabular= superTabular)
         if(signaturesFileName):
             part.append(pylatex.Command('input{'+signaturesFileName+'}'))
         doc.append(part)

@@ -104,6 +104,10 @@ class PriceJustificationList(object):
 
 
     def writePriceJustification(self, data_table):
+        ''' Write price justification into a latex table.
+
+        :param data_table: pylatex table to write into.
+        '''
         total= self.getTotal()
         rnd= self.Redondeo()
         total_rnd= self.getRoundedTotal()

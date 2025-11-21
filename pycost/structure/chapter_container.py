@@ -279,17 +279,19 @@ class Subcapitulos(list, epc.EntPyCost):
         for j in self:
             (j).writeElementaryPrices(doc, parentSection, tipos, filterBy= filterBy, superTabular= superTabular)
 
-    def writePriceJustification(self, data_table, parentSection, filterBy= None):
+    def writePriceJustification(self, data_table, parentSection, filterBy= None, superTabular= False):
         ''' Write unit prices table one in the pylatex document argument.
 
         :param data_table: pylatex tabular data to populate.
         :param parentSection: section command for the parent chapter.
         :param filterBy: write price justification for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         :returns: list of the written prices.
         '''
         retval= list()
         for j in self:
-            retval+= (j).writePriceJustification(data_table, parentSection= parentSection, filterBy= filterBy)
+            retval+= (j).writePriceJustification(data_table, parentSection= parentSection, filterBy= filterBy, superTabular= superTabular)
         return retval
 
     def ImprLtxResumen(self, doc, parentSection, recursive):

@@ -68,6 +68,10 @@ class PriceJustificationRecord(object):
         return retval
 
     def writePriceJustification(self, data_table):
+        ''' Write price justification into a latex table.
+
+        :param data_table: pylatex table to write into.
+        '''
         row= [self.codigo]
         row.append(basic_types.human_readable(self.rdto))
         row.append(self.unidad)
