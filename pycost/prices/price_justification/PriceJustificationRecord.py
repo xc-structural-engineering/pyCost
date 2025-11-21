@@ -79,7 +79,11 @@ class PriceJustificationRecord(object):
 
 
     def writePriceTableTwoIntoLatexDocument(self, data_table):
-        ''' Write row of a percentage price (e.g. indirect costs) in price table number two'''
+        ''' Write row of a percentage price (e.g. indirect costs) in price 
+           table number two.
+
+        :param data_table: pylatex table to write into.
+        '''
         if(self.is_percentage):
             description= pylatex_utils.ascii2latex(self.titulo)+' ('+self.getStrUnary()+')'
             data_table.add_row(['','',description,basic_types.human_readable(self.getTotal())])

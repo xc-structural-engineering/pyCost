@@ -242,25 +242,29 @@ class Subcapitulos(list, epc.EntPyCost):
         for j in self:
             (j).writeQuantitiesIntoLatexDocument(doc,sectName, superTabular= superTabular)
 
-    def writePriceTableOneIntoLatexDocument(self, doc, sectName, filterBy= None):
+    def writePriceTableOneIntoLatexDocument(self, doc, sectName, filterBy= None, superTabular= False):
         ''' Write unit prices table one in the pylatex document argument.
 
         :param doc: document to write into.
         :param sectName: section command for the chapter.
         :param filterBy: write the prices on the list only.
-        '''
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
+         '''
         for j in self:
-            (j).writePriceTableOneIntoLatexDocument(doc, sectName, filterBy= filterBy)
+            (j).writePriceTableOneIntoLatexDocument(doc, sectName, filterBy= filterBy, superTabular= superTabular)
 
-    def writePriceTableTwoIntoLatexDocument(self, doc, sectName, filterBy= None):
+    def writePriceTableTwoIntoLatexDocument(self, doc, sectName, filterBy= None, superTabular= False):
         ''' Write unit prices table one in the pylatex document argument.
 
         :param doc: document to write into.
         :param sectName: section command for the chapter.
         :param filterBy: write the prices on the list only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         for j in self:
-            (j).writePriceTableTwoIntoLatexDocument(doc, sectName, filterBy= filterBy)
+            (j).writePriceTableTwoIntoLatexDocument(doc, sectName, filterBy= filterBy, superTabular= superTabular)
 
     def writeElementaryPrices(self, doc, parentSection, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the elementary prices table.

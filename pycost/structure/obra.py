@@ -472,30 +472,34 @@ class Obra(cp.Chapter):
         super(Obra,self).ImprCompLtxMed(os,'root',other)
         doc.create(pylatex_utils.ltx_end("landscape") + '\n')
 
-    def writePriceTableOneIntoLatexDocument(self, doc, signaturesFileName= 'firmas', filterBy= None):
+    def writePriceTableOneIntoLatexDocument(self, doc, signaturesFileName= 'firmas', filterBy= None, superTabular= False):
         '''
         :param signaturesFileName: name of the file containing the signatures.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         part= pylatex_utils.Part("Cuadro de precios no. 1")
         part.append(pylatex.Command('parttoc'))
         part.append(pylatex.Command('setcounter{chapter}{0}'))
-        super(Obra,self).writePriceTableOneIntoLatexDocument(part,'root', filterBy= filterBy)
+        super(Obra,self).writePriceTableOneIntoLatexDocument(part,'root', filterBy= filterBy, superTabular= superTabular)
         if(signaturesFileName):
             part.append(pylatex.Command('input{'+signaturesFileName+'}'))
         doc.append(part)
 
-    def writePriceTableTwoIntoLatexDocument(self, doc, signaturesFileName= 'firmas', filterBy= None):
+    def writePriceTableTwoIntoLatexDocument(self, doc, signaturesFileName= 'firmas', filterBy= None, superTabular= False):
         '''Write price table two.
 
         :param doc: pylatex document to write into.
         :param signaturesFileName: name of the file containing the signatures.
         :param filterBy: write the prices on the list only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         part= pylatex_utils.Part("Cuadro de precios no. 2")
         part.append(pylatex.Command('parttoc'))
         part.append(pylatex.Command('setcounter{chapter}{0}'))
-        super(Obra,self).writePriceTableTwoIntoLatexDocument(part,'root', filterBy= filterBy)
+        super(Obra,self).writePriceTableTwoIntoLatexDocument(part,'root', filterBy= filterBy, superTabular= superTabular)
         if(signaturesFileName):
             part.append(pylatex.Command('input{'+signaturesFileName+'}'))
         doc.append(part)
@@ -535,14 +539,16 @@ class Obra(cp.Chapter):
                 logging.warning('The following prices are missing: '+str(missingPrices))
         return retval
 
-    def writePriceTablesIntoLatexDocument(self, doc, filterBy= None):
+    def writePriceTablesIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         ''' Write price tables 1 and 2.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price tables for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        self.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy)
-        self.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy)
+        self.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
+        self.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
 
     def writePartialBudgetsIntoLatexDocument(self, doc, superTabular= False):
         ''' Write partial budgets report.
@@ -578,7 +584,7 @@ class Obra(cp.Chapter):
         super(Obra,self).ImprLtxResumen(chapter, parentSection= 'root')
         doc.append(part)
 
-    def ImprCompLtx(self, doc, other):
+    def ImprCompLtx(self, doc, other, superTabular= False):
         ''' Prints the comparison with another project.
 
         :param doc: pylatex document to write into.
@@ -586,7 +592,7 @@ class Obra(cp.Chapter):
         '''
         #ImprCompLtxMed(other,os)
         self.ImprCompLtxMed(doc,other)
-        precios.writePriceTablesIntoLatexDocument(os); #Price tables.
+        precios.writePriceTablesIntoLatexDocument(os, superTabular= superTabular); #Price tables.
         self.ImprCompLtxPreParc(doc,other)
         #ImprLtxResumen(os)
 
@@ -597,7 +603,7 @@ class Obra(cp.Chapter):
         :param filterBy: write those prices only.
         '''
         self.writeQuantitiesIntoLatexDocument(doc, superTabular= superTabular) #Quantities.
-        self.writePriceTablesIntoLatexDocument(doc, filterBy= filterBy) #Price lists.
+        self.writePriceTablesIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular) #Price lists.
         self.writePartialBudgetsIntoLatexDocument(doc, superTabular= superTabular) #Presupuestos parciales.
         self.ImprLtxResumen(doc) #Resument presup. parciales.
         self.ImprLtxPresGen(doc) #Presupuestos generales.

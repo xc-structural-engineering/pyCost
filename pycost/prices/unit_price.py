@@ -217,12 +217,20 @@ class UnitPrice(ms.Measurable):
         return retval
 
     def writePriceTableOneIntoLatexDocument(self, data_table):
+        '''Write first price table.
+
+        :param data_table: pylatex table to write into.
+        '''
         row= self.getLtxCodeUnitDescription()
         row.extend(['',''])
         data_table.add_row(row)
         self.components.writePriceTableOneIntoLatexDocument(data_table,True,False); #XXX Aqui género.
 
     def writePriceTableTwoIntoLatexDocument(self, data_table):
+        '''Write second price table.
+
+        :param data_table: pylatex table to write into.
+        '''
         tableStr= 'l r p{5.5cm} r'
         headerRow= [u'Código',u'Ud.',u'Descripción',u'Importe']
         nested_data_table= pylatex.Tabular(tableStr)

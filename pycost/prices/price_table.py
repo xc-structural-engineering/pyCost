@@ -181,30 +181,36 @@ class CuaPre(epc.EntPyCost):
         return self.unidades.writePriceJustification(doc, filterBy= filterBy)
 
 
-    def writePriceTableOneIntoLatexDocument(self, doc, filterBy= None):
+    def writePriceTableOneIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         '''Write first price table.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price only if its code is in the list.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        self.unidades.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy)
+        self.unidades.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
 
-    def writePriceTableTwoIntoLatexDocument(self, doc, filterBy= None):
+    def writePriceTableTwoIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         '''Write second prince table.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price only if its code is in the list.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        self.unidades.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy)
+        self.unidades.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
 
-    def writePriceTablesIntoLatexDocument(self, doc, filterBy= None):
+    def writePriceTablesIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         '''Write both price tables.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price only if its code is in the list.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy)
-        writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy)
+        writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
+        writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
 
     def writeSpreadsheet(self, book):
         ''' Write the prices in the work book argument.

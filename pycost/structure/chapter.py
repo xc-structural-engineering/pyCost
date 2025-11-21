@@ -570,32 +570,36 @@ class Chapter(bc3_entity.EntBC3):
                 self.subcapitulos.writeQuantitiesIntoLatexDocument(docPart,sectName, superTabular= superTabular)
             doc.append(docPart)
         
-    def writePriceTableOneIntoLatexDocument(self, doc, parentSection, filterBy= None):
+    def writePriceTableOneIntoLatexDocument(self, doc, parentSection, filterBy= None, superTabular= False):
         ''' Write price table number one in the pylatex document argument.
 
         :param doc: document to write into.
         :param parentSection: section command for the parent chapter.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if(self.TieneDescompuestos(filterBy= filterBy)):
             if parentSection!='root':
                 doc.append('\\' + parentSection + '{' + self.getTitle() + '}' + '\n')
             if self.precios.TieneDescompuestos(filterBy= filterBy):
-                self.precios.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy)
-            self.subcapitulos.writePriceTableOneIntoLatexDocument(doc,pylatex_utils.getLatexSection(parentSection), filterBy= filterBy)
+                self.precios.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
+            self.subcapitulos.writePriceTableOneIntoLatexDocument(doc,pylatex_utils.getLatexSection(parentSection), filterBy= filterBy, superTabular= superTabular)
             
-    def writePriceTableTwoIntoLatexDocument(self, doc, parentSection, filterBy= None):
+    def writePriceTableTwoIntoLatexDocument(self, doc, parentSection, filterBy= None, superTabular= False):
         ''' Write price table number two in the pylatex document argument.
 
         :param doc: document to write into.
         :param parentSection: section command for the parent chapter.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if self.precios.TieneDescompuestos(filterBy= filterBy):
             if parentSection!='root':
                 doc.append('\\' + parentSection + '{' + self.getTitle() + '}' + '\n')
-            self.precios.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy)
-        self.subcapitulos.writePriceTableTwoIntoLatexDocument(doc,pylatex_utils.getLatexSection(parentSection), filterBy= filterBy)
+            self.precios.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy, superTabular= superTabular)
+        self.subcapitulos.writePriceTableTwoIntoLatexDocument(doc,pylatex_utils.getLatexSection(parentSection), filterBy= filterBy, superTabular= superTabular)
 
     def writeElementaryPrices(self, doc, parentSection, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the elementary prices table.

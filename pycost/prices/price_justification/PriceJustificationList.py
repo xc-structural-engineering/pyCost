@@ -140,6 +140,10 @@ class PriceJustificationList(object):
             data_table.add_row(row)
 
     def writePriceTableTwoIntoLatexDocument(self, data_table):
+        ''' Write in price table number two.
+
+        :param data_table: pylatex table to write into.
+        '''
         total= self.getTotal()
         rnd= self.Redondeo()
         total_rnd= self.getRoundedTotal()
@@ -172,6 +176,10 @@ class PriceJustificationList(object):
 
 
     def writePriceTableOneIntoLatexDocument(self, data_table, genero):
+        ''' Write in price table number one.
+
+        :param data_table: pylatex table to write into.
+        '''
         data_table.add_row(['','','',self.StrPriceToWords(genero),self.getLtxPriceString()])
 
 

@@ -185,43 +185,65 @@ class Descompuestos(concept_dict.ConceptDict):
                     retval.append(key)
         return retval
         
-    def writePriceTableOneIntoLatexDocument(self, doc, filterBy= None):
+    def writePriceTableOneIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         ''' Write unit price table one into a latex report.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price table for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if(len(self)>=1):
             num_campos= 5
             doc.append(pylatex_utils.SmallCommand())
             longTableStr= '|l|l|p{4cm}|p{3cm}|r|'
-            headerRow1= [u'Código','Ud.',u'Denominación',(pylatex.table.MultiColumn(2,align='|c|',data= 'Precio'))]
-            headerRow2= ['','','','en letra', 'en cifra']
-            with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-                data_table.add_hline()
-                data_table.add_row(headerRow1)
-                data_table.add_row(headerRow2)
-                data_table.add_hline()
-                data_table.end_table_header()
-                data_table.add_hline()
-                data_table.add_row((pylatex.table.MultiColumn(num_campos, align='|r|',data='../..'),))
-                data_table.add_hline()
-                data_table.end_table_footer()
-                data_table.add_hline()
-                data_table.end_table_last_footer()
-                filteredConcepts= self.filterConcepts(filterBy= filterBy)
-                for key in sorted(filteredConcepts):
-                    data_table.add_empty_row()
-                    self.concepts[key].writePriceTableOneIntoLatexDocument(data_table)
-                    data_table.add_empty_row()
+            if(superTabular):
+                # Create LaTeX supertabular.
+                header_row1= [u'Código','Ud.',u'Denominación']
+                header_row1.append('\\multicolumn{2}{|c|}}{Precio}')
+                header_row1.append('Importe')
+                header_str1= '&'.join(header_row1)+'\\\\%\n'
+                header_row2= ['','','','en letra', 'en cifra']
+                header_str2=  '&'.join(header_row2)+'\\\\%\n\\hline%\n'
+                header_str= header_str1+header_str2
+                pylatex_utils.supertabular_first_head(doc, firstHeadStr= head_str)
+                pylatex_utils.supertabular_head(doc, headStr= head_str)
+                superTabularTailStr= '\\multicolumn{'+str(num_campos)+'}{|r|}{../..}\\\\%\n'
+                pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+                pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
+                with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
+                    pass
 
+            else:
+                # Create LaTeX longtable.
+                headerRow1= [u'Código','Ud.',u'Denominación',(pylatex.table.MultiColumn(2,align='|c|',data= 'Precio'))]
+                headerRow2= ['','','','en letra', 'en cifra']
+                with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
+                    data_table.add_hline()
+                    data_table.add_row(headerRow1)
+                    data_table.add_row(headerRow2)
+                    data_table.add_hline()
+                    data_table.end_table_header()
+                    data_table.add_hline()
+                    data_table.add_row((pylatex.table.MultiColumn(num_campos, align='|r|',data='../..'),))
+                    data_table.add_hline()
+                    data_table.end_table_footer()
+                    data_table.add_hline()
+                    data_table.end_table_last_footer()
+            filteredConcepts= self.filterConcepts(filterBy= filterBy)
+            for key in sorted(filteredConcepts):
+                data_table.add_empty_row()
+                self.concepts[key].writePriceTableOneIntoLatexDocument(data_table)
+                data_table.add_empty_row()
             doc.append(pylatex_utils.NormalSizeCommand())
 
-    def writePriceJustification(self, doc, filterBy= None):
+    def writePriceJustification(self, doc, filterBy= None, superTabular= False):
         ''' Write price justification into a latex report.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price justification for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         :returns: list of the written prices.
         '''
         retval= list()
@@ -230,27 +252,44 @@ class Descompuestos(concept_dict.ConceptDict):
             if(len(filteredConcepts)>0):
                 doc.append(pylatex_utils.SmallCommand())
                 longTableStr= 'l'
-                with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-                    for key in sorted(filteredConcepts):
-                        self.concepts[key].writePriceJustification(data_table)
-                        retval.append(key)
+                if(superTabular):
+                    # Create LaTeX supertabular.
+                    with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
+                        pass
+                else:
+                    # Create LaTeX longtable.
+                    with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
+                        pass
+                for key in sorted(filteredConcepts):
+                    self.concepts[key].writePriceJustification(data_table)
+                    retval.append(key)
                 doc.append(pylatex_utils.NormalSizeCommand())
         return retval
 
-    def writePriceTableTwoIntoLatexDocument(self, doc, filterBy= None):
+    def writePriceTableTwoIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         ''' Write unit price table two into a latex report.
 
         :param doc: pylatex document to write into.
         :param filterBy: write price table for those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if(len(self)>0):
             #doc.append(pylatex_utils.ltx_star_.chapter("Cuadro de precios no. 2") + '\n'
             doc.append(pylatex_utils.SmallCommand())
             longTableStr= 'l'
-            with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-                filteredConcepts= self.filterConcepts(filterBy= filterBy)
-                for key in sorted(filteredConcepts):
-                    self.concepts[key].writePriceTableTwoIntoLatexDocument(data_table)
+            if(superTabular):
+                # Create LaTeX supertabular.
+                with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
+                    pass
+            else:
+                # Create LaTeX longtable.
+                with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
+                    pass
+                
+            filteredConcepts= self.filterConcepts(filterBy= filterBy)
+            for key in sorted(filteredConcepts):
+                self.concepts[key].writePriceTableTwoIntoLatexDocument(data_table)
             doc.append(pylatex_utils.NormalSizeCommand())
 
     def writeSpreadsheet(self, sheet):
