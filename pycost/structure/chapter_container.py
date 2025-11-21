@@ -260,16 +260,18 @@ class Subcapitulos(list, epc.EntPyCost):
         for j in self:
             (j).writePriceTableTwoIntoLatexDocument(doc, sectName, filterBy= filterBy)
 
-    def writeElementaryPrices(self, doc, parentSection, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None):
+    def writeElementaryPrices(self, doc, parentSection, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the elementary prices table.
 
         :param doc: pylatex document to write into.
         :param parentSection: section command for the parent chapter.
         :param tipos: types of the prices to write (maquinaria, materiales o mano de obra) defaults to all of them.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         for j in self:
-            (j).writeElementaryPrices(doc, parentSection, tipos, filterBy= filterBy)
+            (j).writeElementaryPrices(doc, parentSection, tipos, filterBy= filterBy, superTabular= superTabular)
 
     def writePriceJustification(self, data_table, parentSection, filterBy= None):
         ''' Write unit prices table one in the pylatex document argument.

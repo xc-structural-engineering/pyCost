@@ -118,9 +118,7 @@ def input(s, escape=True):
 class LongTable(pylatex.table.LongTable):
     '''A class with the methods that are not yet implemented
        in the stable version of PyLatex.'''
-    foot = False
-    lastFoot = False
-
+    
     def end_table_footer(self):
         r'''End the table foot which will appear on every page.'''
 
@@ -142,6 +140,71 @@ class LongTable(pylatex.table.LongTable):
         self.lastFoot = True
 
         self.append(pylatex.Command('endlastfoot'))
+
+# supertabular
+def supertabular_first_head(doc, firstHeadStr):
+    ''' Set the first head of the table.
+
+    :param firstHeadStr: string defining the first head of the table.
+    '''
+    doc.append(pylatex.UnsafeCommand('tablefirsthead', arguments= firstHeadStr))
+
+def supertabular_head(doc, headStr):
+    ''' Set the head of the table.
+
+    :param headStr: string defining the table head.
+    '''
+    doc.append(pylatex.UnsafeCommand('tablehead', arguments= headStr))
+
+def supertabular_tail(doc, tailStr):
+    '''Set the table tail.
+
+    :param tailStr: string defining the table tail.
+    '''
+    doc.append(pylatex.UnsafeCommand('tabletail', arguments= tailStr))
+
+def supertabular_last_tail(doc, lastTailStr):
+    '''End the table foot which will appear on the last page.
+
+    :param lastTailStr: string defining the last tail of the table.
+    '''
+    doc.append(pylatex.UnsafeCommand('tablelasttail', arguments= lastTailStr))
+
+class SuperTabular(pylatex.table.Tabular):
+    '''A class that is not yet implemented in the stable version of PyLatex.'''
+    def __init__(self, table_spec, data=None, pos=None, row_height=None, col_space=None, width=None, booktabs=None, **kwargs):
+        ''' Constructor.
+
+        :param table_spec: str
+            A string that represents how many columns a table should have and
+            if it should contain vertical lines and where.
+        :param pos: list
+        :param row_height: float
+            Specifies the heights of the rows in relation to the default
+            row height
+        :param col_space: str
+            Specifies the spacing between table columns
+        :param booktabs: bool
+            Enable or disable booktabs style tables. These tables generally
+            look nicer than regular tables. If this is `None` it will use the
+            value of the ``booktabs`` attribte from the `~.active`
+            configuration. This attribute is `False` by default.
+        :param width: int
+            The amount of columns that the table has. If this is `None` it is
+            calculated based on the ``table_spec``, but this is only works for
+            simple specs. In cases where this calculation is wrong override the
+            width using this argument.
+
+        References
+        ----------
+        * https://en.wikibooks.org/wiki/LaTeX/Tables#The_tabular_environment
+        '''
+        super().__init__(table_spec= table_spec, data= data, pos= pos, row_height= row_height, col_space= col_space, width= width, booktabs= booktabs)
+        self.firsthead= False
+        self.head= False
+        self.tail = False
+        self.lastTail = False
+
 
 def getTabularDataFromList(listData):
     ''' Return tabular data in LaTeX format from the data stored in the

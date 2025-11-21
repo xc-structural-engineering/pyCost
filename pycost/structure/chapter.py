@@ -595,19 +595,21 @@ class Chapter(bc3_entity.EntBC3):
             self.precios.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy)
         self.subcapitulos.writePriceTableTwoIntoLatexDocument(doc,pylatex_utils.getLatexSection(parentSection), filterBy= filterBy)
 
-    def writeElementaryPrices(self, doc, parentSection, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None):
+    def writeElementaryPrices(self, doc, parentSection, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the elementary prices table.
 
         :param doc: pylatex document to write into.
         :param parentSection: section command for the parent chapter.
         :param tipos: types of the prices to write (maquinaria, materiales o mano de obra) defaults to all of them.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if(self.TieneElementales(filterBy= filterBy)):
             if(parentSection!='root'):
                 doc.append('\\' + parentSection + '{' + self.getTitle() + '}' + '\n')
-            self.precios.writeElementaryPrices(doc, tipos, filterBy= filterBy)
-            self.subcapitulos.writeElementaryPrices(doc, pylatex_utils.getLatexSection(parentSection), filterBy= filterBy)
+            self.precios.writeElementaryPrices(doc, tipos, filterBy= filterBy, superTabular= superTabular)
+            self.subcapitulos.writeElementaryPrices(doc, pylatex_utils.getLatexSection(parentSection), filterBy= filterBy, superTabular= superTabular)
     
     def writePriceJustification(self, doc, parentSection, filterBy= None):
         ''' Write price justification table in the pylatex document argument.

@@ -160,14 +160,16 @@ class CuaPre(epc.EntPyCost):
             self.unidades.LeeSpre(iS,elementos)
 
 
-    def writeElementaryPrices(self, doc, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None):
+    def writeElementaryPrices(self, doc, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the elementary prices table.
 
         :param doc: pylatex document to write into.
         :param tipos: types of the prices to write (maquinaria, materiales o mano de obra) defaults to all of them.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        self.elementos.writeLatex(doc, tipos, filterBy= filterBy)
+        self.elementos.writeLatex(doc, tipos, filterBy= filterBy, superTabular= superTabular)
 
     def writePriceJustification(self, doc, filterBy= None):
         '''Write price justification.

@@ -25,15 +25,17 @@ rootChapter.readFromYaml(pth+'/../data/yaml/test_03_prices.yaml')
 doc= pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
 doc.packages.append(pylatex.Package('minitoc'))
+doc.packages.append(pylatex.Package('supertabular'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 # doc.append(pylatex.Command('doparttoc'))
 # doc.append(pylatex.Command('parttoc'))
-rootChapter.writeElementaryPrices(doc, tipos= [basic_types.mdo, basic_types.maq, basic_types.mat])
+rootChapter.writeElementaryPrices(doc, tipos= [basic_types.mdo, basic_types.maq, basic_types.mat], superTabular= True)
 
 
 # Generate LaTeX file.
-outputFilesBaseName= 'elementary_prices'
-texFileName= outputFilesBaseName+'.tex'
+fname= os.path.basename(__file__)
+outputFilesBaseName= fname[:-3]
+texFileName= fname.replace('.py', '.tex')
 thisFile= pth+'/./'+outputFilesBaseName
 doc.generate_tex(thisFile)
 thisFile+= '.tex'
@@ -49,7 +51,6 @@ ok= filecmp.cmp(refFile, thisFile, shallow=False)
 # print(ok)
 # print(thisFile)
 
-fname= os.path.basename(__file__)
 if (ok):
     print('test: '+fname+': ok.')
 else:

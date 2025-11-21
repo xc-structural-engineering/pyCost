@@ -65,34 +65,52 @@ class ElementaryPrices(concept_dict.ConceptDict):
         logging.error("ElementaryPrices.writeSpreadsheet not implemented." + '\n')
 
     @staticmethod
-    def writeLatexHeader(doc, tipo):
+    def writeLatexHeader(doc, tipo, superTabular= False):
         ''' Write the header for the elementary prices table.
 
         :param doc: pylatex document to write into.
-        :param tipo: type of the prices to write (maquinaria, materiales o mano de obra).
+        :param tipo: type of the prices to write (maquinaria, materiales o 
+                     mano de obra).
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         str_tipo= basic_types.str_tipo(tipo)
 
-        doc.append(pylatex.NoEscape(pylatex_utils.ltx_begin(textStr= "center") + '\n'))
+        doc.append(pylatex.Command('begin', arguments='center'))
         doc.append(pylatex_utils.LargeCommand())
         doc.append(" Precios elementales de " + str_tipo + ' ')
         doc.append(pylatex_utils.NormalSizeCommand())
-        doc.append(pylatex.NoEscape(pylatex_utils.ltx_end("center") + '\n'))
+        doc.append(pylatex.Command('end', arguments='center'))
         doc.append(pylatex_utils.SmallCommand())
-        # Create LaTeX longtable.
-        longTableStr= '|l|l|p{4cm}|r|'
+        if(superTabular):
+            doc.append(pylatex.Command('begin', arguments='center'))
+        ltxColumnsStr= '|l|l|p{4cm}|r|'
         headerRow= [u'Código','Ud.',u'Denominación',u'Coste directo']
-        with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-            data_table.add_hline()
-            data_table.add_row(headerRow)
-            data_table.add_hline()
-            data_table.end_table_header()
-            data_table.add_hline()
-            data_table.add_row((pylatex.table.MultiColumn(4, align='|r|',data='../..'),))
-            data_table.add_hline()
-            data_table.end_table_footer()
-            data_table.add_hline()
-            data_table.end_table_last_footer()
+        if(superTabular):
+            # Create LaTeX supertabular.
+            superTabularHeaderStr= '\\hline%\n'+'&'.join(headerRow)+'\\\\%\n\\hline%\n'
+            pylatex_utils.supertabular_first_head(doc, firstHeadStr= superTabularHeaderStr)
+            pylatex_utils.supertabular_head(doc, headStr= superTabularHeaderStr)
+            superTabularTailStr= '\\multicolumn{4}{|r|}{../..}\\\\%\n'
+            pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+            pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
+            with doc.create(pylatex_utils.SuperTabular(ltxColumnsStr)) as data_table:
+                pass
+        else:
+            # Create LaTeX longtable.
+            with doc.create(pylatex_utils.LongTable(ltxColumnsStr)) as data_table:
+                data_table.add_hline()
+                data_table.add_row(headerRow)
+                data_table.add_hline()
+                data_table.end_table_header()
+                data_table.add_hline()
+                data_table.add_row((pylatex.table.MultiColumn(4, align='|r|',data='../..'),))
+                data_table.add_hline()
+                data_table.end_table_footer()
+                data_table.add_hline()
+                data_table.end_table_last_footer()
+        if(superTabular):
+            doc.append(pylatex.Command('end', arguments='center'))
         return data_table
 
     def LeeMdoSpre(self, iS):
@@ -246,12 +264,14 @@ class ElementaryPrices(concept_dict.ConceptDict):
                 logging.info("Loaded " + str(sz) + " elementary prices. " + '\n')
 
 
-    def writeLatexPricesOfType(self, doc, tipo, filterBy= None):
+    def writeLatexPricesOfType(self, doc, tipo, filterBy= None, superTabular= False):
         ''' Write the header for the elementary prices table.
 
         :param doc: pylatex document to write into.
         :param tipo: type of the prices to write (maquinaria, materiales o mano de obra).
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         # Get concepts to write.
         filteredConcepts= list()
@@ -265,20 +285,22 @@ class ElementaryPrices(concept_dict.ConceptDict):
                     filteredConcepts.append(el)
         
         if(len(filteredConcepts)>0):
-            data_table= self.writeLatexHeader(doc, tipo)
+            data_table= self.writeLatexHeader(doc, tipo, superTabular= superTabular)
             for el in filteredConcepts:
                 el.writeLatex(data_table)
             doc.append(pylatex_utils.NormalSizeCommand())
 
-    def writeLatex(self, doc, tipos= [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None):
+    def writeLatex(self, doc, tipos= [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the header for the elementary prices table.
 
         :param doc: pylatex document to write into.
         :param tipos: types of the prices to write (maquinaria, materiales o mano de obra) defaults to all of them.
         :param filterBy: write those prices only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         for tp in tipos:
-            self.writeLatexPricesOfType(doc, tp, filterBy= filterBy)
+            self.writeLatexPricesOfType(doc, tp, filterBy= filterBy, superTabular= superTabular)
             # doc.append(pylatex.NoEscape(pylatex_utils.ltx_newpage + '\n'))
 
     def getDict(self):

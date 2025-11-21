@@ -498,15 +498,17 @@ class Obra(cp.Chapter):
             part.append(pylatex.Command('input{'+signaturesFileName+'}'))
         doc.append(part)
 
-    def writeElementaryPrices(self, doc, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None):
+    def writeElementaryPrices(self, doc, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
         ''' Write the elementary prices table.
 
         :param doc: pylatex document to write into.
         :param tipos: types of the prices to write (maquinaria, materiales o mano de obra) defaults to all of them.
         :param filterBy: write the prices on the list only.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         part= pylatex_utils.Part("Precios elementales")
-        super(Obra,self).writeElementaryPrices(doc= part, parentSection= 'root', tipos= tipos, filterBy= filterBy)
+        super(Obra,self).writeElementaryPrices(doc= part, parentSection= 'root', tipos= tipos, filterBy= filterBy, superTabular= superTabular)
         doc.append(part)
             
     def writePriceJustification(self, doc, signaturesFileName= 'firmas', filterBy= None):
