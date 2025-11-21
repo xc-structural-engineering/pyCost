@@ -164,14 +164,29 @@ class UnitPriceQuantitiesBase(epc.EntPyCost):
 
     @staticmethod
     def printLtxColumnHeaders(data_table):
+        ''' Write the column headers in the given table.
+
+        :param data_table: pylatex table to write into.
+        '''
         data_table.add_row(["Texto","Unidades", "Largo", "Ancho","Alto","Parcial"])
 
     @staticmethod
     def ImprLtxPie(data_table, totalr):
+        ''' Write the sum of the quantities in the given table.
+
+        :param data_table: pylatex table to write into.
+        :param totalr: total quantity to write in the table.
+        '''
         data_table.add_row([pylatex.table.MultiColumn(5,align= 'r',data= pylatex.NoEscape("Suma\\ldots")),pylatex.utils.bold(totalr)])
 
 
-    def writeQuantitiesIntoLatexDocument(self, data_table):
+    def writeQuantitiesIntoLatexDocument(self, data_table, superTabular= False):
+        ''' Write the quantities in the given data table.
+
+        :param data_table: pylatex table to write into.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
+        '''
         data_table.add_empty_row()
         totalr= basic_types.human_readable(self.getRoundedTotal())
         self.printLatexHeader(data_table,totalr,'p{6cm}')

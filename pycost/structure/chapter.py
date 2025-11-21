@@ -551,11 +551,13 @@ class Chapter(bc3_entity.EntBC3):
         logging.error("aqui 2: " + other.getTitle() + ' ' + other.subcapitulos.size() + u" subcapítulos" + '\n')
         self.subcapitulos.ImprCompLtxMed(os,pylatex_utils.getLatexSection(parentSection), other.subcapitulos)
         
-    def writeQuantitiesIntoLatexDocument(self, doc, parentSection):
+    def writeQuantitiesIntoLatexDocument(self, doc, parentSection, superTabular= False):
         ''' Write quantities in the pylatex document argument.
 
         :param doc: document to write into.
         :param parentSection: section command for the parent chapter.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if(self.hasQuantities()): # There is something to write.
             sectName= pylatex_utils.getLatexSection(parentSection)
@@ -563,9 +565,9 @@ class Chapter(bc3_entity.EntBC3):
             if(sectName!='part'):
                 caption= self.getTitle()
             docPart= pylatex_utils.getPyLatexSection(sectName, caption, label= False)
-            self.quantities.writeQuantitiesIntoLatexDocument(docPart)
+            self.quantities.writeQuantitiesIntoLatexDocument(docPart, superTabular= superTabular)
             if(len(self.subcapitulos)>0):
-                self.subcapitulos.writeQuantitiesIntoLatexDocument(docPart,sectName)
+                self.subcapitulos.writeQuantitiesIntoLatexDocument(docPart,sectName, superTabular= superTabular)
             doc.append(docPart)
         
     def writePriceTableOneIntoLatexDocument(self, doc, parentSection, filterBy= None):
@@ -720,11 +722,13 @@ class Chapter(bc3_entity.EntBC3):
                 retval= None
         return retval
         
-    def writePartialBudgetsIntoLatexDocument(self, doc, parentSection):
+    def writePartialBudgetsIntoLatexDocument(self, doc, parentSection, superTabular= False):
         '''Write partial budgets in the pylatex document argument.
 
         :param doc: document to write into.
         :param parentSection: section command for the parent chapter.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if(self.hasQuantities()): # There is something to write.
             sectName= pylatex_utils.getLatexSection(parentSection)
@@ -732,9 +736,9 @@ class Chapter(bc3_entity.EntBC3):
             if(sectName!='part'):
                 caption= self.getTitle()
             docPart= pylatex_utils.getPyLatexSection(sectName, caption, label= False)
-            self.quantities.writePartialBudgetsIntoLatexDocument(docPart,self.getTitle())
+            self.quantities.writePartialBudgetsIntoLatexDocument(docPart,self.getTitle(), superTabular= superTabular)
             if(len(self.subcapitulos)>0):
-                self.subcapitulos.writePartialBudgetsIntoLatexDocument(docPart, sectName)
+                self.subcapitulos.writePartialBudgetsIntoLatexDocument(docPart, sectName, superTabular= superTabular)
                 docPart.append(pylatex.Command('noindent'))
                 docPart.append(pylatex_utils.largeCommand())
                 docPart.append(pylatex.utils.bold('Total: '+self.getTitle()+' '))

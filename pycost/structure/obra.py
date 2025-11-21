@@ -451,12 +451,14 @@ class Obra(cp.Chapter):
         self.ImprLtxPresContrata(part)
         doc.append(part)
 
-    def writeQuantitiesIntoLatexDocument(self, doc):
+    def writeQuantitiesIntoLatexDocument(self, doc, superTabular= False):
         ''' Write measurements report.
 
         :param doc: pylatex document to write into.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        super(Obra,self).writeQuantitiesIntoLatexDocument(doc,'root')
+        super(Obra,self).writeQuantitiesIntoLatexDocument(doc,'root', superTabular= superTabular)
 
     def ImprCompLtxMed(self, doc, other):
         ''' Write measurements comparison report.
@@ -542,12 +544,14 @@ class Obra(cp.Chapter):
         self.writePriceTableOneIntoLatexDocument(doc, filterBy= filterBy)
         self.writePriceTableTwoIntoLatexDocument(doc, filterBy= filterBy)
 
-    def writePartialBudgetsIntoLatexDocument(self, doc):
+    def writePartialBudgetsIntoLatexDocument(self, doc, superTabular= False):
         ''' Write partial budgets report.
 
         :param doc: pylatex document to write into.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
-        super(Obra,self).writePartialBudgetsIntoLatexDocument(doc,'root')
+        super(Obra,self).writePartialBudgetsIntoLatexDocument(doc,'root', superTabular= superTabular)
 
     def ImprCompLtxPreParc(self, doc, other):
         ''' Compare partial budgets and write a report.
@@ -586,15 +590,15 @@ class Obra(cp.Chapter):
         self.ImprCompLtxPreParc(doc,other)
         #ImprLtxResumen(os)
 
-    def writeIntoLatexDocument(self, doc, filterBy= None):
+    def writeIntoLatexDocument(self, doc, filterBy= None, superTabular= False):
         ''' Write budget in the pylatex document argument.
 
         :param doc: pylatex document to write into.
         :param filterBy: write those prices only.
         '''
-        self.writeQuantitiesIntoLatexDocument(doc) #Quantities.
+        self.writeQuantitiesIntoLatexDocument(doc, superTabular= superTabular) #Quantities.
         self.writePriceTablesIntoLatexDocument(doc, filterBy= filterBy) #Price lists.
-        self.writePartialBudgetsIntoLatexDocument(doc) #Presupuestos parciales.
+        self.writePartialBudgetsIntoLatexDocument(doc, superTabular= superTabular) #Presupuestos parciales.
         self.ImprLtxResumen(doc) #Resument presup. parciales.
         self.ImprLtxPresGen(doc) #Presupuestos generales.
         return doc

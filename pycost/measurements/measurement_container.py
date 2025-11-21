@@ -140,20 +140,30 @@ class ChapterQuantities(list, epc.EntPyCost):
             doc.append("\\end{longtable}" + '\n')
             doc.append(pylatex_utils.NormalSizeCommand())
 
-    def writeQuantitiesIntoLatexDocument(self, doc):
+    def writeQuantitiesIntoLatexDocument(self, doc, superTabular= False):
         ''' Write quantities into pylatex document.
 
         :param doc: pylatex document to write into.
-        '''
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
+       '''
         if len(self):
             num_campos= 6
             longTableStr= 'lrrrrr'
-            with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-                data_table.add_row((pylatex.table.MultiColumn(num_campos, align='r',data='../..'),))
-                data_table.end_table_footer()
-                data_table.end_table_last_footer()
-                for i in self:
-                    (i).writeQuantitiesIntoLatexDocument(data_table)
+            if(superTabular):
+                # Create LaTeX supertabular.
+                superTabularTailStr= '\\multicolumn{'+str(num_campos)+'}{|r|}{../..}\\\\%\n'
+                pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+                with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
+                    pass
+            else:
+                # Create LaTeX longtable.
+                with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
+                    data_table.add_row((pylatex.table.MultiColumn(num_campos, align='r',data='../..'),))
+                    data_table.end_table_footer()
+                    data_table.end_table_last_footer()
+            for i in self:
+                (i).writeQuantitiesIntoLatexDocument(data_table, superTabular= superTabular)
             doc.append(pylatex.Command('newpage'))
 
     def ImprCompLtxPre(self, doc, tit, other, tit_other):
@@ -192,30 +202,47 @@ class ChapterQuantities(list, epc.EntPyCost):
             doc.append("\\end{longtable}" + '\n')
             doc.append(pylatex_utils.NormalSizeCommand())
 
-    def writePartialBudgetsIntoLatexDocument(self, doc, tit):
+    def writePartialBudgetsIntoLatexDocument(self, doc, tit, superTabular= False):
         ''' Write partial budgets into pylatex document.
 
         :param doc: pylatex document to write into.
         :param tit: title of the corresponding chapter.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         if len(self):
             doc.append(pylatex_utils.SmallCommand())
             num_campos= 5
             longTableStr= 'lrlrr'
-            header_row= ['Partida','Cantidad',u'Descripción']
-            header_row.append(pylatex.table.MultiColumn(1, align=pylatex.utils.NoEscape('p{1.5cm}'),data='Precio unitario'))
-            header_row.append('Importe')
-                                            
-            with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-                data_table.add_row(header_row)
-                data_table.add_hline()
-                data_table.end_table_header()
-                data_table.add_row((pylatex.table.MultiColumn(num_campos, align='r',data='../..'),))
-                data_table.end_table_footer()
-                data_table.end_table_last_footer()
-                for i in self:
-                    (i).writePartialBudgetsIntoLatexDocument(data_table)
-                data_table.add_row([pylatex.table.MultiColumn(4, align=pylatex.utils.NoEscape('p{8cm}'),data=pylatex.utils.bold('Total: '+tit)),pylatex.utils.bold(self.getLtxPriceString())])
+            if(superTabular):
+                # Create LaTeX supertabular.
+                header_row= ['Partida','Cantidad',u'Descripción']
+                header_row.append('\\multicolumn{1}{p{1.5cm}}{Precio unitario}')
+                header_row.append('Importe')                
+                superTabularHeaderStr= '&'.join(header_row)+'\\\\%\n\\hline%\n'
+                pylatex_utils.supertabular_first_head(doc, firstHeadStr= superTabularHeaderStr)
+                pylatex_utils.supertabular_head(doc, headStr= superTabularHeaderStr)
+                superTabularTailStr= '\\multicolumn{'+str(num_campos)+'}{|r|}{../..}\\\\%\n'
+                pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+                pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
+                with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
+                    pass
+            else:                                            
+                # Create LaTeX longtable.
+                header_row= ['Partida','Cantidad',u'Descripción']
+                header_row.append(pylatex.table.MultiColumn(1, align=pylatex.utils.NoEscape('p{1.5cm}'),data='Precio unitario'))
+                header_row.append('Importe')
+                with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
+                    data_table.add_row(header_row)
+                    data_table.add_hline()
+                    data_table.end_table_header()
+                    data_table.add_row((pylatex.table.MultiColumn(num_campos, align='r',data='../..'),))
+                    data_table.end_table_footer()
+                    data_table.add_hline()
+                    data_table.end_table_last_footer()
+            for i in self:
+                (i).writePartialBudgetsIntoLatexDocument(data_table)
+            data_table.add_row([pylatex.table.MultiColumn(4, align=pylatex.utils.NoEscape('p{8cm}'),data=pylatex.utils.bold('Total: '+tit)),pylatex.utils.bold(self.getLtxPriceString())])
             doc.append(pylatex_utils.NormalSizeCommand())
 
 

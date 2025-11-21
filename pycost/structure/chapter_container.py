@@ -231,14 +231,16 @@ class Subcapitulos(list, epc.EntPyCost):
             j= otro[k]
             i.ImprCompLtxMed(os,parentSection,j)
 
-    def writeQuantitiesIntoLatexDocument(self, doc, sectName):
+    def writeQuantitiesIntoLatexDocument(self, doc, sectName, superTabular= False):
         ''' Write quantities in the pylatex document argument.
 
         :param doc: document to write into.
         :param sectName: section command for the chapter.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''        
         for j in self:
-            (j).writeQuantitiesIntoLatexDocument(doc,sectName)
+            (j).writeQuantitiesIntoLatexDocument(doc,sectName, superTabular= superTabular)
 
     def writePriceTableOneIntoLatexDocument(self, doc, sectName, filterBy= None):
         ''' Write unit prices table one in the pylatex document argument.
@@ -308,14 +310,16 @@ class Subcapitulos(list, epc.EntPyCost):
         for i, j in zip(self, other):
             i.ImprCompLtxPre(doc,parentSection,j)
 
-    def writePartialBudgetsIntoLatexDocument(self, doc, sectName):
+    def writePartialBudgetsIntoLatexDocument(self, doc, sectName, superTabular= False):
         ''' Write partial budgets into the pylatex document argument.
 
         :param doc: pylatex document to write into.
         :param sectName: section command for the chapter.
+        :param superTabular: if true use a supertabular LaTeX environment,
+                             otherwise use longtable.
         '''
         for j in self:
-            (j).writePartialBudgetsIntoLatexDocument(doc,sectName)
+            (j).writePartialBudgetsIntoLatexDocument(doc,sectName, superTabular= superTabular)
 
     def writeSpreadsheetSummary(self, sheet, depth, recursive, maxDepth):
         ''' Write summary report.

@@ -21,14 +21,16 @@ obra= test_estimates.test(pth)
 doc= pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
 doc.packages.append(pylatex.Package('minitoc'))
+doc.packages.append(pylatex.Package('supertabular'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 # doc.append(pylatex.Command('doparttoc'))
 # doc.append(pylatex.Command('parttoc'))
-obra.writeQuantitiesIntoLatexDocument(doc)
+obra.writeQuantitiesIntoLatexDocument(doc, superTabular= True)
 
 # Generate LaTeX file.
-outputFilesBaseName= 'measurements_01'
-texFileName= outputFilesBaseName+'.tex'
+fname= os.path.basename(__file__)
+outputFilesBaseName= fname[:-3]
+texFileName= fname.replace('.py', '.tex')
 thisFile= pth+'/./'+outputFilesBaseName
 doc.generate_tex(thisFile)
 thisFile+= '.tex'
@@ -44,7 +46,6 @@ ok= filecmp.cmp(refFile, thisFile, shallow=False)
 # print(ok)
 # print(thisFile)
 
-fname= os.path.basename(__file__)
 if (ok):
     print('test: '+fname+': ok.')
 else:

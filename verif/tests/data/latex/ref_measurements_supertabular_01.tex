@@ -1,0 +1,42 @@
+\documentclass{book}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage[spanish]{babel}%
+\usepackage{minitoc}%
+\usepackage{supertabular}%
+%
+\selectlanguage{spanish}%
+%
+\begin{document}%
+\normalsize%
+\part{Mediciones}%
+\chapter{Test}%
+\tabletail{\multicolumn{6}{|r|}{../..}\\%
+}%
+\begin{supertabular}{lrrrrr}%
+&&&&&\\%
+MAACE0201&    20,000& kg.&\multicolumn{3}{p{6cm}}{\scriptsize Rebar steel.\normalsize}\\%
+Texto&Unidades&Largo&Ancho&Alto&Parcial\\%
+\hline%
+\multicolumn{1}{p{3.5cm}}{test A}&2&10&&&    20,000\\%
+&&&&&\\%
+\multicolumn{5}{r}{Suma\ldots}&\textbf{    20,000}\\%
+\hline%
+&&&&&\\%
+&&&&&\\%
+ACERO0103&   500,000& kg&\multicolumn{3}{p{6cm}}{\scriptsize Reinforcement steel.\normalsize}\\%
+Texto&Unidades&Largo&Ancho&Alto&Parcial\\%
+\hline%
+\multicolumn{1}{p{3.5cm}}{test B}&20&25&&&   500,000\\%
+&&&&&\\%
+\multicolumn{5}{r}{Suma\ldots}&\textbf{   500,000}\\%
+\hline%
+&&&&&\\%
+\end{supertabular}%
+\newpage
+
+%
+\end{document}

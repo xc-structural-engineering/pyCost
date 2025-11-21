@@ -99,8 +99,10 @@ python tests/pickle/test_write_pickle.py
 python tests/pickle/test_read_pickle.py
 python tests/pickle/test_yaml_to_pickle.py
 echo "$BLEU" "  LaTeX write tests." "$NORMAL"
-python tests/latex/measurements_01.py
-python tests/latex/partial_estimates_01.py
+python tests/latex/measurements_longtable_01.py
+python tests/latex/measurements_supertabular_01.py
+python tests/latex/partial_estimates_longtable_01.py
+python tests/latex/partial_estimates_supertabular_01.py
 python tests/latex/price_justification.py
 python tests/latex/price_justification_02.py
 python tests/latex/elementary_prices_longtable.py

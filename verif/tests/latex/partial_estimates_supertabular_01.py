@@ -22,14 +22,16 @@ obra= test_estimates.test(pth)
 doc= pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
 doc.packages.append(pylatex.Package('minitoc'))
+doc.packages.append(pylatex.Package('supertabular'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 # doc.append(pylatex.Command('doparttoc'))
 # doc.append(pylatex.Command('parttoc'))
-obra.writePartialBudgetsIntoLatexDocument(doc)
+obra.writePartialBudgetsIntoLatexDocument(doc, superTabular= True)
 
 # Generate LaTeX file.
-outputFilesBaseName= 'partial_estimates_01'
-texFileName= outputFilesBaseName+'.tex'
+fname= os.path.basename(__file__)
+outputFilesBaseName= fname[:-3]
+texFileName= fname.replace('.py', '.tex')
 thisFile= pth+'/./'+outputFilesBaseName
 doc.generate_tex(thisFile)
 thisFile+= '.tex'
