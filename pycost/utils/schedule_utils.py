@@ -10,6 +10,7 @@ __email__= "l.pereztato@ciccp.es"
 import math
 import sys
 import logging
+import locale
 import datetime
 import pandas
 import numpy as np
@@ -19,6 +20,27 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 
 default_date_format= "%A, %d %B de %Y"
+
+# Internationalization.
+loc= locale.getlocale()
+lang_id= loc[0][:2].lower()
+label_dict= dict()
+if(lang_id=='en'):
+    label_dict['expenses']= 'expenses'
+    label_dict['cumulated_expenses']= 'cumulated expenses'
+    label_dict['workers']= 'workers'
+elif(lang_id=='es'):
+    label_dict['expenses']= 'gasto'
+    label_dict['cumulated_expenses']= 'gasto acumulado'
+    label_dict['workers']= 'trabajadores'
+else:
+    className= type(self).__name__
+    methodName= sys._getframe(0).f_code.co_name
+    errMsg= '; language: '+str(lang_id)+' not implemented.'
+    logging.error(className+'.'+methodName+errMsg)
+    label_dict['expenses']= 'expenses'
+    label_dict['cumulated_expenses']= 'cumulated expenses'
+    label_dict['workers']= 'workers'
 
 class Task(object):
     ''' Representation of a project task.
@@ -666,8 +688,8 @@ class ProjectTasks(object):
         fig, ax = plt.subplots()
         ax.set_xticks(sample_times)
         ax.set_xticklabels(xTickLabels, rotation='vertical')
-        ax.plot(sample_times, cost_inc, label= 'expenses.')
-        ax.plot(sample_times, cost, label= 'cumulated expenses')
+        ax.plot(sample_times, cost_inc, label= label_dict['expenses'])
+        ax.plot(sample_times, cost, label= label_dict['cumulated_expenses'])
         plt.legend()
         ax.grid()
         plt.title(title, fontsize=15)
@@ -721,7 +743,7 @@ class ProjectTasks(object):
 
         return days, workers, xTickLabels
 
-    def drawAvgNumberOfWorkersAlongProjectDiagram(self, title, outputFileName= None, xlabel= 't', ylabel= 'workers'):
+    def drawAvgNumberOfWorkersAlongProjectDiagram(self, title, outputFileName= None):
         ''' Draws a diagram of the the average number of workers along the 
             project.
 
@@ -738,7 +760,9 @@ class ProjectTasks(object):
         ax.set_xticklabels(xTickLabels, rotation='vertical')
         ax.grid()
         plt.title(title)
-        plt.xlabel(xlabel)
+        xlabel= 't'
+        ylabel= label_dict['workers']
+        plt.xlabel('t')
         plt.ylabel(ylabel)
 
         if(outputFileName):
