@@ -1,0 +1,37 @@
+\documentclass{book}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage[spanish]{babel}%
+\usepackage{supertabular}%
+\usepackage{minitoc}%
+%
+\selectlanguage{spanish}%
+%
+\begin{document}%
+\normalsize%
+\part{Justificación de precios}%
+\label{sec:Justificacindeprecios}%
+\small%
+\begin{supertabular}{l r l p{60mm} r r}%
+ACERO0103&kg&\multicolumn{4}{p{95mm}}{Reinforcement steel.}\\%
+Código&Rdto.&Ud.&Descripción&Unit.&Total\\%
+\hline%
+OFICFER&     0,015&H&Iron worker&    18,140&     0,272\\%
+PEONES&     0,015&H&Specialized laborer&    13,750&     0,206\\%
+\multicolumn{4}{r}{Total mano de obra}&&     0,478\\%
+MAACE0201&     1,000&kg.&&     0,620&     0,620\\%
+\multicolumn{4}{r}{Total materiales}&&     0,620\\%
+\%003&     0,030&\%&3 \% Medios auxiliares&     3,000\%&     0,033\\%
+\multicolumn{4}{r}{Total sin clasificar}&&     0,033\\%
+\multicolumn{4}{r}{Suma\ldots}&\multicolumn{2}{r}{\textbf{     1,131}}\\%
+\multicolumn{4}{r}{Redondeo\ldots}&\multicolumn{2}{r}{\textbf{    {-}0,001}}\\%
+\multicolumn{4}{r}{Total\ldots}&\multicolumn{2}{r}{\textbf{     1,130}}\\%
+&&&&&\\%
+\end{supertabular}%
+\normalsize
+
+%
+\end{document}

@@ -18,23 +18,22 @@ pth= os.path.dirname(__file__)
 # print("pth= ", pth)
 if(not pth):
     pth= '.'
-rootChapter.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
+rootChapter.readFromYaml(pth+'/../data/yaml/test_03_prices.yaml')
 
-filterBy= ['DMOVI3001', 'DSELECRI', 'RELL0301', 'ACERO0103', 'DRIESUB', 'USJT10abz', 'DPAVHORPUL', 'DALPEDR']
-
-# Store text in pylatex doc.
+# Store text int pylatex doc.
 doc= pylatex.Document(documentclass= 'book')
 doc.packages.append(pylatex.Package('babel', options = ['spanish']))
 doc.packages.append(pylatex.Package('minitoc'))
 doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 # doc.append(pylatex.Command('doparttoc'))
 # doc.append(pylatex.Command('parttoc'))
-rootChapter.writePriceJustification(doc, signaturesFileName= None, filterBy= filterBy)
+rootChapter.writePriceJustification(doc, signaturesFileName= None, superTabular= False)
 
 
 # Generate LaTeX file.
-outputFilesBaseName= 'price_justification_02'
-texFileName= outputFilesBaseName+'.tex'
+fname= os.path.basename(__file__)
+outputFilesBaseName= fname[:-3]
+texFileName= fname.replace('.py', '.tex')
 thisFile= pth+'/./'+outputFilesBaseName
 doc.generate_tex(thisFile)
 thisFile+= '.tex'
@@ -50,7 +49,6 @@ ok= filecmp.cmp(refFile, thisFile, shallow=False)
 # print(ok)
 # print(thisFile)
 
-fname= os.path.basename(__file__)
 if (ok):
     print('test: '+fname+': ok.')
 else:

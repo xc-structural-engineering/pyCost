@@ -251,17 +251,22 @@ class Descompuestos(concept_dict.ConceptDict):
             filteredConcepts= self.filterConcepts(filterBy= filterBy)
             if(len(filteredConcepts)>0):
                 doc.append(pylatex_utils.SmallCommand())
-                longTableStr= 'l'
                 if(superTabular):
                     # Create LaTeX supertabular.
+                    # upertabular has problems with high table rows
+                    # so we avoid using nested tables.
+                    longTableStr= unit_price.UnitPrice.getJustificationTableLtxTableSpec()
+                    use_nested_table= False 
                     with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
                         pass
                 else:
                     # Create LaTeX longtable.
+                    longTableStr= 'l'
+                    use_nested_table= True
                     with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
                         pass
                 for key in sorted(filteredConcepts):
-                    self.concepts[key].writePriceJustification(data_table)
+                    self.concepts[key].writePriceJustification(data_table, use_nested_table= use_nested_table)
                     retval.append(key)
                 doc.append(pylatex_utils.NormalSizeCommand())
         return retval

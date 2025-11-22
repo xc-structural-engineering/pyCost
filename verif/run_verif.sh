@@ -103,8 +103,10 @@ python tests/latex/measurements_longtable_01.py
 python tests/latex/measurements_supertabular_01.py
 python tests/latex/partial_estimates_longtable_01.py
 python tests/latex/partial_estimates_supertabular_01.py
-python tests/latex/price_justification.py
-python tests/latex/price_justification_02.py
+python tests/latex/price_justification_longtable_01.py
+python tests/latex/price_justification_longtable_02.py
+python tests/latex/price_justification_supertabular_01.py
+python tests/latex/price_justification_supertabular_02.py
 python tests/latex/elementary_prices_longtable.py
 python tests/latex/elementary_prices_supertabular.py
 python tests/latex/test_quantities_report.py

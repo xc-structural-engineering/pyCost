@@ -245,7 +245,7 @@ class ComponentList(list, epc.EntPyCost):
         ''' Write the price justification in the argument table.
 
         :param data_table: LaTeX table to write the justification into.
-        :param pa: True percentages must be cumulated.
+        :param pa: if true percentages must be cumulated.
         '''
         lista= self.getPriceJustificationList(pa)
         lista.writePriceJustification(data_table)

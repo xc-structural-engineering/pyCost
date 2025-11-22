@@ -28,6 +28,7 @@ class UnitPrice(ms.Measurable):
     precision= 2
     places= Decimal(10) ** -precision
     formatString= '{0:.'+str(precision)+'f}'
+    descriptionColumnWidth= 60 # Width of the description column in mm.
 
     def __init__(self, cod="", desc="", ud="", ld= None):
         ''' Constructor.
@@ -189,26 +190,43 @@ class UnitPrice(ms.Measurable):
         self.components= copia(otra.components)
         return self.components.FuerzaPrecio(objetivo)
 
-    def writePriceJustification(self, data_table):
-        ''' Write price justification in the table argument.
+    @staticmethod
+    def getJustificationTableLtxTableSpec():
+        ''' Return the table spec for the justification table.'''
+        return  'l r l p{'+str(UnitPrice.descriptionColumnWidth)+'mm} r r'
+
+    def populateJustificationTable(self, data_table):
+        ''' Populate the given table with the price justification data.
 
         :param data_table: pylatex tabular data to populate.
         '''
-        descriptionColumnWidth= 60
-        unitDescriptionWidth= descriptionColumnWidth+35
-        tableStr= 'l r l p{'+str(descriptionColumnWidth)+'mm} r r'
-        nested_data_table= pylatex.Tabular(tableStr)
+        unitDescriptionWidth= UnitPrice.descriptionColumnWidth+35
         row= [pylatex_utils.ascii2latex(self.Codigo())]
         row.append(pylatex_utils.ascii2latex(self.Unidad()))
         row.append(pylatex.table.MultiColumn(4, align=pylatex.utils.NoEscape('p{'+str(unitDescriptionWidth)+'mm}'),data=pylatex_utils.ascii2latex(self.getNoEmptyDescription())))
-        nested_data_table.add_row(row)
-        #Header
+        data_table.add_row(row)
+        # Header
         headerRow= [u'Código',u'Rdto.',u'Ud.',u'Descripción',u'Unit.',u'Total']
-        nested_data_table.add_row(headerRow)
-        nested_data_table.add_hline()
-        #Decomposition
-        self.components.writePriceJustification(nested_data_table,pa= True); # Cumulated percentages.
-        data_table.add_row([nested_data_table])
+        data_table.add_row(headerRow)
+        data_table.add_hline()
+        # Decomposition
+        self.components.writePriceJustification(data_table, pa= True); # Cumulated percentages.
+        
+    def writePriceJustification(self, data_table, use_nested_table):
+        ''' Write price justification in the table argument.
+
+        :param data_table: pylatex tabular data to populate.
+        :param use_nested_table: if true use a nested table that is inserted
+                                 in the given one.
+        '''
+        tableStr= UnitPrice.getJustificationTableLtxTableSpec()
+        if(use_nested_table):
+            nested_data_table= pylatex.Tabular(tableStr)
+            self.populateJustificationTable(nested_data_table)
+            data_table.add_row([nested_data_table])
+        else:
+            self.populateJustificationTable(data_table)
+            data_table.add_empty_row()
 
     def getLtxCodeUnitDescription(self):
         retval= [pylatex_utils.ascii2latex(self.Codigo())]
