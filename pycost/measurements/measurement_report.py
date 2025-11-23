@@ -10,6 +10,7 @@ __email__= "l.pereztato@ciccp.es"
 import pylatex
 from pycost.prices import unit_price_report
 from pycost.utils import basic_types
+from pycost.utils import pylatex_utils
 from operator import itemgetter
 
 class QuantitiesReport(dict):
@@ -102,15 +103,16 @@ class QuantitiesReport(dict):
         '''
         sz= len(self)
         if(sz>0):
-            longTableStr= '|l|p{4cm}|r|r|'
+            doc.append(pylatex_utils.SmallCommand())
+            longTableStr= '|l|p{6cm}|r|r|'
             headerRow= [u"Código",u"Descripción.",u"Medición",'Precio']
             num_fields= 4
             if(superTabular):
                 # Create LaTeX supertabular.
-                head_str= '&'.join(headerRow)+'\\\\%\n\\hline%\n'
+                head_str= '\\hline%\n'+'&'.join(headerRow)+'\\\\%\n\\hline%\n'
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= head_str)
                 pylatex_utils.supertabular_head(doc, headStr= head_str)
-                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\hline%\n\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n\\hline%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
@@ -136,6 +138,7 @@ class QuantitiesReport(dict):
                 value= self[key]
                 iu= unit_price_report.UnitPriceReport(key,value)
                 iu.printLtx(data_table)
+            doc.append(pylatex_utils.NormalSizeCommand())
 
 def get_rows_elementary_quantities(elementaryQuantitiesDict, currencySymbol, biggestAmountFirst= True, limitTextWidth= None):
     ''' For each record in the given dictionary return a row containing the 

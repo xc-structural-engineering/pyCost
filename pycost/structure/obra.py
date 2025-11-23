@@ -625,6 +625,8 @@ class Obra(cp.Chapter):
         :param superTabular: if true, use supertabular instead of longtable.
         '''
         retval= pylatex.Document(documentclass= 'article')
+        if(superTabular):
+            retval.packages.append(pylatex.Package('supertabular'))
         quantitiesReport= self.getQuantitiesReport()
         quantitiesReport.printLtx(retval, superTabular= superTabular)
         return retval

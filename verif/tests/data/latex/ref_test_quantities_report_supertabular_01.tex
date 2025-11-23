@@ -4,24 +4,28 @@
 \usepackage{lmodern}%
 \usepackage{textcomp}%
 \usepackage{lastpage}%
-\usepackage{longtable}%
+\usepackage{supertabular}%
 %
 %
 %
 \begin{document}%
 \normalsize%
 \small%
-\begin{longtable}{|l|p{6cm}|r|r|}%
-\hline%
+\tablefirsthead{\hline%
 Código&Descripción.&Medición&Precio\\%
 \hline%
-\endhead%
+}%
+\tablehead{\hline%
+Código&Descripción.&Medición&Precio\\%
 \hline%
+}%
+\tabletail{\hline%
 \multicolumn{4}{|r|}{../..}\\%
 \hline%
-\endfoot%
-\hline%
-\endlastfoot%
+}%
+\tablelasttail{\hline%
+}%
+\begin{supertabular}{|l|p{6cm}|r|r|}%
 DMOVI3001&Excavación general del terreno existente a maquina , medición carga del material seleccionado, según criterio de la Dirección facultativa, y trasporte a zona de cribado, machaqueo y mezcla en obra.&  5.210,00& 13.233,40\\%
 DSELECRI&Selección, cribado, machaqueo y mezcla de los mejores suelos de la excavación para obtener suelo adecuado y emplearlo en los terraplenes de la obra y elaboracion de tierra vegetal.&  4.689,00&  9.706,23\\%
 RELL0301&Formación de terraplén, en tongadas no superiores a 20 cms., con suelos adecuados, acopiados en la zona de cribado, incluso carga y transporte a su lugar de empleo, extendidos, humectados o desecados, rasanteados y compactados al 98 \textbackslash{}\% del Proctor Modificado. Incluso compactado previo de la base del terreno natural.&  2.125,00&  5.312,50\\%
@@ -75,6 +79,6 @@ DALPEDR&Pavimento formado por arena de Albero de 10 cm de espesor, extendida, ra
 barand01&Suministro y colocación de barandilla de 1 m. de altura de acero inoxidable tipo AISI 316, con los siguientes elementos, Placa de anclaje realizada con pletina 120 mm de anchura  y 8 mm de espesor, montantes realizados con barras de 12 mm de diámetro. Pasamanos tubular de 30 mmm de díametro y 1.5 mm de espesor. Según planos y P.P.T.P.&    201,00& 50.344,47\\%
 D5.2&Suministro y colocación de pletina de acero de 100 mm de anchura y 10 mm de espesor, en tramos rectos de longitud variable, según planos, con varillas soldadas de acero en barras corrugadas de DN 10 mm, de 30 cm de longitud, soldadas a la pletina cada 0,70/0,80 metro de longitud y refuerzos en los extremos, galvanizado el conjunto en baño caliente hasta alcanzar una capa de zinc de 450 g/m2, equivalente a 65 µm, incluso pletina de unión de 20 cm de longitud 4 cm de altura y 4 mm de espesor, para colocación del conjunto mediante hinca sobre la capa base de zahorra de los pavimentos. (Peso total conjunto de 5 m de longitud: 25,41 kg).&    855,34& 28.431,50\\%
 pefil1&Suministro y colocación de perfil de acero galvanizado en caliente LPN140, en formación de escalones y remate de pavimento de hormigón.&    178,23& 23.715,28\\%
-\end{longtable}%
+\end{supertabular}%
 \normalsize%
 \end{document}
