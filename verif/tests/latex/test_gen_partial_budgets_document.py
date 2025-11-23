@@ -24,9 +24,12 @@ if(not pth):
 rootChapter.readFromJson(pth+'/../data/json/test_file_09.json')
 
 doc=pylatex.Document(documentclass= 'book')
+doc.packages.append(pylatex.Package('babel', options = ['spanish']))
 doc.packages.append(pylatex.Package('minitoc'))
+doc.packages.append(pylatex.Package('supertabular'))
+doc.preamble.append(pylatex.Command('selectlanguage', 'spanish'))
 doc.append(pylatex.Command('doparttoc'))
-rootChapter.ImprLtxResumen(doc)
+rootChapter.writePartialBudgetsIntoLatexDocument(doc, superTabular= True)
 
 # Generate LaTeX file.
 fname= os.path.basename(__file__)
@@ -53,8 +56,7 @@ else:
     logging.error('test: '+fname+' ERROR.')
 
 # Remove LaTeX file
-if(ok):
-    if os.path.exists(thisFile):
-        os.remove(thisFile)
-    else:
-        logging.error('ERROR file: '+thisFile+' not found.')
+if os.path.exists(thisFile):
+    os.remove(thisFile)
+else:
+    logging.error('ERROR file: '+thisFile+' not found.')

@@ -24,7 +24,6 @@ if(not pth):
 rootChapter.readFromJson(pth+'/../data/json/test_file_09.json')
 
 doc=pylatex.Document(documentclass= 'book')
-doc.packages.append(pylatex.Package('aeguill'))
 doc.packages.append(pylatex.Package('minitoc'))
 doc.append(pylatex.Command('doparttoc'))
 rootChapter.ImprLtxResumen(doc)
