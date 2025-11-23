@@ -206,8 +206,8 @@ class Descompuestos(concept_dict.ConceptDict):
                 header_row2= ['','','','en letra', 'en cifra']
                 header_str2=  '&'.join(header_row2)+'\\\\%\n\\hline%\n'
                 header_str= header_str1+header_str2
-                pylatex_utils.supertabular_first_head(doc, firstHeadStr= head_str)
-                pylatex_utils.supertabular_head(doc, headStr= head_str)
+                pylatex_utils.supertabular_first_head(doc, firstHeadStr= header_str)
+                pylatex_utils.supertabular_head(doc, headStr= header_str)
                 superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')

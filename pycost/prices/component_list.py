@@ -250,28 +250,28 @@ class ComponentList(list, epc.EntPyCost):
         lista= self.getPriceJustificationList(pa)
         lista.writePriceJustification(data_table)
 
-    def writePriceTableTwoIntoLatexDocument(self, os, pa, superTabular= False):
+    def writePriceTableTwoIntoLatexDocument(self, data_table, pa, superTabular= False):
         ''' Write the price table number two in LaTeX format.
 
-        :param os: LaTeX document to write into.
+        :param data_table: pylatex table to write into.
         :param pa: True percentages must be cumulated.
         :param superTabular: if true use a supertabular LaTeX environment,
                              otherwise use longtable.
         '''
         lista= self.getPriceJustificationList(pa)
-        lista.writePriceTableTwoIntoLatexDocument(os, superTabular= superTabular)
+        lista.writePriceTableTwoIntoLatexDocument(data_table)
 
-    def writePriceTableOneIntoLatexDocument(self, os, pa, gender, superTabular= False):
+    def writePriceTableOneIntoLatexDocument(self, data_table, pa, gender):
         ''' Write the price table number one in LaTeX forma.
 
-        :param os: LaTeX document to write into.
-        :param pa: True percentages must be cumulated.
+        :param data_table: pylatex table to write into.
+        :param pa: if True percentages must be cumulated.
         :param gender: Gender to use for the currency.
         :param superTabular: if true use a supertabular LaTeX environment,
                              otherwise use longtable.
         '''
         lista= self.getPriceJustificationList(pa)
-        lista.writePriceTableOneIntoLatexDocument(os,gender, superTabular= superTabular)
+        lista.writePriceTableOneIntoLatexDocument(data_table, gender)
 
     def getDict(self):
         ''' Return a dictionary containing the object data.'''

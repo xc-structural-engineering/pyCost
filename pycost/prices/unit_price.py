@@ -242,7 +242,7 @@ class UnitPrice(ms.Measurable):
         row= self.getLtxCodeUnitDescription()
         row.extend(['',''])
         data_table.add_row(row)
-        self.components.writePriceTableOneIntoLatexDocument(data_table,True,False); #XXX Aqui género.
+        self.components.writePriceTableOneIntoLatexDocument(data_table, True, False); #XXX Aqui género.
 
     def writePriceTableTwoIntoLatexDocument(self, data_table):
         '''Write second price table.
