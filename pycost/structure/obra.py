@@ -504,7 +504,7 @@ class Obra(cp.Chapter):
             part.append(pylatex.Command('input{'+signaturesFileName+'}'))
         doc.append(part)
 
-    def writeElementaryPrices(self, doc, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False):
+    def writeElementaryPrices(self, doc, tipos=  [basic_types.mdo, basic_types.maq, basic_types.mat], filterBy= None, superTabular= False, sctName= 'part'):
         ''' Write the elementary prices table.
 
         :param doc: pylatex document to write into.
@@ -512,10 +512,16 @@ class Obra(cp.Chapter):
         :param filterBy: write the prices on the list only.
         :param superTabular: if true use a supertabular LaTeX environment,
                              otherwise use longtable.
+        :param sctName: type of section (from 'part' until 'subparagraph'), if
+                        None, don't create a section for the elementary prices.
         '''
-        part= pylatex_utils.Part("Precios elementales")
-        super(Obra,self).writeElementaryPrices(doc= part, parentSection= 'root', tipos= tipos, filterBy= filterBy, superTabular= superTabular)
-        doc.append(part)
+        if(sctName is None):
+            outputDoc= doc
+        else:
+            outputDoc= pylatex_utils.getPyLatexSection(sctName= sctName, title= "Precios elementales")
+        super(Obra,self).writeElementaryPrices(doc= outputDoc, parentSection= 'root', tipos= tipos, filterBy= filterBy, superTabular= superTabular)
+        if(sctName):
+            doc.append(outputDoc)
             
     def writePriceJustification(self, doc, signaturesFileName= 'firmas', filterBy= None, superTabular= False):
         ''' Write price justification.
