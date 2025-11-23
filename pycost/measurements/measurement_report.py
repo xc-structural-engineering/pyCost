@@ -94,33 +94,48 @@ class QuantitiesReport(dict):
             retval= list(reversed(sorted(retval, key=itemgetter(4))))
         return retval
 
-    def printLtx(self, doc):
+    def printLtx(self, doc, superTabular= False):
         ''' Write Latex report.
 
         :param doc: pylatex document to write into.
+        :param superTabular: if true, use supertabular instead of longtable.
         '''
         sz= len(self)
         if(sz>0):
             longTableStr= '|l|p{4cm}|r|r|'
-            headerRow1= [u"Código",u"Descripción.",u"Medición",'Precio']
-            num_campos= 4
-            with doc.create(pylatex.table.LongTable(longTableStr)) as data_table:
-                data_table.add_hline()
-                data_table.add_row(headerRow1)
-                data_table.add_hline()
-                data_table.end_table_header()
-                data_table.add_hline()
-                data_table.add_row((pylatex.table.MultiColumn(num_campos, align='|r|',
-                                    data='../..'),))
-                data_table.add_hline()
-                data_table.end_table_footer()
-                data_table.add_hline()
-                data_table.end_table_last_footer()
+            headerRow= [u"Código",u"Descripción.",u"Medición",'Precio']
+            num_fields= 4
+            if(superTabular):
+                # Create LaTeX supertabular.
+                head_str= '&'.join(headerRow)+'\\\\%\n\\hline%\n'
+                pylatex_utils.supertabular_first_head(doc, firstHeadStr= head_str)
+                pylatex_utils.supertabular_head(doc, headStr= head_str)
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
+                pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+                pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
+                with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
+                    pass
 
-                for key in self:
-                    value= self[key]
-                    iu= unit_price_report.UnitPriceReport(key,value)
-                    iu.printLtx(data_table)
+            else:
+                # Create LaTeX longtable.
+                with doc.create(pylatex.table.LongTable(longTableStr)) as data_table:
+                    data_table.add_hline()
+                    data_table.add_row(headerRow)
+                    data_table.add_hline()
+                    data_table.end_table_header()
+                    data_table.add_hline()
+                    data_table.add_row((pylatex.table.MultiColumn(num_fields,
+                                                                  align='|r|',
+                                                                  data='../..'),))
+                    data_table.add_hline()
+                    data_table.end_table_footer()
+                    data_table.add_hline()
+                    data_table.end_table_last_footer()
+
+            for key in self:
+                value= self[key]
+                iu= unit_price_report.UnitPriceReport(key,value)
+                iu.printLtx(data_table)
 
 def get_rows_elementary_quantities(elementaryQuantitiesDict, currencySymbol, biggestAmountFirst= True, limitTextWidth= None):
     ''' For each record in the given dictionary return a row containing the 

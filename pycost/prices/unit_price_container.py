@@ -194,7 +194,7 @@ class Descompuestos(concept_dict.ConceptDict):
                              otherwise use longtable.
         '''
         if(len(self)>=1):
-            num_campos= 5
+            num_fields= 5
             doc.append(pylatex_utils.SmallCommand())
             longTableStr= '|l|l|p{4cm}|p{3cm}|r|'
             if(superTabular):
@@ -208,7 +208,7 @@ class Descompuestos(concept_dict.ConceptDict):
                 header_str= header_str1+header_str2
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= head_str)
                 pylatex_utils.supertabular_head(doc, headStr= head_str)
-                superTabularTailStr= '\\multicolumn{'+str(num_campos)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
@@ -225,7 +225,7 @@ class Descompuestos(concept_dict.ConceptDict):
                     data_table.add_hline()
                     data_table.end_table_header()
                     data_table.add_hline()
-                    data_table.add_row((pylatex.table.MultiColumn(num_campos, align='|r|',data='../..'),))
+                    data_table.add_row((pylatex.table.MultiColumn(num_fields, align='|r|',data='../..'),))
                     data_table.add_hline()
                     data_table.end_table_footer()
                     data_table.add_hline()

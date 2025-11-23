@@ -619,11 +619,14 @@ class Obra(cp.Chapter):
         self.writeIntoLatexDocument(retval)
         return retval
 
-    def getPriceReportLatexDocument(self):
-        '''Prints the report in latex format.'''
-        im= self.getQuantitiesReport()
+    def getPriceReportLatexDocument(self, superTabular= False):
+        '''Prints the report in latex format.
+
+        :param superTabular: if true, use supertabular instead of longtable.
+        '''
         retval= pylatex.Document(documentclass= 'article')
-        im.printLtx(retval)
+        quantitiesReport= self.getQuantitiesReport()
+        quantitiesReport.printLtx(retval, superTabular= superTabular)
         return retval
     
     def writeSpreadsheetSummary(self, sheet, maxDepth):

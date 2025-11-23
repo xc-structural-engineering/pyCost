@@ -327,8 +327,8 @@ ltx_endfoot= '\\endfoot'
 ltx_endlastfoot= '\\endlastfoot'
 def ltx_cline(doc,  textStr):
     doc.append('\\cline{' + textStr + '}')
-def ltx_datos_multicolumn( num_campos, just, texto):
-    return ('{' + num_campos + '}{' + just + '}{' + texto + '}')
+def ltx_datos_multicolumn( num_fields, just, texto):
+    return ('{' + num_fields + '}{' + just + '}{' + texto + '}')
 def ltx_multicolumn(textStr):
     return '\\multicolumn' + textStr
 

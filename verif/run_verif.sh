@@ -109,7 +109,7 @@ python tests/latex/price_justification_supertabular_01.py
 python tests/latex/price_justification_supertabular_02.py
 python tests/latex/elementary_prices_longtable.py
 python tests/latex/elementary_prices_supertabular.py
-python tests/latex/test_quantities_report.py
+python tests/latex/test_quantities_report_longtable_01.py
 
 echo "$BLEU" "  Project schedule tests." "$NORMAL"
 python tests/schedule/test_schedule_estimation_01.py

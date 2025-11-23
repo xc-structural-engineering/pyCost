@@ -21,11 +21,12 @@ if(not pth):
     pth= '.'
 pendingLinks= site.readFromYaml(pth+'/../data/yaml/test_file_05.yaml')
 
-report= site.getPriceReportLatexDocument()
+report= site.getPriceReportLatexDocument(superTabular= False)
 
 # Generate LaTeX file.
-outputFilesBaseName= 'quantities_report'
-texFileName= outputFilesBaseName+'.tex'
+fname= os.path.basename(__file__)
+outputFilesBaseName= fname[:-3]
+texFileName= fname.replace('.py', '.tex')
 thisFile= pth+'/./'+outputFilesBaseName
 report.generate_tex(thisFile)
 thisFile+= '.tex'
@@ -41,7 +42,6 @@ ok= filecmp.cmp(refFile, thisFile, shallow=False)
 # print(ok)
 # print(thisFile)
 
-fname= os.path.basename(__file__)
 if (ok):
     print('test: '+fname+': ok.')
 else:

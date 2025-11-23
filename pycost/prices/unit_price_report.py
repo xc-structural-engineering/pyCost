@@ -12,14 +12,33 @@ from pycost.utils import basic_types
 
 
 class UnitPriceReport(object):
-    def __init__(self,u,mt):
+    ''' Data to report the quantity corresponding to a unit price.
+
+    :ivar ud: unit to which the quantity corresponds.
+    ;ivar med_total: measured quantity.
+    '''
+    def __init__(self, u, mt):
+        ''' Constructor.
+
+        :param ud: unit to which the quantity corresponds.
+        ;param med_total: measured quantity.
+        '''
         self.ud= u
         self.med_total= mt
+        
     def Unidad(self):
+        ''' Return the unit price.'''
         return self.ud
+    
     def Medicion(self):
+        ''' Return the measured quantity.'''
         return self.med_total
+    
     def printLtx(self, data_table):
+        ''' Fills the given LaTeX table with the data of this objeect.
+
+        :param data_table: pylatex table to write into.
+        '''
         precision= 2
         if self.ud:
             row= [self.ud.Codigo()]

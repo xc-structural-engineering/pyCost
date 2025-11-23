@@ -33,8 +33,9 @@ class UnitPriceQuantitiesBase(epc.EntPyCost):
     def getUnitRoundedPrice(self):
         return self.ud.getRoundedPrice()
 
-    def Informe(self):
-        return unit_price_report.UnitPriceReport(self.ud,self.getTotal())
+    def Report(self):
+        ''' Return a report of the quantities corresponding to this unit.'''
+        return unit_price_report.UnitPriceReport(self.ud, self.getTotal())
 
     def getUnitPriceString(self):
         return self.ud.getPriceString()

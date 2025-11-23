@@ -148,18 +148,18 @@ class ChapterQuantities(list, epc.EntPyCost):
                              otherwise use longtable.
        '''
         if len(self):
-            num_campos= 6
+            num_fields= 6
             longTableStr= 'lrrrrr'
             if(superTabular):
                 # Create LaTeX supertabular.
-                superTabularTailStr= '\\multicolumn{'+str(num_campos)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
                     pass
             else:
                 # Create LaTeX longtable.
                 with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
-                    data_table.add_row((pylatex.table.MultiColumn(num_campos, align='r',data='../..'),))
+                    data_table.add_row((pylatex.table.MultiColumn(num_fields, align='r',data='../..'),))
                     data_table.end_table_footer()
                     data_table.end_table_last_footer()
             for i in self:
@@ -212,7 +212,7 @@ class ChapterQuantities(list, epc.EntPyCost):
         '''
         if len(self):
             doc.append(pylatex_utils.SmallCommand())
-            num_campos= 5
+            num_fields= 5
             longTableStr= 'lrlrr'
             if(superTabular):
                 # Create LaTeX supertabular.
@@ -222,7 +222,7 @@ class ChapterQuantities(list, epc.EntPyCost):
                 superTabularHeaderStr= '&'.join(header_row)+'\\\\%\n\\hline%\n'
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= superTabularHeaderStr)
                 pylatex_utils.supertabular_head(doc, headStr= superTabularHeaderStr)
-                superTabularTailStr= '\\multicolumn{'+str(num_campos)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
@@ -236,7 +236,7 @@ class ChapterQuantities(list, epc.EntPyCost):
                     data_table.add_row(header_row)
                     data_table.add_hline()
                     data_table.end_table_header()
-                    data_table.add_row((pylatex.table.MultiColumn(num_campos, align='r',data='../..'),))
+                    data_table.add_row((pylatex.table.MultiColumn(num_fields, align='r',data='../..'),))
                     data_table.end_table_footer()
                     data_table.add_hline()
                     data_table.end_table_last_footer()
@@ -267,7 +267,7 @@ class ChapterQuantities(list, epc.EntPyCost):
             each unit price.'''
         retval= measurement_report.QuantitiesReport()
         for i in self:
-            retval.Inserta((i).Informe())
+            retval.Inserta((i).Report())
         return retval
 
     def getDict(self):
