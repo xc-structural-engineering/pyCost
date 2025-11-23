@@ -523,7 +523,7 @@ class Obra(cp.Chapter):
         if(sctName):
             doc.append(outputDoc)
             
-    def writePriceJustification(self, doc, signaturesFileName= 'firmas', filterBy= None, superTabular= False):
+    def writePriceJustification(self, doc, signaturesFileName= 'firmas', filterBy= None, superTabular= False, sctName= 'part'):
         ''' Write price justification.
 
         :param doc: pylatex document to write into.
@@ -531,13 +531,20 @@ class Obra(cp.Chapter):
         :param filterBy: write price justification for those prices only.
         :param superTabular: if true use a supertabular LaTeX environment,
                              otherwise use longtable.
+        :param sctName: type of section (from 'part' until 'subparagraph'), if
+                        None, don't create a section for the elementary prices.
         :returns: list of the written prices.
         '''
-        part= pylatex_utils.Part("Justificación de precios")
-        retval= super(Obra,self).writePriceJustification(part, 'root', filterBy= filterBy, superTabular= superTabular)
+        if(sctName is None):
+            outputDoc= doc
+        else:
+            outputDoc= pylatex_utils.getPyLatexSection(sctName= sctName, title= "Justificación de precios")
+            
+        retval= super(Obra,self).writePriceJustification(outputDoc, 'root', filterBy= filterBy, superTabular= superTabular)
         if(signaturesFileName):
-            part.append(pylatex.Command('input{'+signaturesFileName+'}'))
-        doc.append(part)
+            outputDoc.append(pylatex.Command('input{'+signaturesFileName+'}'))
+        if(sctName):
+            doc.append(outputDoc)
         if(filterBy is not None):
             missingPrices= list() # prices that are in filterBy but have not been printed.
             for p in filterBy:
