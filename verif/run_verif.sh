@@ -116,6 +116,8 @@ python tests/latex/test_gen_budget_summary_document.py
 python tests/latex/test_gen_partial_budgets_contents.py
 python tests/latex/test_gen_partial_budgets_document.py
 python tests/latex/test_gen_elementary_prices_justification_contents.py
+python tests/latex/test_gen_quantities_contents.py
+python tests/latex/test_gen_quantities_document.py
 
 echo "$BLEU" "  Project schedule tests." "$NORMAL"
 python tests/schedule/test_schedule_estimation_01.py

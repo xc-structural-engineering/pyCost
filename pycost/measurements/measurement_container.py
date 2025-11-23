@@ -152,7 +152,7 @@ class ChapterQuantities(list, epc.EntPyCost):
             longTableStr= 'lrrrrr'
             if(superTabular):
                 # Create LaTeX supertabular.
-                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{r}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
                     pass
