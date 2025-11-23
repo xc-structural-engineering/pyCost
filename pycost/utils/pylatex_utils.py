@@ -380,3 +380,35 @@ def removeLtxTemporaryFiles(latexFileName):
                 os.remove(filePath)
             except:
                 logging.error("Error while deleting file : ", filePath)        
+
+def get_latex_document_contents(inputFile):
+    ''' From a LaTeX document extract the text between \begin{document} and 
+        \end{document}.
+
+    :param inputFile: file to extract the content from.
+    '''    
+    retval= str()
+    readRetval= False
+    with open(inputFile, 'r') as ltx_input:
+        while line := ltx_input.readline():
+            ln= line.rstrip()
+            if('\\begin{document}' in ln):
+                readRetval= True
+            elif('\\end{document}' in ln):
+                readRetval= False
+            else:
+                if(readRetval):
+                    retval+= line
+    return retval
+
+def extract_latex_document_contents(inputFile, outputFile):
+    ''' From a LaTeX document extract the text between \begin{document} and 
+        \end{document} and write it to the output file.
+
+    :param inputFile: name of the file to extract the content from.
+    :param outputFile: name of the file to write the contents into.
+    '''    
+    contents= get_latex_document_contents(inputFile= inputFile)
+    with open(outputFile, 'w') as ltx_output:
+        ltx_output.write(contents)
+    
