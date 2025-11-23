@@ -38,7 +38,7 @@ doc.generate_tex(thisFile)
 thisFile+= '.tex'
 
 # Extract contents.
-contents= pylatex_utils.extract_latex_document_contents(inputFile= thisFile, outputFile= thisFile)
+pylatex_utils.extract_latex_document_contents(inputFile= thisFile, outputFile= thisFile)
 
 # Compare with reference file.
 refFile= pth+'/../data/latex/ref_'+texFileName
