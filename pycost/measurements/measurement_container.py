@@ -222,7 +222,7 @@ class ChapterQuantities(list, epc.EntPyCost):
                 superTabularHeaderStr= '&'.join(header_row)+'\\\\%\n\\hline%\n'
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= superTabularHeaderStr)
                 pylatex_utils.supertabular_head(doc, headStr= superTabularHeaderStr)
-                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{r}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
