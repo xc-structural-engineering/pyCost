@@ -196,19 +196,18 @@ class Descompuestos(concept_dict.ConceptDict):
         if(len(self)>=1):
             num_fields= 5
             doc.append(pylatex_utils.SmallCommand())
-            longTableStr= '|l|l|p{4cm}|p{3cm}|r|'
+            longTableStr= '|l|l|p{5cm}|p{3cm}|r|'
             if(superTabular):
                 # Create LaTeX supertabular.
                 header_row1= [u'Código','Ud.',u'Denominación']
-                header_row1.append('\\multicolumn{2}{|c|}}{Precio}')
-                header_row1.append('Importe')
+                header_row1.append('\\multicolumn{2}{|c|}{Precio}')
                 header_str1= '&'.join(header_row1)+'\\\\%\n'
                 header_row2= ['','','','en letra', 'en cifra']
                 header_str2=  '&'.join(header_row2)+'\\\\%\n\\hline%\n'
-                header_str= header_str1+header_str2
+                header_str= '\\hline%\n'+header_str1+header_str2
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= header_str)
                 pylatex_utils.supertabular_head(doc, headStr= header_str)
-                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n'
+                superTabularTailStr= '\\hline%\n\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n\\hline%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
                 pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
@@ -253,7 +252,7 @@ class Descompuestos(concept_dict.ConceptDict):
                 doc.append(pylatex_utils.SmallCommand())
                 if(superTabular):
                     # Create LaTeX supertabular.
-                    # upertabular has problems with high table rows
+                    # supertabular has problems with high table rows
                     # so we avoid using nested tables.
                     longTableStr= unit_price.UnitPrice.getJustificationTableLtxTableSpec()
                     use_nested_table= False 
@@ -282,19 +281,30 @@ class Descompuestos(concept_dict.ConceptDict):
         if(len(self)>0):
             #doc.append(pylatex_utils.ltx_star_.chapter("Cuadro de precios no. 2") + '\n'
             doc.append(pylatex_utils.SmallCommand())
-            longTableStr= 'l'
             if(superTabular):
                 # Create LaTeX supertabular.
+                pylatex_utils.supertabular_first_head(doc, firstHeadStr= '')
+                pylatex_utils.supertabular_head(doc, headStr= '')
+                num_fields= unit_price.UnitPrice.getNumFieldsPriceTableTwo()
+                superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{r}{../..}\\\\%\n'
+                pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+                pylatex_utils.supertabular_last_tail(doc, lastTailStr= '')                
+                # supertabular has problems with high table rows
+                # so we avoid using nested tables.
+                longTableStr= unit_price.UnitPrice.getPriceTableTwoLtxTableSpec()
+                use_nested_table= False 
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
                     pass
             else:
                 # Create LaTeX longtable.
+                longTableStr= 'l'
+                use_nested_table= True
                 with doc.create(pylatex_utils.LongTable(longTableStr)) as data_table:
                     pass
                 
             filteredConcepts= self.filterConcepts(filterBy= filterBy)
             for key in sorted(filteredConcepts):
-                self.concepts[key].writePriceTableTwoIntoLatexDocument(data_table)
+                self.concepts[key].writePriceTableTwoIntoLatexDocument(data_table, use_nested_table= use_nested_table)
             doc.append(pylatex_utils.NormalSizeCommand())
 
     def writeSpreadsheet(self, sheet):

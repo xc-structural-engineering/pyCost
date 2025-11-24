@@ -179,11 +179,11 @@ class PriceJustificationList(object):
             data_table.add_row(row3)
 
 
-    def writePriceTableOneIntoLatexDocument(self, data_table, genero):
-        ''' Write in price table number one.
+    def getPriceTableOnePriceColumns(self, gender):
+        ''' Get the two last columns for the price table number one.
 
-        :param data_table: pylatex table to write into.
+        :param gender: Gender to use for the currency.
         '''
-        data_table.add_row(['','','',self.StrPriceToWords(genero),self.getLtxPriceString()])
+        return [self.StrPriceToWords(gender),self.getLtxPriceString()]
 
 

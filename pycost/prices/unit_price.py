@@ -192,8 +192,18 @@ class UnitPrice(ms.Measurable):
 
     @staticmethod
     def getJustificationTableLtxTableSpec():
-        ''' Return the table spec for the justification table.'''
+        ''' Return the LaTeX table spec for the justification table.'''
         return  'l r l p{'+str(UnitPrice.descriptionColumnWidth)+'mm} r r'
+    
+    @staticmethod
+    def getPriceTableTwoLtxTableSpec():
+        ''' Return the LaTeX table spec for the price table two.'''
+        return 'l r p{'+str(UnitPrice.descriptionColumnWidth)+'mm} r'
+
+    @staticmethod
+    def getNumFieldsPriceTableTwo():
+        ''' Return the LaTeX table spec for the price table two.'''
+        return 4
 
     def populateJustificationTable(self, data_table):
         ''' Populate the given table with the price justification data.
@@ -240,27 +250,42 @@ class UnitPrice(ms.Measurable):
         :param data_table: pylatex table to write into.
         '''
         row= self.getLtxCodeUnitDescription()
-        row.extend(['',''])
+        priceColumns= self.components.getPriceTableOnePriceColumns(pa= True, gender= False) #XXX Aqui género.
+        row.extend(priceColumns)
         data_table.add_row(row)
-        self.components.writePriceTableOneIntoLatexDocument(data_table, True, False); #XXX Aqui género.
 
-    def writePriceTableTwoIntoLatexDocument(self, data_table):
-        '''Write second price table.
+    def populatePriceTableTwo(self, data_table):
+        ''' Populate the given table with the data corresponding to price table
+            two.
 
         :param data_table: pylatex table to write into.
         '''
-        tableStr= 'l r p{5.5cm} r'
+        # Header.
         headerRow= [u'Código',u'Ud.',u'Descripción',u'Importe']
-        nested_data_table= pylatex.Tabular(tableStr)
-        # Header
-        nested_data_table.add_row(headerRow)
-        nested_data_table.add_hline()
+        data_table.add_row(headerRow)
+        data_table.add_hline()
+        # Data.
         row= self.getLtxCodeUnitDescription()
         row.append('')
-        nested_data_table.add_row(row)
+        data_table.add_row(row)
         # Decomposition
-        self.components.writePriceTableTwoIntoLatexDocument(nested_data_table,True); #XXX Here cumulated percentages.
-        data_table.add_row([nested_data_table])
+        self.components.writePriceTableTwoIntoLatexDocument(data_table,True); #XXX Here cumulated percentages.
+
+    def writePriceTableTwoIntoLatexDocument(self, data_table, use_nested_table):
+        '''Write second price table.
+
+        :param data_table: pylatex table to write into.
+        :param use_nested_table: if true use a nested table that is inserted
+                                 in the given one.
+        '''
+        tableStr= UnitPrice.getPriceTableTwoLtxTableSpec()
+        if(use_nested_table):
+            nested_data_table= pylatex.Tabular(tableStr)
+            self.populatePriceTableTwo(data_table= nested_data_table)
+            data_table.add_row([nested_data_table])
+        else:
+            self.populatePriceTableTwo(data_table= data_table)
+            data_table.add_empty_row()
 
     def writeSpreadsheet(self, sheet):
         sheet.append([self.Codigo(), pylatex_utils.ascii2latex(self.Unidad()),pylatex_utils.ascii2latex(self.getNoEmptyDescription()),self.StrPriceToWords(True) ,self.getPriceString()])
