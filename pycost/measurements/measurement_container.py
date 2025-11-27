@@ -152,8 +152,12 @@ class ChapterQuantities(list, epc.EntPyCost):
             longTableStr= 'lrrrrr'
             if(superTabular):
                 # Create LaTeX supertabular.
+                ## Remove/redefine previous heads and tails.
+                pylatex_utils.supertabular_first_head(doc, firstHeadStr= '')
+                pylatex_utils.supertabular_head(doc, headStr= '')
                 superTabularTailStr= '\\multicolumn{'+str(num_fields)+'}{r}{../..}\\\\%\n'
                 pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
+                pylatex_utils.supertabular_last_tail(doc, lastTailStr= '')
                 with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
                     pass
             else:
@@ -216,6 +220,7 @@ class ChapterQuantities(list, epc.EntPyCost):
             longTableStr= 'lrlrr'
             if(superTabular):
                 # Create LaTeX supertabular.
+                ## Remove/redefine previous heads and tails.
                 header_row= ['Partida','Cantidad',u'Descripción']
                 header_row.append('\\multicolumn{1}{p{1.5cm}}{Precio unitario}')
                 header_row.append('Importe')                

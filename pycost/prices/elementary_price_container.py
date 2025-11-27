@@ -88,6 +88,7 @@ class ElementaryPrices(concept_dict.ConceptDict):
         headerRow= [u'Código','Ud.',u'Denominación',u'Coste directo']
         if(superTabular):
             # Create LaTeX supertabular.
+            ## Remove/redefine previous heads and tails.
             superTabularHeaderStr= '\\hline%\n'+'&'.join(headerRow)+'\\\\%\n\\hline%\n'
             pylatex_utils.supertabular_first_head(doc, firstHeadStr= superTabularHeaderStr)
             pylatex_utils.supertabular_head(doc, headStr= superTabularHeaderStr)

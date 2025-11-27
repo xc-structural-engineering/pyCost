@@ -205,6 +205,7 @@ class Descompuestos(concept_dict.ConceptDict):
                 header_row2= ['','','','en letra', 'en cifra']
                 header_str2=  '&'.join(header_row2)+'\\\\%\n\\hline%\n'
                 header_str= '\\hline%\n'+header_str1+header_str2
+                # Remove/redefine previous heads and tails.
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= header_str)
                 pylatex_utils.supertabular_head(doc, headStr= header_str)
                 superTabularTailStr= '\\hline%\n\\multicolumn{'+str(num_fields)+'}{|r|}{../..}\\\\%\n\\hline%\n'
@@ -288,6 +289,7 @@ class Descompuestos(concept_dict.ConceptDict):
             doc.append(pylatex_utils.SmallCommand())
             if(superTabular):
                 # Create LaTeX supertabular.
+                ## Remove/redefine previous heads and tails.
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= '')
                 pylatex_utils.supertabular_head(doc, headStr= '')
                 num_fields= unit_price.UnitPrice.getNumFieldsPriceTableTwo()

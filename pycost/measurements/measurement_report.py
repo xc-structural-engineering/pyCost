@@ -109,6 +109,7 @@ class QuantitiesReport(dict):
             num_fields= 4
             if(superTabular):
                 # Create LaTeX supertabular.
+                ## Remove/redefine previous heads and tails.
                 head_str= '\\hline%\n'+'&'.join(headerRow)+'\\\\%\n\\hline%\n'
                 pylatex_utils.supertabular_first_head(doc, firstHeadStr= head_str)
                 pylatex_utils.supertabular_head(doc, headStr= head_str)
