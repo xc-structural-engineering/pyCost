@@ -92,7 +92,7 @@ class ElementaryPrices(concept_dict.ConceptDict):
             superTabularHeaderStr= '\\hline%\n'+'&'.join(headerRow)+'\\\\%\n\\hline%\n'
             pylatex_utils.supertabular_first_head(doc, firstHeadStr= superTabularHeaderStr)
             pylatex_utils.supertabular_head(doc, headStr= superTabularHeaderStr)
-            superTabularTailStr= '\\multicolumn{4}{|r|}{../..}\\\\%\n'
+            superTabularTailStr= '\\hline%\n\\multicolumn{4}{|r|}{../..}\\\\%\n\\hline%\n'
             pylatex_utils.supertabular_tail(doc, tailStr= superTabularTailStr)
             pylatex_utils.supertabular_last_tail(doc, lastTailStr= '\\hline%\n')
             with doc.create(pylatex_utils.SuperTabular(ltxColumnsStr)) as data_table:
