@@ -255,7 +255,12 @@ class Descompuestos(concept_dict.ConceptDict):
                     # supertabular has problems with high table rows
                     # so we avoid using nested tables.
                     longTableStr= unit_price.UnitPrice.getJustificationTableLtxTableSpec()
-                    use_nested_table= False 
+                    use_nested_table= False
+                    # Remove/redefine previous heads and tails.
+                    pylatex_utils.supertabular_first_head(doc, firstHeadStr= '')
+                    pylatex_utils.supertabular_head(doc, headStr= '')
+                    pylatex_utils.supertabular_tail(doc, tailStr= '')
+                    pylatex_utils.supertabular_last_tail(doc, lastTailStr= '')
                     with doc.create(pylatex_utils.SuperTabular(longTableStr)) as data_table:
                         pass
                 else:
