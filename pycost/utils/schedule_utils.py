@@ -51,10 +51,17 @@ class Task(object):
     :ivar start_dates: start date of each phase (if any).
     :ivar durations: duration of each phase (if any).
     :ivar predecessors: tasks that must precede this one.
+    :ivar numberOfTeams: number of teams working simultaneously.
+    :ivar delays: delays of the task to sum to its starts dates of each phase
+                  (if any).
+    :ivar completion_frac: 0 -> task not initiated,
+                           0.5 -> task half finished.
+                           1 -> task finished.
+    :ivar color: color of the task bar in the Gantt chart
     :ivar computedWorkingHours: hours of work needed to fullfill the task 
                                 computed from the chapter measurement data.
     '''
-    def __init__(self, code, description, chapters, start_date= None, duration= None, predecessors= None, numberOfTeams= 1, completion_frac= 0.0, color= 'b'):
+    def __init__(self, code, description, chapters, start_date= None, duration= None, predecessors= None, numberOfTeams= 1, delays= None, completion_frac= 0.0, color= 'b'):
         ''' Constructor.
 
         :param code: code of the task.
@@ -64,6 +71,8 @@ class Task(object):
         :param duration: task duration.
         :param predecessors: tasks that must precede this one.
         :param numberOfTeams: number of teams working simultaneously.
+        :param delays: delays of the task to sum to its starts dates of each 
+                       phase (if any).
         :param completion_frac: 0 -> task not initiated,
                                 0.5 -> task half finished.
                                 1 -> task finished.
@@ -80,6 +89,10 @@ class Task(object):
         else:
             self.predecessors= list()
         self.numberOfTeams= numberOfTeams
+        if(delays):
+            self.delays= delays
+        else:
+            self.delays= list()
         self.computedWorkingHours= None
         self.averageNumberOfWorkers= None
         self.completion_frac= completion_frac
@@ -132,7 +145,11 @@ class Task(object):
         return retval
 
     def setStartDate(self, startDate, i_th= 0):
-        ''' Set the start date of the i_th phase of the task.'''
+        ''' Set the start date of the i_th phase of the task.
+
+        :param startDate: start date.
+        :param i_th: index of the phase of the task.
+        '''
         if(self.predecessors):
             className= type(self).__name__
             methodName= sys._getframe(0).f_code.co_name
@@ -140,6 +157,24 @@ class Task(object):
             logging.error(className+'.'+methodName+errMsg)            
         else:
             self.start_dates[i_th]= startDate
+
+    def getDelay(self, i_th= 0):
+        ''' Get the delay of the i_th phase of the task.
+
+        :param delay: delay.
+        :param i_th: index of the phase of the task.
+        '''
+        retval= None
+        if(self.delays):
+            retval= self.delays[i_th]
+        return retval
+
+    def setDelays(self, delays):
+        ''' Set the delays for each phase of the task.
+
+        :param delays: list of delays.
+        '''
+        self.delays= delays
 
     def getStartDate(self, i_th= 0):
         ''' Return the start date of the i_th phase of the task.
@@ -149,6 +184,9 @@ class Task(object):
         retval= self.start_dates[i_th]
         if(retval is None):
             retval= self.getPredecessorsEndDate()
+            delay= self.getDelay(i_th)
+            if(delay is not None):
+                retval+= delay
         return retval
 
     def getDuration(self, i_th= 0):
