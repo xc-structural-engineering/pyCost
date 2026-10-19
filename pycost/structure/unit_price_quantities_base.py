@@ -30,6 +30,9 @@ class UnitPriceQuantitiesBase(epc.EntPyCost):
     def getUnitPrice(self):
         return self.ud.getPrice()
 
+    def getUnitPriceTitle(self):
+        return self.ud.getTitle()
+
     def getUnitRoundedPrice(self):
         return self.ud.getRoundedPrice()
 
